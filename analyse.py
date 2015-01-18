@@ -1,16 +1,22 @@
 from __future__ import unicode_literals
 
 import argparse
-import codecs
 import collections
 import io
 import json
+import pprint
 
 import sys
 import re
 
 BASIC_PATTERN = re.compile(r"\[(\w+)\] (.+) - (\d+)\s*(?:\[([\d]+p)\])?.(\w+)")
 MD5_PATTERN = re.compile(r"\s*\[[0-9A-F]+\]\s*", re.IGNORECASE)
+NORMALIZATION_MAP = {ord(c): None for c in "/:;._ -'\"!,~()"}
+
+
+def get_title_key(title):
+    return title.lower().translate(NORMALIZATION_MAP)
+
 
 class Episode(object):
     def __init__(self, series, episode, sub_group, resolution, file_type):
@@ -78,28 +84,54 @@ def main():
 
     torrents = load(args.endpoint)
 
-    c = collections.Counter()
     series_downloads = collections.Counter()
     resolutions = collections.Counter()
+    series_episodes = collections.defaultdict(set)
+    spelling_map = collections.defaultdict(collections.Counter)
+
+    norm_downloads = collections.Counter()
+    norm_episodes = collections.defaultdict(set)
+
     for torrent in torrents:
         episode = Episode.from_name(torrent.title)
         if episode:
+            episode_key = get_title_key(episode.series)
             series_downloads[episode.series] += torrent.downloads
+            series_episodes[episode.series].add(episode.episode)
             resolutions[episode.resolution] += torrent.downloads
-            c["success"] += 1
-            c["success_by_downloads"] += torrent.downloads
-        else:
-            c["failure"] += 1
-            c["failure_by_downloads"] += torrent.downloads
 
-    #print "Success rate by torrents: {:.1f}%".format(100. * c["success"] / (c["success"] + c["failure"]))
-    #print "Success rate by downloads: {:.1f}%".format(100. * c["success_by_downloads"] / (c["success_by_downloads"] + c["failure_by_downloads"]))
+            spelling_map[episode_key][episode.series] += torrent.downloads
 
-    #print resolutions.most_common()
+            norm_downloads[episode_key] += torrent.downloads
+            norm_episodes[episode_key].add(episode.episode)
 
-    for series, downloads in series_downloads.most_common():
-        print "{}: {:,} downloads".format(series, downloads)
+    for series in series_downloads.iterkeys():
+        if series_episodes[series]:
+            series_downloads[series] /= len(series_episodes[series])
 
+    # print "Without merging spelling variants"
+    # for series, downloads in series_downloads.most_common():
+    #     print "{}: {:,} downloads per episode".format(series, downloads)
+    #     print "\tEpisodes {}".format(", ".join(unicode(i) for i in sorted(series_episodes[series])))
+
+    for title_counts in spelling_map.itervalues():
+        if len(title_counts) < 2:
+            continue
+
+        # print "Normalization group: {}".format(", ".join(title for title, count in title_counts.most_common()))
+
+    for series in norm_downloads.iterkeys():
+        if norm_episodes[series]:
+            norm_downloads[series] /= len(norm_episodes[series])
+
+    # print "Merging spelling variants"
+    for series, downloads in norm_downloads.most_common():
+        best_title, _ = spelling_map[series].most_common(1)[0]
+        print "{}: {:,} downloads per episode".format(best_title, downloads)
+        print "\tEpisodes {}".format(", ".join(unicode(i) for i in sorted(norm_episodes[series])))
+
+        if len(spelling_map[series]) > 1:
+            print "\tSpellings: {}".format(", ".join(t for t, v in spelling_map[series].most_common()))
 
 if __name__ == "__main__":
     sys.exit(main())
