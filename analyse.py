@@ -13,42 +13,72 @@ MD5_PATTERN = re.compile(r"\s*\[[0-9A-F]+\]{6,}\s*", re.IGNORECASE)
 NORMALIZATION_MAP = {ord(c): None for c in "/:;._ -'\"!,~()"}
 
 webpage_begin = """
-<html>
-  <head>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable(
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<title>Over 9000: Anime Trends</title>
+<style type="text/css">
+<!--
+td.value {
+    padding:0;
+    border-bottom: none;
+}
+td.number {
+    text-align: right;
+}
+td {
+    padding: 4px 6px;
+    height: 2em;
+}
+td.name {
+    width: 15em;
+}
+body {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 80%;
+}
+th {
+    text-align: left;
+    vertical-align:top;
+}
+caption {
+    font-size:90%;
+    font-style:italic;
+}
+div.rectangle {
+    height: 16px;
+    background-color: green;
+    width: 500px;
+}
+-->
+</style>
+</head>
+<body>
+    <h1>Over 9000: Anime Trends</h1>
+    <table cellspacing="0" cellpadding="0" summary="...">
 """
-
-webpage_end = """);
-
-        var options = {
-          vAxis: {title: 'Series',  titleTextStyle: {color: 'red'}}
-        };
-
-        var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
-
-        chart.draw(data, options);
-      }
-    </script>
-  </head>
-  <body>
-    <div id="chart_div" style="width: 900px; height: 2000px;"></div>
-  </body>
+webpage_end = """
+    </table>
+</body>
 </html>
 """
 
-# Example chart data
-# [
-#           ['Year', 'Sales', 'Expenses'],
-#           ['2004',  1000,      400],
-#           ['2005',  1170,      460],
-#           ['2006',  660,       1120],
-#           ['2007',  1030,      540]
-#         ]
+row_html = """
+      <tr>
+        <td class="name">{series}</td>
+        <td class="number">{value}</td>
+        <td class="value"><div class="rectangle" style="width: {bar_width}px;"></div></td>
+      </tr>
+"""
+
+
+def format_row(series_names, downloads, max_downloads):
+    print "Formatting", series_names, downloads, max_downloads
+    best_name = series_names.most_common(1)[0][0]
+    return row_html.format(series=best_name, value="{:,}".format(downloads),
+                           bar_width=int(400. * downloads / max_downloads))
+
 
 def get_title_key(title):
     return title.lower().translate(NORMALIZATION_MAP)
@@ -87,7 +117,6 @@ def _parse_size(size_string):
         return float(parts[0]) * 1024
 
     return -1
-
 
 
 class Torrent(object):
@@ -138,9 +167,10 @@ def make_series_row(downloads, spelling_counts):
 
 def make_js_data(series_downloads, spelling_map):
     print "make_js_data"
-    data_entries = [make_series_row(downloads, spelling_map[series]) for series, downloads in series_downloads.most_common(100)]
-    data_entries = [["Series", "Popularity"]] + data_entries
-    return json.dumps(data_entries)
+    top_series = series_downloads.most_common()
+    data_entries = [format_row(spelling_map[series], downloads, top_series[0][1]) for series, downloads in top_series]
+
+    return "\n".join(data_entries)
 
 
 def main():
@@ -202,6 +232,7 @@ def main():
 
     with io.open(args.output, "w", encoding="UTF-8") as html_out:
         html_out.write(webpage_begin + make_js_data(series_downloads, spelling_map) + webpage_end)
+
 
 if __name__ == "__main__":
     sys.exit(main())
