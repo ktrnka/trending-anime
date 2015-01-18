@@ -4,7 +4,6 @@ import argparse
 import collections
 import io
 import json
-import pprint
 
 import sys
 import re
@@ -84,47 +83,31 @@ def main():
 
     torrents = load(args.endpoint)
 
-    series_downloads = collections.Counter()
     resolutions = collections.Counter()
-    series_episodes = collections.defaultdict(set)
     spelling_map = collections.defaultdict(collections.Counter)
 
     norm_downloads = collections.Counter()
     norm_episodes = collections.defaultdict(set)
 
+    who_subs = collections.defaultdict(collections.Counter)
+
     for torrent in torrents:
         episode = Episode.from_name(torrent.title)
         if episode:
             episode_key = get_title_key(episode.series)
-            series_downloads[episode.series] += torrent.downloads
-            series_episodes[episode.series].add(episode.episode)
+
             resolutions[episode.resolution] += torrent.downloads
 
             spelling_map[episode_key][episode.series] += torrent.downloads
 
             norm_downloads[episode_key] += torrent.downloads
             norm_episodes[episode_key].add(episode.episode)
-
-    for series in series_downloads.iterkeys():
-        if series_episodes[series]:
-            series_downloads[series] /= len(series_episodes[series])
-
-    # print "Without merging spelling variants"
-    # for series, downloads in series_downloads.most_common():
-    #     print "{}: {:,} downloads per episode".format(series, downloads)
-    #     print "\tEpisodes {}".format(", ".join(unicode(i) for i in sorted(series_episodes[series])))
-
-    for title_counts in spelling_map.itervalues():
-        if len(title_counts) < 2:
-            continue
-
-        # print "Normalization group: {}".format(", ".join(title for title, count in title_counts.most_common()))
+            who_subs[episode_key][episode.sub_group] += torrent.downloads
 
     for series in norm_downloads.iterkeys():
         if norm_episodes[series]:
             norm_downloads[series] /= len(norm_episodes[series])
 
-    # print "Merging spelling variants"
     for series, downloads in norm_downloads.most_common():
         best_title, _ = spelling_map[series].most_common(1)[0]
         print "{}: {:,} downloads per episode".format(best_title, downloads)
@@ -132,6 +115,8 @@ def main():
 
         if len(spelling_map[series]) > 1:
             print "\tSpellings: {}".format(", ".join(t for t, v in spelling_map[series].most_common()))
+
+        print "\tSub groups: {}".format(", ".join(g for g, _ in who_subs[series].most_common()))
 
 if __name__ == "__main__":
     sys.exit(main())
