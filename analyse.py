@@ -7,6 +7,7 @@ import json
 import logging
 import sys
 import re
+import datetime
 
 import requests
 
@@ -67,7 +68,7 @@ caption {
 }
 div.rectangle {
     height: 16px;
-    background-color: darkgreen;
+    background-color: #336699;
     width: 500px;
 }
 #middle {
@@ -80,6 +81,12 @@ h1 {
     text-align: center;
     font-style: italic;
     color: grey;
+    margin: 10px 0px;
+}
+#timestamp {
+    text-align: center;
+    color: grey;
+    margin: 0px 0px 20px 0px;
 }
 -->
 </style>
@@ -87,10 +94,17 @@ h1 {
 <body>
 <div id="middle">
     <h1>Over 9000: Anime Trends</h1>
-    <table cellspacing="0" cellpadding="0" summary="...">
 """
+
+timestamp_html = '<div id="timestamp">Popular anime in the past month, refreshed {}</div>'
+
+table_begin = """
+<table cellspacing="0" cellpadding="0" summary="...">
+"""
+
+table_end = "</table>"
+
 webpage_end = """
-    </table>
 </div>
 </body>
 </html>
@@ -296,7 +310,12 @@ def main():
         # print "\tSub groups: {}".format(", ".join(g for g, _ in who_subs[series].most_common()))
 
     with io.open(args.output, "w", encoding="UTF-8") as html_out:
-        html_out.write(webpage_begin + make_table(series_downloads, spelling_map) + webpage_end)
+        html_out.write(webpage_begin)
+        html_out.write(timestamp_html.format(datetime.datetime.now().strftime("%A, %B %d")))
+        html_out.write(table_begin)
+        html_out.write(make_table(series_downloads, spelling_map))
+        html_out.write(table_end)
+        html_out.write(webpage_end)
 
 
 if __name__ == "__main__":
