@@ -6,6 +6,7 @@ import io
 import json
 import logging
 import sys
+import shutil
 import os
 import re
 import datetime
@@ -158,11 +159,16 @@ class Torrent(object):
 def load(endpoint):
     logger = logging.getLogger(__name__)
     torrents = []
-    with io.open(endpoint, "rb") as json_in:
-        data = json.load(json_in)
+    if endpoint.startswith("https:"):
+        r = requests.get(endpoint)
+        r.raise_for_status()
+        data = r.json()
+    else:
+        with io.open(endpoint, "rb") as json_in:
+            data = json.load(json_in)
 
-        for torrent in data["results"]["collection1"]:
-            torrents.append(Torrent.from_json(torrent))
+    for torrent in data["results"]["collection1"]:
+        torrents.append(Torrent.from_json(torrent))
     logger.info("Loaded %d torrents", len(torrents))
 
     return torrents
@@ -181,6 +187,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--template_dir", default="templates", help="Dir of templates")
     parser.add_argument("-v", "--verbose", default=False, action="store_true", help="Verbose logging")
+    parser.add_argument("--style-file", default="over9000.css", help="CSS style")
     parser.add_argument("endpoint", help="Json file or web location to fetch data")
     parser.add_argument("output", help="Output webpage")
     args = parser.parse_args()
@@ -250,6 +257,10 @@ def main():
         html_out.write(templates.sub("main",
                                      refreshed_timestamp=datetime.datetime.now().strftime("%A, %B %d"),
                                      table_body=table_data))
+
+    dest_dir = os.path.dirname(args.output)
+    if dest_dir:
+        shutil.copy(args.style_file, os.path.join(dest_dir, args.style_file))
 
 
 if __name__ == "__main__":
