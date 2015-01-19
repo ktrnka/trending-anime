@@ -4,9 +4,12 @@ import argparse
 import collections
 import io
 import json
-
+import logging
 import sys
 import re
+
+import requests
+
 
 BASIC_PATTERN = re.compile(r"\[([^]]+)\] (.+) - (\d+)\s*(?:\[([\d]+p)\])?.(\w+)")
 MD5_PATTERN = re.compile(r"\s*\[[0-9A-F]+\]{6,}\s*", re.IGNORECASE)
@@ -17,9 +20,25 @@ webpage_begin = """
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="UTF-8">
+<link href='http://fonts.googleapis.com/css?family=Roboto:500' rel='stylesheet' type='text/css'>
 <title>Over 9000: Anime Trends</title>
 <style type="text/css">
 <!--
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:active {
+    text-decoration: underline;
+}
 td.value {
     padding:0;
     border-bottom: none;
@@ -35,8 +54,8 @@ td.name {
     width: 15em;
 }
 body {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 80%;
+    font-family: Roboto, sans-serif;
+    background: lightgrey;
 }
 th {
     text-align: left;
@@ -48,18 +67,31 @@ caption {
 }
 div.rectangle {
     height: 16px;
-    background-color: green;
+    background-color: darkgreen;
     width: 500px;
+}
+#middle {
+    width: 800px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 5px 20px;
+}
+h1 {
+    text-align: center;
+    font-style: italic;
+    color: grey;
 }
 -->
 </style>
 </head>
 <body>
+<div id="middle">
     <h1>Over 9000: Anime Trends</h1>
     <table cellspacing="0" cellpadding="0" summary="...">
 """
 webpage_end = """
     </table>
+</div>
 </body>
 </html>
 """
@@ -73,11 +105,41 @@ row_html = """
 """
 
 
-def format_row(series_names, downloads, max_downloads):
-    print "Formatting", series_names, downloads, max_downloads
+class SearchEngine(object):
+    def __init__(self):
+        self.api_key = "***REMOVED***"
+        self.cx = "***REMOVED***"
+        self.url = "https://www.googleapis.com/customsearch/v1"
+
+        self.max_requests = 10
+        self.requests = 0
+        self.logger = logging.getLogger(__name__)
+
+    def get_link(self, series_name):
+        if self.requests > self.max_requests:
+            return None
+
+        r = requests.get(self.url, params={"key": self.api_key, "cx": self.cx, "q": series_name})
+        self.logger.info("Request URL: {}".format(r.url))
+        r.raise_for_status()
+        self.requests += 1
+        data = r.json()
+        first_result = data["items"][0]["link"]
+        self.logger.info("Link for {}: {}".format(series_name, first_result))
+        return first_result
+
+    def linkify(self, series_name):
+        url = self.get_link(series_name)
+        if url:
+            return '<a href="{}">{}</a>'.format(url, series_name)
+        return series_name
+
+
+def format_row(series_names, downloads, max_downloads, search_engine):
     best_name = series_names.most_common(1)[0][0]
-    return row_html.format(series=best_name, value="{:,}".format(downloads),
-                           bar_width=int(400. * downloads / max_downloads))
+    return row_html.format(series=search_engine.linkify(best_name),
+                           value="{:,}".format(downloads),
+                           bar_width=int(520. * downloads / max_downloads))
 
 
 def get_title_key(title):
@@ -149,27 +211,22 @@ class Torrent(object):
 
 
 def load(endpoint):
+    logger = logging.getLogger(__name__)
     torrents = []
     with io.open(endpoint, "rb") as json_in:
         data = json.load(json_in)
 
         for torrent in data["results"]["collection1"]:
             torrents.append(Torrent.from_json(torrent))
+    logger.info("Loaded %d torrents", len(torrents))
 
     return torrents
 
 
-def make_series_row(downloads, spelling_counts):
-    print "make_series_row"
-    best_spelling = spelling_counts.most_common()[0][0]
-    return [best_spelling, downloads]
-
-
-def make_js_data(series_downloads, spelling_map):
-    print "make_js_data"
+def make_table(series_downloads, spelling_map):
+    search_engine = SearchEngine()
     top_series = series_downloads.most_common()
-    data_entries = [format_row(spelling_map[series], downloads, top_series[0][1]) for series, downloads in top_series]
-
+    data_entries = [format_row(spelling_map[series], downloads, top_series[0][1], search_engine) for series, downloads in top_series]
     return "\n".join(data_entries)
 
 
@@ -177,7 +234,15 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("endpoint", help="Json file or web location to fetch data")
     parser.add_argument("output", help="Output webpage")
+    parser.add_argument("-v", "--verbose", default=False, action="store_true", help="Verbose logging")
     args = parser.parse_args()
+
+    if args.verbose:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.WARNING)
+
+    logger = logging.getLogger(__name__)
 
     torrents = load(args.endpoint)
 
@@ -213,8 +278,8 @@ def main():
             parse_fail[torrent.title] += torrent.downloads
             success[False] += torrent.downloads
 
-    # print "Parsed {:.1f}% of downloads".format(100. * success[True] / (success[True] + success[False]))
-    # print "Failed to parse", pprint.pprint(parse_fail.most_common(40))
+    logger.debug("Parsed {:.1f}% of downloads".format(100. * success[True] / (success[True] + success[False])))
+    logger.debug("Failed to parse %s", parse_fail.most_common(40))
 
     for series in series_downloads.iterkeys():
         if episode_numbers[series]:
@@ -222,16 +287,16 @@ def main():
 
     for series, downloads in series_downloads.most_common():
         best_title, _ = spelling_map[series].most_common(1)[0]
-        print "{}: {:,} downloads per episode".format(best_title, downloads)
-        print "\tEpisodes {}".format(", ".join(unicode(i) for i in sorted(episode_numbers[series])))
-
-        if len(spelling_map[series]) > 1:
-            print "\tSpellings: {}".format(", ".join(t for t, v in spelling_map[series].most_common()))
-
-        print "\tSub groups: {}".format(", ".join(g for g, _ in who_subs[series].most_common()))
+        # print "{}: {:,} downloads per episode".format(best_title, downloads)
+        # print "\tEpisodes {}".format(", ".join(unicode(i) for i in sorted(episode_numbers[series])))
+        #
+        # if len(spelling_map[series]) > 1:
+        # print "\tSpellings: {}".format(", ".join(t for t, v in spelling_map[series].most_common()))
+        #
+        # print "\tSub groups: {}".format(", ".join(g for g, _ in who_subs[series].most_common()))
 
     with io.open(args.output, "w", encoding="UTF-8") as html_out:
-        html_out.write(webpage_begin + make_js_data(series_downloads, spelling_map) + webpage_end)
+        html_out.write(webpage_begin + make_table(series_downloads, spelling_map) + webpage_end)
 
 
 if __name__ == "__main__":
