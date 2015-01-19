@@ -6,127 +6,43 @@ import io
 import json
 import logging
 import sys
+import os
 import re
 import datetime
 
 import requests
 import pymongo
-
+import string
 
 BASIC_PATTERN = re.compile(r"\[([^]]+)\] (.+) - (\d+)\s*(?:\[([\d]+p)\])?.(\w+)")
 MD5_PATTERN = re.compile(r"\s*\[[0-9A-F]+\]{6,}\s*", re.IGNORECASE)
 NORMALIZATION_MAP = {ord(c): None for c in "/:;._ -'\"!,~()"}
 
-webpage_begin = """
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta charset="UTF-8">
-<link href='http://fonts.googleapis.com/css?family=Roboto:500' rel='stylesheet' type='text/css'>
-<title>Over 9000: Anime Trends</title>
-<style type="text/css">
-<!--
-a:link {
-    text-decoration: none;
-}
 
-a:visited {
-    text-decoration: none;
-}
+class Templates(object):
+    """Dict of templates"""
+    def __init__(self, template_dir):
+        self.templates = dict()
 
-a:hover {
-    text-decoration: underline;
-}
+        for filename in os.listdir(template_dir):
+            name = os.path.splitext(os.path.basename(filename))[0]
+            filename = os.path.join(template_dir, filename)
 
-a:active {
-    text-decoration: underline;
-}
-td.value {
-    padding:0;
-    border-bottom: none;
-}
-td.number {
-    text-align: right;
-}
-td {
-    padding: 4px 6px;
-    height: 2em;
-}
-td.name {
-    width: 15em;
-}
-body {
-    font-family: Roboto, sans-serif;
-    background: lightgrey;
-}
-th {
-    text-align: left;
-    vertical-align:top;
-}
-caption {
-    font-size:90%;
-    font-style:italic;
-}
-div.rectangle {
-    height: 16px;
-    background-color: #336699;
-    width: 500px;
-}
-#middle {
-    width: 800px;
-    margin: 0 auto;
-    background: #ffffff;
-    padding: 5px 20px;
-}
-h1 {
-    text-align: center;
-    font-style: italic;
-    color: grey;
-    margin: 10px 0px;
-}
-#timestamp {
-    text-align: center;
-    color: grey;
-    margin: 0px 0px 20px 0px;
-}
--->
-</style>
-</head>
-<body>
-<div id="middle">
-    <h1>Over 9000: Anime Trends</h1>
-"""
+            with io.open(filename, "r", encoding="UTF-8") as template_in:
+                self.templates[name] = string.Template(template_in.read())
 
-timestamp_html = '<div id="timestamp">Popular anime in the past month, refreshed {}</div>'
-
-table_begin = """
-<table cellspacing="0" cellpadding="0" summary="...">
-"""
-
-table_end = "</table>"
-
-webpage_end = """
-</div>
-</body>
-</html>
-"""
-
-row_html = """
-      <tr>
-        <td class="name">{series}</td>
-        <td class="number">{value}</td>
-        <td class="value"><div class="rectangle" style="width: {bar_width}px;"></div></td>
-      </tr>
-"""
+    def sub(self, template_name, **kwargs):
+        return self.templates[template_name].substitute(**kwargs)
 
 
 class SearchEngine(object):
-    def __init__(self, mongo_db):
+    """Wrap Google Custom Search Engine requests"""
+    def __init__(self, mongo_db, max_requests=10):
         self.api_key = "***REMOVED***"
         self.cx = "***REMOVED***"
         self.url = "https://www.googleapis.com/customsearch/v1"
 
-        self.max_requests = 10
+        self.max_requests = max_requests
         self.requests = 0
         self.logger = logging.getLogger(__name__)
         self.db = mongo_db
@@ -140,12 +56,11 @@ class SearchEngine(object):
         if self.requests >= self.max_requests:
             return None
 
-        r = requests.get(self.url, params={"key": self.api_key, "cx": self.cx, "q": series_name})
-        self.logger.info("Request URL: {}".format(r.url))
-
         try:
+            r = requests.get(self.url, params={"key": self.api_key, "cx": self.cx, "q": series_name})
+            self.logger.info("Request URL: {}".format(r.url))
             r.raise_for_status()
-        except requests.exceptions.HTTPError:
+        except (requests.exceptions.HTTPError, requests.exceptions.SSLError):
             self.logger.exception("Failed to query API, skipping further requests")
             self.requests = self.max_requests
             return None
@@ -164,11 +79,12 @@ class SearchEngine(object):
         return series_name
 
 
-def format_row(series_names, downloads, max_downloads, search_engine):
+def format_row(series_names, downloads, max_downloads, search_engine, html_templates):
     best_name = series_names.most_common(1)[0][0]
-    return row_html.format(series=search_engine.linkify(best_name),
-                           value="{:,}".format(downloads),
-                           bar_width=int(520. * downloads / max_downloads))
+    return html_templates.sub("row",
+                              series_name=search_engine.linkify(best_name),
+                              value="{:,}".format(downloads),
+                              bar_width=int(520. * downloads / max_downloads))
 
 
 def get_title_key(title):
@@ -252,19 +168,21 @@ def load(endpoint):
     return torrents
 
 
-def make_table(series_downloads, spelling_map):
+def make_table(series_downloads, spelling_map, html_templates):
     mongo_client = pymongo.MongoClient("***REMOVED***")
     search_engine = SearchEngine(mongo_client["anime-trends"])
     top_series = series_downloads.most_common()
-    data_entries = [format_row(spelling_map[series], downloads, top_series[0][1], search_engine) for series, downloads in top_series]
+    data_entries = [format_row(spelling_map[series], downloads, top_series[0][1], search_engine, html_templates) for
+                    series, downloads in top_series]
     return "\n".join(data_entries)
 
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("-t", "--template_dir", default="templates", help="Dir of templates")
+    parser.add_argument("-v", "--verbose", default=False, action="store_true", help="Verbose logging")
     parser.add_argument("endpoint", help="Json file or web location to fetch data")
     parser.add_argument("output", help="Output webpage")
-    parser.add_argument("-v", "--verbose", default=False, action="store_true", help="Verbose logging")
     args = parser.parse_args()
 
     if args.verbose:
@@ -273,6 +191,8 @@ def main():
         logging.basicConfig(level=logging.WARNING)
 
     logger = logging.getLogger(__name__)
+
+    templates = Templates(args.template_dir)
 
     torrents = load(args.endpoint)
 
@@ -326,12 +246,10 @@ def main():
         # print "\tSub groups: {}".format(", ".join(g for g, _ in who_subs[series].most_common()))
 
     with io.open(args.output, "w", encoding="UTF-8") as html_out:
-        html_out.write(webpage_begin)
-        html_out.write(timestamp_html.format(datetime.datetime.now().strftime("%A, %B %d")))
-        html_out.write(table_begin)
-        html_out.write(make_table(series_downloads, spelling_map))
-        html_out.write(table_end)
-        html_out.write(webpage_end)
+        table_data = make_table(series_downloads, spelling_map, templates)
+        html_out.write(templates.sub("main",
+                                     refreshed_timestamp=datetime.datetime.now().strftime("%A, %B %d"),
+                                     table_body=table_data))
 
 
 if __name__ == "__main__":
