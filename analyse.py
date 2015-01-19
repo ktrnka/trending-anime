@@ -10,6 +10,7 @@ import re
 import datetime
 
 import requests
+import pymongo
 
 
 BASIC_PATTERN = re.compile(r"\[([^]]+)\] (.+) - (\d+)\s*(?:\[([\d]+p)\])?.(\w+)")
@@ -120,7 +121,7 @@ row_html = """
 
 
 class SearchEngine(object):
-    def __init__(self):
+    def __init__(self, mongo_db):
         self.api_key = "***REMOVED***"
         self.cx = "***REMOVED***"
         self.url = "https://www.googleapis.com/customsearch/v1"
@@ -128,18 +129,32 @@ class SearchEngine(object):
         self.max_requests = 10
         self.requests = 0
         self.logger = logging.getLogger(__name__)
+        self.db = mongo_db
 
     def get_link(self, series_name):
-        if self.requests > self.max_requests:
+        cached = self.db["links"].find_one({"title": series_name})
+        if cached:
+            self.logger.info("Found cached object in database: %s", cached)
+            return cached["url"]
+
+        if self.requests >= self.max_requests:
             return None
 
         r = requests.get(self.url, params={"key": self.api_key, "cx": self.cx, "q": series_name})
         self.logger.info("Request URL: {}".format(r.url))
-        r.raise_for_status()
+
+        try:
+            r.raise_for_status()
+        except requests.exceptions.HTTPError:
+            self.logger.exception("Failed to query API, skipping further requests")
+            self.requests = self.max_requests
+            return None
+
         self.requests += 1
         data = r.json()
         first_result = data["items"][0]["link"]
         self.logger.info("Link for {}: {}".format(series_name, first_result))
+        self.db["links"].insert({"title": series_name, "url": first_result})
         return first_result
 
     def linkify(self, series_name):
@@ -238,7 +253,8 @@ def load(endpoint):
 
 
 def make_table(series_downloads, spelling_map):
-    search_engine = SearchEngine()
+    mongo_client = pymongo.MongoClient("***REMOVED***")
+    search_engine = SearchEngine(mongo_client["anime-trends"])
     top_series = series_downloads.most_common()
     data_entries = [format_row(spelling_map[series], downloads, top_series[0][1], search_engine) for series, downloads in top_series]
     return "\n".join(data_entries)
