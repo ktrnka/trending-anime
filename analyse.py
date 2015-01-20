@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 import ConfigParser
-
 import argparse
 import collections
 import io
@@ -8,13 +7,13 @@ import json
 import logging
 import sys
 import shutil
+import datetime
+import string
+
 import os
 import re
-import datetime
-
 import requests
 import pymongo
-import string
 
 BASIC_PATTERN = re.compile(r"\[([^]]+)\] (.+) - (\d+)\s*(?:\[([\d]+p)\])?.(\w+)")
 MD5_PATTERN = re.compile(r"\s*\[[0-9A-F]+\]{6,}\s*", re.IGNORECASE)
@@ -23,6 +22,7 @@ NORMALIZATION_MAP = {ord(c): None for c in "/:;._ -'\"!,~()"}
 
 class Templates(object):
     """Dict of templates"""
+
     def __init__(self, template_dir):
         self.templates = dict()
 
@@ -39,6 +39,7 @@ class Templates(object):
 
 class SearchEngine(object):
     """Wrap Google Custom Search Engine requests"""
+
     def __init__(self, api_key, cx, mongo_db, max_requests=10):
         self.api_key = api_key
         self.cx = cx
@@ -115,19 +116,6 @@ class Episode(object):
         return "[{}] {} - {} [{}].{}".format(self.sub_group, self.series, self.episode, self.resolution, self.file_type)
 
 
-def _parse_size(size_string):
-    parts = size_string.split()
-    if not parts:
-        return -1
-
-    if parts[1] == "MiB":
-        return float(parts[0])
-    elif parts[1] == "GiB":
-        return float(parts[0]) * 1024
-
-    return -1
-
-
 class Torrent(object):
     def __init__(self):
         self.title = None
@@ -153,8 +141,21 @@ class Torrent(object):
         except ValueError:
             torrent.leechers = 0
         torrent.downloads = int(data["downloads"])
-        torrent.size = _parse_size(data["size"])
+        torrent.size = Torrent._parse_nyaa_size_string(data["size"])
         return torrent
+
+    @staticmethod
+    def _parse_nyaa_size_string(size_string):
+        parts = size_string.split()
+        if not parts:
+            return -1
+
+        if parts[1] == "MiB":
+            return float(parts[0])
+        elif parts[1] == "GiB":
+            return float(parts[0]) * 1024
+
+        return -1
 
 
 def load(endpoint):
@@ -175,54 +176,22 @@ def load(endpoint):
     return torrents
 
 
-def make_table(series_downloads, spelling_map, html_templates, search_engine):
+def make_table_body(series_downloads, spelling_map, html_templates, search_engine):
     top_series = series_downloads.most_common()
     data_entries = [format_row(spelling_map[series], downloads, top_series[0][1], search_engine, html_templates) for
                     series, downloads in top_series]
     return "\n".join(data_entries)
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-t", "--template_dir", default="templates", help="Dir of templates")
-    parser.add_argument("-v", "--verbose", default=False, action="store_true", help="Verbose logging")
-    parser.add_argument("--style-file", default="over9000.css", help="CSS style")
-    parser.add_argument("config", help="Config file")
-    parser.add_argument("output", help="Output webpage")
-    args = parser.parse_args()
-
-    if args.verbose:
-        logging.basicConfig(level=logging.DEBUG)
-    else:
-        logging.basicConfig(level=logging.WARNING)
-
+def process_torrents(torrents):
     logger = logging.getLogger(__name__)
-
-    # load config
-    config = ConfigParser.RawConfigParser()
-    config.read([args.config])
-
-    # load templates
-    templates = Templates(args.template_dir)
-
-    # load torrent list
-    torrents = load(config.get("kimono", "endpoint"))
-
-    mongo_client = pymongo.MongoClient(config.get("mongo", "uri"))
-    search_engine = SearchEngine(config.get("google", "api_key"), config.get("google", "cx"), mongo_client["anime-trends"])
-
     resolutions = collections.Counter()
     spelling_map = collections.defaultdict(collections.Counter)
-
     series_downloads = collections.Counter()
     episode_numbers = collections.defaultdict(set)
-
     who_subs = collections.defaultdict(collections.Counter)
-
     parse_fail = collections.Counter()
-
     success = collections.Counter()
-
     for torrent in torrents:
         episode = Episode.from_name(torrent.title)
         if episode:
@@ -242,14 +211,12 @@ def main():
         else:
             parse_fail[torrent.title] += torrent.downloads
             success[False] += torrent.downloads
-
     logger.debug("Parsed {:.1f}% of downloads".format(100. * success[True] / (success[True] + success[False])))
     logger.debug("Failed to parse %s", parse_fail.most_common(40))
+    return episode_numbers, series_downloads, spelling_map
 
-    for series in series_downloads.iterkeys():
-        if episode_numbers[series]:
-            series_downloads[series] /= len(episode_numbers[series])
 
+def debug_data(series_downloads, spelling_map):
     for series, downloads in series_downloads.most_common():
         best_title, _ = spelling_map[series].most_common(1)[0]
         # print "{}: {:,} downloads per episode".format(best_title, downloads)
@@ -260,8 +227,46 @@ def main():
         #
         # print "\tSub groups: {}".format(", ".join(g for g, _ in who_subs[series].most_common()))
 
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-t", "--template_dir", default="templates", help="Dir of templates")
+    parser.add_argument("-v", "--verbose", default=False, action="store_true", help="Verbose logging")
+    parser.add_argument("--style-file", default="over9000.css", help="CSS style")
+    parser.add_argument("config", help="Config file")
+    parser.add_argument("output", help="Output webpage")
+    args = parser.parse_args()
+
+    if args.verbose:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.WARNING)
+
+    # load config
+    config = ConfigParser.RawConfigParser()
+    config.read([args.config])
+
+    # load templates
+    templates = Templates(args.template_dir)
+
+    # load torrent list
+    torrents = load(config.get("kimono", "endpoint"))
+
+    # mongodb, google search
+    mongo_client = pymongo.MongoClient(config.get("mongo", "uri"))
+    search_engine = SearchEngine(config.get("google", "api_key"), config.get("google", "cx"),
+                                 mongo_client["anime-trends"])
+
+    episode_numbers, series_downloads, spelling_map = process_torrents(torrents)
+
+    for series in series_downloads.iterkeys():
+        if episode_numbers[series]:
+            series_downloads[series] /= len(episode_numbers[series])
+
+    debug_data(series_downloads, spelling_map)
+
     with io.open(args.output, "w", encoding="UTF-8") as html_out:
-        table_data = make_table(series_downloads, spelling_map, templates, search_engine)
+        table_data = make_table_body(series_downloads, spelling_map, templates, search_engine)
         html_out.write(templates.sub("main",
                                      refreshed_timestamp=datetime.datetime.now().strftime("%A, %B %d"),
                                      table_body=table_data))
