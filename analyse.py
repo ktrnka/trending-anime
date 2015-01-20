@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+import ConfigParser
 
 import argparse
 import collections
@@ -38,9 +39,9 @@ class Templates(object):
 
 class SearchEngine(object):
     """Wrap Google Custom Search Engine requests"""
-    def __init__(self, mongo_db, max_requests=10):
-        self.api_key = "***REMOVED***"
-        self.cx = "***REMOVED***"
+    def __init__(self, api_key, cx, mongo_db, max_requests=10):
+        self.api_key = api_key
+        self.cx = cx
         self.url = "https://www.googleapis.com/customsearch/v1"
 
         self.max_requests = max_requests
@@ -174,9 +175,7 @@ def load(endpoint):
     return torrents
 
 
-def make_table(series_downloads, spelling_map, html_templates):
-    mongo_client = pymongo.MongoClient("***REMOVED***")
-    search_engine = SearchEngine(mongo_client["anime-trends"])
+def make_table(series_downloads, spelling_map, html_templates, search_engine):
     top_series = series_downloads.most_common()
     data_entries = [format_row(spelling_map[series], downloads, top_series[0][1], search_engine, html_templates) for
                     series, downloads in top_series]
@@ -188,7 +187,7 @@ def main():
     parser.add_argument("-t", "--template_dir", default="templates", help="Dir of templates")
     parser.add_argument("-v", "--verbose", default=False, action="store_true", help="Verbose logging")
     parser.add_argument("--style-file", default="over9000.css", help="CSS style")
-    parser.add_argument("endpoint", help="Json file or web location to fetch data")
+    parser.add_argument("config", help="Config file")
     parser.add_argument("output", help="Output webpage")
     args = parser.parse_args()
 
@@ -199,9 +198,18 @@ def main():
 
     logger = logging.getLogger(__name__)
 
+    # load config
+    config = ConfigParser.RawConfigParser()
+    config.read([args.config])
+
+    # load templates
     templates = Templates(args.template_dir)
 
-    torrents = load(args.endpoint)
+    # load torrent list
+    torrents = load(config.get("kimono", "endpoint"))
+
+    mongo_client = pymongo.MongoClient(config.get("mongo", "uri"))
+    search_engine = SearchEngine(config.get("google", "api_key"), config.get("google", "cx"), mongo_client["anime-trends"])
 
     resolutions = collections.Counter()
     spelling_map = collections.defaultdict(collections.Counter)
@@ -253,7 +261,7 @@ def main():
         # print "\tSub groups: {}".format(", ".join(g for g, _ in who_subs[series].most_common()))
 
     with io.open(args.output, "w", encoding="UTF-8") as html_out:
-        table_data = make_table(series_downloads, spelling_map, templates)
+        table_data = make_table(series_downloads, spelling_map, templates, search_engine)
         html_out.write(templates.sub("main",
                                      refreshed_timestamp=datetime.datetime.now().strftime("%A, %B %d"),
                                      table_body=table_data))
