@@ -9,6 +9,7 @@ import sys
 import shutil
 import datetime
 import string
+import bitballoon
 
 import os
 import re
@@ -234,7 +235,7 @@ def main():
     parser.add_argument("-v", "--verbose", default=False, action="store_true", help="Verbose logging")
     parser.add_argument("--style-file", default="over9000.css", help="CSS style")
     parser.add_argument("config", help="Config file")
-    parser.add_argument("output", help="Output webpage")
+    parser.add_argument("output", help="Output filename or 'bitballoon' to upload to bitballoon")
     args = parser.parse_args()
 
     if args.verbose:
@@ -257,23 +258,33 @@ def main():
     search_engine = SearchEngine(config.get("google", "api_key"), config.get("google", "cx"),
                                  mongo_client["anime-trends"])
 
+    bb = bitballoon.BitBalloon(config.get("bitballoon", "access_key"), config.get("bitballoon", "site_id"),
+                               config.get("bitballoon", "email"))
+
     episode_numbers, series_downloads, spelling_map = process_torrents(torrents)
 
     for series in series_downloads.iterkeys():
         if episode_numbers[series]:
             series_downloads[series] /= len(episode_numbers[series])
 
+    series_downloads = collections.Counter({k: v for k, v in series_downloads.iteritems() if v > 1000})
+
     debug_data(series_downloads, spelling_map)
 
-    with io.open(args.output, "w", encoding="UTF-8") as html_out:
-        table_data = make_table_body(series_downloads, spelling_map, templates, search_engine)
-        html_out.write(templates.sub("main",
-                                     refreshed_timestamp=datetime.datetime.now().strftime("%A, %B %d"),
-                                     table_body=table_data))
+    table_data = make_table_body(series_downloads, spelling_map, templates, search_engine)
+    html_data = templates.sub("main",
+                              refreshed_timestamp=datetime.datetime.now().strftime("%A, %B %d"),
+                              table_body=table_data)
 
-    dest_dir = os.path.dirname(args.output)
-    if dest_dir:
-        shutil.copy(args.style_file, os.path.join(dest_dir, args.style_file))
+    if args.output == "bitballoon":
+        bb.update_file_data(html_data.encode("UTF-8"), "index.html", deploy=True)
+    else:
+        with io.open(args.output, "w", encoding="UTF-8") as html_out:
+            html_out.write(html_data)
+
+        dest_dir = os.path.dirname(args.output)
+        if dest_dir:
+            shutil.copy(args.style_file, os.path.join(dest_dir, args.style_file))
 
 
 if __name__ == "__main__":
