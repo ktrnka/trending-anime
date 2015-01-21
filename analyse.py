@@ -158,6 +158,11 @@ class Torrent(object):
 
         return -1
 
+def parse_timestamp(timestamp):
+    """Parse a timestamp like Fri Jan 02 2015 22:04:11 GMT+0000 (UTC)"""
+    timestamp = timestamp.replace(" GMT+0000 (UTC)", "")
+    return datetime.datetime.strptime(timestamp, "%a %b %d %Y %H:%M:%S")
+
 
 def load(endpoint):
     logger = logging.getLogger(__name__)
@@ -174,7 +179,7 @@ def load(endpoint):
         torrents.append(Torrent.from_json(torrent))
     logger.info("Loaded %d torrents", len(torrents))
 
-    return torrents
+    return parse_timestamp(data["lastsuccess"]), torrents
 
 
 def make_table_body(series_downloads, spelling_map, html_templates, search_engine):
@@ -251,14 +256,16 @@ def main():
     templates = Templates(args.template_dir)
 
     # load torrent list
-    torrents = load(config.get("kimono", "endpoint"))
+    data_date, torrents = load(config.get("kimono", "endpoint"))
 
     # mongodb, google search
     mongo_client = pymongo.MongoClient(config.get("mongo", "uri"))
-    search_engine = SearchEngine(config.get("google", "api_key"), config.get("google", "cx"),
+    search_engine = SearchEngine(config.get("google", "api_key"),
+                                 config.get("google", "cx"),
                                  mongo_client["anime-trends"])
 
-    bb = bitballoon.BitBalloon(config.get("bitballoon", "access_key"), config.get("bitballoon", "site_id"),
+    bb = bitballoon.BitBalloon(config.get("bitballoon", "access_key"),
+                               config.get("bitballoon", "site_id"),
                                config.get("bitballoon", "email"))
 
     episode_numbers, series_downloads, spelling_map = process_torrents(torrents)
@@ -273,7 +280,7 @@ def main():
 
     table_data = make_table_body(series_downloads, spelling_map, templates, search_engine)
     html_data = templates.sub("main",
-                              refreshed_timestamp=datetime.datetime.now().strftime("%A, %B %d"),
+                              refreshed_timestamp=data_date.strftime("%A, %B %d"),
                               table_body=table_data)
 
     if args.output == "bitballoon":
