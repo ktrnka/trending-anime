@@ -95,7 +95,7 @@ def get_title_key(title):
     return title.lower().translate(NORMALIZATION_MAP)
 
 
-class Episode(object):
+class ParsedTorrent(object):
     def __init__(self, series, episode, sub_group, resolution, file_type):
         self.series = series
         self.episode = int(episode)
@@ -109,7 +109,7 @@ class Episode(object):
         title_cleaned = title_cleaned.translate({0x2012: "-"})
         m = BASIC_PATTERN.match(title_cleaned)
         if m:
-            return Episode(m.group(2), m.group(3), m.group(1), m.group(4), m.group(5))
+            return ParsedTorrent(m.group(2), m.group(3), m.group(1), m.group(4), m.group(5))
         else:
             return None
 
@@ -166,6 +166,11 @@ class Series(object):
         self.num_downloads = 0
         self.spelling_counts = collections.Counter()
 
+    def get_season(self):
+        assert False
+
+
+
 
 def parse_timestamp(timestamp):
     """Parse a timestamp like Fri Jan 02 2015 22:04:11 GMT+0000 (UTC)"""
@@ -209,35 +214,33 @@ def process_torrents(torrents):
     success_counts = collections.Counter()
     parse_fail = collections.Counter()
 
-    series = dict()
+    animes = dict()
 
     for torrent in torrents:
-        episode = Episode.from_name(torrent.title)
+        episode = ParsedTorrent.from_name(torrent.title)
         if episode:
             episode_key = get_title_key(episode.series)
-            if episode_key in series:
-                current_series = series[episode_key]
+            if episode_key in animes:
+                anime = animes[episode_key]
             else:
-                current_series = Series()
-                series[episode_key] = current_series
+                anime = Series()
+                animes[episode_key] = anime
 
-            current_series.spelling_counts[episode.series] += torrent.downloads
-            current_series.num_downloads += torrent.downloads
-            current_series.episodes.add(episode.episode)
-            current_series.sub_groups.add(episode.sub_group)
+            anime.spelling_counts[episode.series] += torrent.downloads
+            anime.num_downloads += torrent.downloads
+            anime.episodes.add(episode.episode)
+            anime.sub_groups.add(episode.sub_group)
 
             success_counts[True] += torrent.downloads
         elif torrent.size > 1000 or "OVA" in torrent.title:
-            # success[False] += torrent.downloads
             pass
         else:
             parse_fail[torrent.title] += torrent.downloads
             success_counts[False] += torrent.downloads
-    logger.debug("Parsed {:.1f}% of downloads".format(
-        100. * success_counts[True] / (success_counts[True] + success_counts[False])))
+    logger.debug("Parsed {:.1f}% of downloads".format(100. * success_counts[True] / (success_counts[True] + success_counts[False])))
     logger.debug("Failed to parse %s", parse_fail.most_common(40))
 
-    return series
+    return animes
 
 
 def main():
