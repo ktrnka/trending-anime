@@ -83,12 +83,12 @@ class SearchEngine(object):
         return series_name
 
 
-def format_row(series_names, downloads, max_downloads, search_engine, html_templates):
-    best_name = series_names.most_common(1)[0][0]
+def format_row(series, top_series, search_engine, html_templates):
+    best_name = series.spelling_counts.most_common(1)[0][0]
     return html_templates.sub("row",
                               series_name=search_engine.linkify(best_name),
-                              value="{:,}".format(downloads),
-                              bar_width=int(520. * downloads / max_downloads))
+                              value="{:,}".format(series.num_downloads),
+                              bar_width=int(520. * series.num_downloads / top_series.num_downloads))
 
 
 def get_title_key(title):
@@ -158,6 +158,15 @@ class Torrent(object):
 
         return -1
 
+
+class Series(object):
+    def __init__(self):
+        self.episodes = set()
+        self.sub_groups = set()
+        self.num_downloads = 0
+        self.spelling_counts = collections.Counter()
+
+
 def parse_timestamp(timestamp):
     """Parse a timestamp like Fri Jan 02 2015 22:04:11 GMT+0000 (UTC)"""
     timestamp = timestamp.replace(" GMT+0000 (UTC)", "")
@@ -182,56 +191,53 @@ def load(endpoint):
     return parse_timestamp(data["lastsuccess"]), torrents
 
 
-def make_table_body(series_downloads, spelling_map, html_templates, search_engine):
-    top_series = series_downloads.most_common()
-    data_entries = [format_row(spelling_map[series], downloads, top_series[0][1], search_engine, html_templates) for
-                    series, downloads in top_series]
+def make_table_body(series, html_templates, search_engine):
+    top_series = sorted(series.itervalues(), key=lambda s: s.num_downloads, reverse=True)
+    data_entries = [format_row(anime, top_series[0], search_engine, html_templates) for
+                    anime in top_series]
     return "\n".join(data_entries)
 
 
 def process_torrents(torrents):
+    """
+
+    :param torrents:
+    :return: Mapping of normalized series names to Series objects
+    """
     logger = logging.getLogger(__name__)
-    resolutions = collections.Counter()
-    spelling_map = collections.defaultdict(collections.Counter)
-    series_downloads = collections.Counter()
-    episode_numbers = collections.defaultdict(set)
-    who_subs = collections.defaultdict(collections.Counter)
+
+    success_counts = collections.Counter()
     parse_fail = collections.Counter()
-    success = collections.Counter()
+
+    series = dict()
+
     for torrent in torrents:
         episode = Episode.from_name(torrent.title)
         if episode:
             episode_key = get_title_key(episode.series)
+            if episode_key in series:
+                current_series = series[episode_key]
+            else:
+                current_series = Series()
+                series[episode_key] = current_series
 
-            resolutions[episode.resolution] += torrent.downloads
+            current_series.spelling_counts[episode.series] += torrent.downloads
+            current_series.num_downloads += torrent.downloads
+            current_series.episodes.add(episode.episode)
+            current_series.sub_groups.add(episode.sub_group)
 
-            spelling_map[episode_key][episode.series] += torrent.downloads
-
-            series_downloads[episode_key] += torrent.downloads
-            episode_numbers[episode_key].add(episode.episode)
-            who_subs[episode_key][episode.sub_group] += torrent.downloads
-            success[True] += torrent.downloads
+            success_counts[True] += torrent.downloads
         elif torrent.size > 1000 or "OVA" in torrent.title:
             # success[False] += torrent.downloads
             pass
         else:
             parse_fail[torrent.title] += torrent.downloads
-            success[False] += torrent.downloads
-    logger.debug("Parsed {:.1f}% of downloads".format(100. * success[True] / (success[True] + success[False])))
+            success_counts[False] += torrent.downloads
+    logger.debug("Parsed {:.1f}% of downloads".format(
+        100. * success_counts[True] / (success_counts[True] + success_counts[False])))
     logger.debug("Failed to parse %s", parse_fail.most_common(40))
-    return episode_numbers, series_downloads, spelling_map
 
-
-def debug_data(series_downloads, spelling_map):
-    for series, downloads in series_downloads.most_common():
-        best_title, _ = spelling_map[series].most_common(1)[0]
-        # print "{}: {:,} downloads per episode".format(best_title, downloads)
-        # print "\tEpisodes {}".format(", ".join(unicode(i) for i in sorted(episode_numbers[series])))
-        #
-        # if len(spelling_map[series]) > 1:
-        # print "\tSpellings: {}".format(", ".join(t for t, v in spelling_map[series].most_common()))
-        #
-        # print "\tSub groups: {}".format(", ".join(g for g, _ in who_subs[series].most_common()))
+    return series
 
 
 def main():
@@ -268,17 +274,15 @@ def main():
                                config.get("bitballoon", "site_id"),
                                config.get("bitballoon", "email"))
 
-    episode_numbers, series_downloads, spelling_map = process_torrents(torrents)
+    animes = process_torrents(torrents)
 
-    for series in series_downloads.iterkeys():
-        if episode_numbers[series]:
-            series_downloads[series] /= len(episode_numbers[series])
+    for anime in animes.itervalues():
+        if anime.episodes:
+            anime.num_downloads /= len(anime.episodes)
 
-    series_downloads = collections.Counter({k: v for k, v in series_downloads.iteritems() if v > 1000})
+    animes = collections.Counter({k: v for k, v in animes.iteritems() if v.num_downloads > 1000})
 
-    debug_data(series_downloads, spelling_map)
-
-    table_data = make_table_body(series_downloads, spelling_map, templates, search_engine)
+    table_data = make_table_body(animes, templates, search_engine)
     html_data = templates.sub("main",
                               refreshed_timestamp=data_date.strftime("%A, %B %d"),
                               table_body=table_data)
