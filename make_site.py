@@ -76,17 +76,21 @@ class SearchEngine(object):
         self.db["links"].insert({"title": series_name, "url": first_result})
         return first_result
 
-    def linkify(self, series_name):
-        url = self.get_link(series_name)
-        if url:
-            return '<a href="{}">{}</a>'.format(url, series_name)
-        return series_name
 
+def format_row(index, series, top_series, html_templates):
+    extras = []
+    alternate_names = series.get_alternate_names()
+    if alternate_names:
+        extras.append("Alternate titles: {}".format(", ".join(alternate_names)))
 
-def format_row(series, top_series, search_engine, html_templates):
-    best_name = series.spelling_counts.most_common(1)[0][0]
+    extras.append("Sub groups: {}".format(", ".join(sorted(series.sub_groups))))
+
+    extras.append(", ".join("Episode {}: {:,}".format(ep, count) for ep, count in series.get_episode_counts()))
+
     return html_templates.sub("row",
-                              series_name=search_engine.linkify(best_name),
+                              id="row_{}".format(index),
+                              extra="<br>".join(extras),
+                              series_name=series.get_link(),
                               value="{:,}".format(series.num_downloads),
                               bar_width=int(520. * series.num_downloads / top_series.num_downloads))
 
@@ -165,11 +169,49 @@ class Series(object):
         self.sub_groups = set()
         self.num_downloads = 0
         self.spelling_counts = collections.Counter()
+        self.url = None
+        self.episode_counts = collections.Counter()
 
-    def get_season(self):
-        assert False
+    def add_torrent(self, torrent, parsed_torrent):
+        self.spelling_counts[parsed_torrent.series] += torrent.downloads
+        self.num_downloads += torrent.downloads
+        self.episodes.add(parsed_torrent.episode)
+        self.sub_groups.add(parsed_torrent.sub_group)
+        self.episode_counts[parsed_torrent.episode] += torrent.downloads
 
+    def get_name(self):
+        """Get the best name for this anime"""
+        assert len(self.spelling_counts) > 0
+        return self.spelling_counts.most_common(1)[0][0]
 
+    def get_alternate_names(self):
+        assert len(self.spelling_counts) > 0
+        return [name for name, _ in self.spelling_counts.most_common()[1:]]
+
+    def get_link(self):
+        name = self.get_name()
+        if self.url:
+            return '<a href="{}">{}</a>'.format(self.url, name)
+        return name
+
+    def normalize_counts(self):
+        if self.episodes:
+            self.num_downloads /= len(self.episodes)
+
+    def __repr__(self):
+        return "{} [{}] {:,} DL".format(self.get_name(), ", ".join(self.sub_groups), self.num_downloads)
+
+    def get_episode_counts(self):
+        return [(ep, self.episode_counts[ep]) for ep in sorted(self.episode_counts.iterkeys())]
+
+    def merge(self, other):
+        logger = logging.getLogger(__name__)
+        logger.info("Merging by URL %s and %s", self, other)
+        self.episodes.update(other.episodes)
+        self.sub_groups.update(other.sub_groups)
+        self.num_downloads += other.num_downloads
+        self.spelling_counts.update(other.spelling_counts)
+        self.episode_counts.update(other.episode_counts)
 
 
 def parse_timestamp(timestamp):
@@ -196,10 +238,9 @@ def load(endpoint):
     return parse_timestamp(data["lastsuccess"]), torrents
 
 
-def make_table_body(series, html_templates, search_engine):
-    top_series = sorted(series.itervalues(), key=lambda s: s.num_downloads, reverse=True)
-    data_entries = [format_row(anime, top_series[0], search_engine, html_templates) for
-                    anime in top_series]
+def make_table_body(series, html_templates):
+    top_series = sorted(series, key=lambda s: s.num_downloads, reverse=True)
+    data_entries = [format_row(i, anime, top_series[0], html_templates) for i, anime in enumerate(top_series)]
     return "\n".join(data_entries)
 
 
@@ -226,10 +267,7 @@ def process_torrents(torrents):
                 anime = Series()
                 animes[episode_key] = anime
 
-            anime.spelling_counts[episode.series] += torrent.downloads
-            anime.num_downloads += torrent.downloads
-            anime.episodes.add(episode.episode)
-            anime.sub_groups.add(episode.sub_group)
+            anime.add_torrent(torrent, episode)
 
             success_counts[True] += torrent.downloads
         elif torrent.size > 1000 or "OVA" in torrent.title:
@@ -241,6 +279,27 @@ def process_torrents(torrents):
     logger.debug("Failed to parse %s", parse_fail.most_common(40))
 
     return animes
+
+
+def update_mal_link(anime, search_engine):
+    anime.url = search_engine.get_link(anime.get_name())
+
+
+def merge_by_link(animes):
+    logger = logging.getLogger(__name__)
+    filtered_anime = []
+
+    url_map = dict()
+    for anime in animes:
+        if not anime.url:
+            logger.info("No url, can't deduplicate %s", anime.get_name())
+            filtered_anime.append(anime)
+        elif anime.url in url_map:
+            url_map[anime.url].merge(anime)
+        else:
+            url_map[anime.url] = anime
+
+    return filtered_anime + url_map.values()
 
 
 def main():
@@ -280,12 +339,16 @@ def main():
     animes = process_torrents(torrents)
 
     for anime in animes.itervalues():
-        if anime.episodes:
-            anime.num_downloads /= len(anime.episodes)
+        anime.normalize_counts()
 
     animes = collections.Counter({k: v for k, v in animes.iteritems() if v.num_downloads > 1000})
 
-    table_data = make_table_body(animes, templates, search_engine)
+    for anime in animes.itervalues():
+        update_mal_link(anime, search_engine)
+
+    animes = merge_by_link(animes.values())
+
+    table_data = make_table_body(animes, templates)
     html_data = templates.sub("main",
                               refreshed_timestamp=data_date.strftime("%A, %B %d"),
                               table_body=table_data)
