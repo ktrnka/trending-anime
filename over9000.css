@@ -44,17 +44,21 @@ div.rectangle {
     background-color: #336699;
     width: 500px;
 }
-#middle {
+div.middle {
     width: 800px;
-    margin: 0 auto;
+    margin: 30px auto;
     background: #ffffff;
-    padding: 5px 20px;
+    padding: 20px 20px;
 }
 h1 {
     text-align: center;
     font-style: italic;
     color: grey;
-    margin: 10px 0px;
+    margin: 5px 0px;
+}
+h2 {
+    font-style: italic;
+    color: maroon;
 }
 #timestamp {
     text-align: center;
