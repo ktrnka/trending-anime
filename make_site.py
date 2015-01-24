@@ -166,8 +166,6 @@ class Torrent(object):
 
 class Series(object):
     def __init__(self):
-        self.episodes = set()
-        self.sub_groups = set()
         self.num_downloads = 0
         self.spelling_counts = collections.Counter()
         self.url = None
@@ -177,8 +175,6 @@ class Series(object):
     def add_torrent(self, torrent, parsed_torrent):
         self.spelling_counts[parsed_torrent.series] += torrent.downloads
         self.num_downloads += torrent.downloads
-        self.episodes.add(parsed_torrent.episode)
-        self.sub_groups.add(parsed_torrent.sub_group)
 
         self.episode_counts[parsed_torrent.episode] += torrent.downloads
         self.sub_group_counts[parsed_torrent.sub_group] += torrent.downloads
@@ -199,11 +195,11 @@ class Series(object):
         return name
 
     def normalize_counts(self):
-        if self.episodes:
-            self.num_downloads /= len(self.episodes)
+        if self.episode_counts:
+            self.num_downloads /= len(self.episode_counts)
 
     def __repr__(self):
-        return "{} [{}] {:,} DL".format(self.get_name(), ", ".join(self.sub_groups), self.num_downloads)
+        return "{} {:,} DL".format(self.get_name(), self.num_downloads)
 
     def get_episode_counts(self):
         return [(ep, self.episode_counts[ep]) for ep in sorted(self.episode_counts.iterkeys())]
@@ -214,8 +210,6 @@ class Series(object):
     def merge(self, other):
         logger = logging.getLogger(__name__)
         logger.info("Merging by URL %s and %s", self, other)
-        self.episodes.update(other.episodes)
-        self.sub_groups.update(other.sub_groups)
         self.num_downloads += other.num_downloads
         self.spelling_counts.update(other.spelling_counts)
         self.episode_counts.update(other.episode_counts)
