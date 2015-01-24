@@ -5,6 +5,7 @@ import collections
 import io
 import json
 import logging
+import pprint
 import sys
 import shutil
 import datetime
@@ -83,7 +84,7 @@ def format_row(index, series, top_series, html_templates):
     if alternate_names:
         extras.append("Alternate titles: {}".format(", ".join(alternate_names)))
 
-    extras.append("Sub groups: {}".format(", ".join(sorted(series.sub_groups))))
+    extras.append("Sub groups: {}".format(", ".join(series.get_sub_groups())))
 
     extras.append(", ".join("Episode {}: {:,}".format(ep, count) for ep, count in series.get_episode_counts()))
 
@@ -171,13 +172,16 @@ class Series(object):
         self.spelling_counts = collections.Counter()
         self.url = None
         self.episode_counts = collections.Counter()
+        self.sub_group_counts = collections.Counter()
 
     def add_torrent(self, torrent, parsed_torrent):
         self.spelling_counts[parsed_torrent.series] += torrent.downloads
         self.num_downloads += torrent.downloads
         self.episodes.add(parsed_torrent.episode)
         self.sub_groups.add(parsed_torrent.sub_group)
+
         self.episode_counts[parsed_torrent.episode] += torrent.downloads
+        self.sub_group_counts[parsed_torrent.sub_group] += torrent.downloads
 
     def get_name(self):
         """Get the best name for this anime"""
@@ -204,6 +208,9 @@ class Series(object):
     def get_episode_counts(self):
         return [(ep, self.episode_counts[ep]) for ep in sorted(self.episode_counts.iterkeys())]
 
+    def get_sub_groups(self):
+        return [name for name, _ in self.sub_group_counts.most_common()]
+
     def merge(self, other):
         logger = logging.getLogger(__name__)
         logger.info("Merging by URL %s and %s", self, other)
@@ -212,6 +219,7 @@ class Series(object):
         self.num_downloads += other.num_downloads
         self.spelling_counts.update(other.spelling_counts)
         self.episode_counts.update(other.episode_counts)
+        self.sub_group_counts.update(other.sub_group_counts)
 
 
 def parse_timestamp(timestamp):
