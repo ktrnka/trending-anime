@@ -88,6 +88,8 @@ def format_row(index, series, top_series, html_templates):
 
     extras.append(", ".join("Episode {}: {:,}".format(ep, count) for ep, count in series.get_episode_counts()))
 
+    extras.append(", ".join("Episode {}: {}".format(ep, date) for ep, date in series.episode_dates.iteritems()))
+
     return html_templates.sub("row",
                               id="row_{}".format(index),
                               extra="<br>".join(extras),
@@ -130,12 +132,19 @@ class Torrent(object):
         self.leechers = 0
         self.downloads = 0
         self.size = 0
+        self.release_date = None
 
     @classmethod
     def from_json(cls, data):
+        """Parse Json from either endpoint"""
         torrent = Torrent()
-        torrent.title = data["title"]["text"]
-        torrent.url = data["title"]["href"]
+
+        if "title" in data:
+            torrent.title = data["title"]["text"]
+            torrent.url = data["title"]["href"]
+        elif "name" in data:
+            torrent.title = data["name"]
+            torrent.url = None
 
         try:
             torrent.seeders = int(data["seeders"])
@@ -146,8 +155,13 @@ class Torrent(object):
             torrent.leechers = int(data["leechers"])
         except ValueError:
             torrent.leechers = 0
+
         torrent.downloads = int(data["downloads"])
         torrent.size = Torrent._parse_nyaa_size_string(data["size"])
+
+        if "date" in data:
+            torrent.release_date = Torrent._parse_nyaa_date(data["date"])
+
         return torrent
 
     @staticmethod
@@ -163,6 +177,10 @@ class Torrent(object):
 
         return -1
 
+    @staticmethod
+    def _parse_nyaa_date(date_string):
+        """Parse a date like 2015-01-21, 18:42 UTC"""
+        return datetime.datetime.strptime(date_string, "%Y-%m-%d, %H:%M %Z")
 
 class Series(object):
     def __init__(self):
@@ -171,6 +189,7 @@ class Series(object):
         self.url = None
         self.episode_counts = collections.Counter()
         self.sub_group_counts = collections.Counter()
+        self.episode_dates = dict()
 
     def add_torrent(self, torrent, parsed_torrent):
         self.spelling_counts[parsed_torrent.series] += torrent.downloads
@@ -178,6 +197,18 @@ class Series(object):
 
         self.episode_counts[parsed_torrent.episode] += torrent.downloads
         self.sub_group_counts[parsed_torrent.sub_group] += torrent.downloads
+
+    def add_release_date_torrent(self, torrent, parsed_torrent):
+        logger = logging.getLogger(__name__)
+        if not torrent.release_date:
+            return
+
+        if parsed_torrent.episode in self.episode_dates:
+            if torrent.downloads > 1000 and torrent.release_date < self.episode_dates[parsed_torrent.episode]:
+                logger.info("Updating release date of %s, episode %d from %s tp %s", self.get_name(), parsed_torrent.episode, self.episode_dates[parsed_torrent.episode], torrent.release_date)
+                self.episode_dates[parsed_torrent.episode] = torrent.release_date
+        else:
+            self.episode_dates[parsed_torrent.episode] = torrent.release_date
 
     def get_name(self):
         """Get the best name for this anime"""
@@ -215,6 +246,8 @@ class Series(object):
         self.episode_counts.update(other.episode_counts)
         self.sub_group_counts.update(other.sub_group_counts)
 
+        # TODO: merge the release dates
+
 
 def parse_timestamp(timestamp):
     """Parse a timestamp like Fri Jan 02 2015 22:04:11 GMT+0000 (UTC)"""
@@ -246,7 +279,7 @@ def make_table_body(series, html_templates):
     return "\n".join(data_entries)
 
 
-def process_torrents(torrents):
+def process_torrents(torrents, release_date_torrents):
     """
 
     :param torrents:
@@ -279,6 +312,14 @@ def process_torrents(torrents):
             success_counts[False] += torrent.downloads
     logger.debug("Parsed {:.1f}% of downloads".format(100. * success_counts[True] / (success_counts[True] + success_counts[False])))
     logger.debug("Failed to parse %s", parse_fail.most_common(40))
+
+    # add release dates when possible
+    for torrent in release_date_torrents:
+        episode = ParsedTorrent.from_name(torrent.title)
+        if episode:
+            episode_key = get_title_key(episode.series)
+            if episode_key in animes:
+                animes[episode_key].add_release_date_torrent(torrent, episode)
 
     return animes
 
@@ -328,6 +369,9 @@ def main():
     # load torrent list
     data_date, torrents = load(config.get("kimono", "endpoint"))
 
+    # load release dates
+    release_data_date, release_date_torrents = load(config.get("kimono", "release_date_endpoint"))
+
     # mongodb, google search
     mongo_client = pymongo.MongoClient(config.get("mongo", "uri"))
     search_engine = SearchEngine(config.get("google", "api_key"),
@@ -338,7 +382,7 @@ def main():
                                config.get("bitballoon", "site_id"),
                                config.get("bitballoon", "email"))
 
-    animes = process_torrents(torrents)
+    animes = process_torrents(torrents, release_date_torrents)
 
     for anime in animes.itervalues():
         anime.normalize_counts()
