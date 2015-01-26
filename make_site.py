@@ -89,7 +89,7 @@ def format_row(index, series, top_series, html_templates):
 
     extras.append(", ".join("Episode {}: {:,}".format(ep, count) for ep, count in series.get_episode_counts()))
 
-    extras.append(", ".join("Episode {}: {}".format(ep, date) for ep, date in series.episode_dates.iteritems()))
+    extras.append(", ".join("Episode {}: {}".format(ep, date.strftime("%Y-%m-%d")) for ep, date in series.episode_dates.iteritems()))
 
     season_images = "".join(html_templates.sub("season_image", image=SEASON_IMAGES[season], season=SEASONS[season]) for season in series.get_seasons())
 
@@ -283,11 +283,14 @@ class Series(object):
                 estimated_dates = [d + datetime.timedelta((episode - e) * 7) for e, d in self.episode_dates.iteritems()]
                 computed_dates[episode] = min(estimated_dates)
 
-        season_counts = collections.Counter(date_to_season(d) for d in computed_dates.itervalues())
-        if len(season_counts) > 2:
+        seasons = []
+        for season in (date_to_season(d) for d in computed_dates.itervalues()):
+            if season not in seasons:
+                seasons.append(season)
+        if len(seasons) > 2:
             return [4]
         else:
-            return sorted(season_counts.iterkeys())
+            return seasons
 
 
 def parse_timestamp(timestamp):
