@@ -17,6 +17,9 @@ td {
     padding: 4px 6px;
     height: 2em;
 }
+td.seasons {
+	width: 10em;
+}
 td.name {
     width: 15em;
 }
@@ -45,7 +48,7 @@ div.rectangle {
     width: 500px;
 }
 div.middle {
-    width: 800px;
+    width: 850px;
     margin: 30px auto;
     background: #ffffff;
     padding: 20px 20px;

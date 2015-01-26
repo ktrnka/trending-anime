@@ -20,7 +20,8 @@ import pymongo
 BASIC_PATTERN = re.compile(r"\[([^]]+)\] (.+) - (\d+)\s*(?:\[([\d]+p)\])?.(\w+)")
 MD5_PATTERN = re.compile(r"\s*\[[0-9A-F]+\]{6,}\s*", re.IGNORECASE)
 NORMALIZATION_MAP = {ord(c): None for c in "/:;._ -'\"!,~()"}
-
+SEASONS = ["Winter season", "Spring season", "Summer season", "Fall season", "Long running show"]
+SEASON_IMAGES = ["winter.svg", "spring.svg", "summer.svg", "fall.svg", "infinity.svg"]
 
 class Templates(object):
     """Dict of templates"""
@@ -90,8 +91,11 @@ def format_row(index, series, top_series, html_templates):
 
     extras.append(", ".join("Episode {}: {}".format(ep, date) for ep, date in series.episode_dates.iteritems()))
 
+    season_images = "".join(html_templates.sub("season_image", image=SEASON_IMAGES[season], season=SEASONS[season]) for season in series.get_seasons())
+
     return html_templates.sub("row",
                               id="row_{}".format(index),
+                              season_images=season_images,
                               extra="<br>".join(extras),
                               series_name=series.get_link(),
                               value="{:,}".format(series.num_downloads),
@@ -182,6 +186,19 @@ class Torrent(object):
         """Parse a date like 2015-01-21, 18:42 UTC"""
         return datetime.datetime.strptime(date_string, "%Y-%m-%d, %H:%M %Z")
 
+
+def date_to_season(date):
+    """Return season as a number from 0-3"""
+    if date.month <= 3:
+        return 0
+    elif date.month <= 6:
+        return 1
+    elif date.month <= 9:
+        return 2
+    else:
+        return 3
+
+
 class Series(object):
     def __init__(self):
         self.num_downloads = 0
@@ -246,7 +263,31 @@ class Series(object):
         self.episode_counts.update(other.episode_counts)
         self.sub_group_counts.update(other.sub_group_counts)
 
-        # TODO: merge the release dates
+        for episode, release_date in other.episode_dates.iteritems():
+            if episode in self.episode_dates:
+                self.episode_dates[episode] = min(self.episode_dates[episode], release_date)
+            else:
+                self.episode_dates[episode] = release_date
+
+    def get_seasons(self):
+        if not self.episode_dates:
+            return []
+
+        max_episode = max(self.episode_dates.iterkeys())
+
+        computed_dates = dict()
+        for episode in xrange(1, max_episode + 1):
+            if episode in self.episode_dates:
+                computed_dates[episode] = self.episode_dates[episode]
+            else:
+                estimated_dates = [d + datetime.timedelta((episode - e) * 7) for e, d in self.episode_dates.iteritems()]
+                computed_dates[episode] = min(estimated_dates)
+
+        season_counts = collections.Counter(date_to_season(d) for d in computed_dates.itervalues())
+        if len(season_counts) > 2:
+            return [4]
+        else:
+            return sorted(season_counts.iterkeys())
 
 
 def parse_timestamp(timestamp):
@@ -349,7 +390,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--template_dir", default="templates", help="Dir of templates")
     parser.add_argument("-v", "--verbose", default=False, action="store_true", help="Verbose logging")
-    parser.add_argument("--style-file", default="over9000.css", help="CSS style")
+    parser.add_argument("--style-file", default="res/over9000.css", help="CSS style")
     parser.add_argument("config", help="Config file")
     parser.add_argument("output", help="Output filename or 'bitballoon' to upload to bitballoon")
     args = parser.parse_args()
@@ -407,7 +448,8 @@ def main():
 
         dest_dir = os.path.dirname(args.output)
         if dest_dir:
-            shutil.copy(args.style_file, os.path.join(dest_dir, args.style_file))
+            for filename in [args.style_file] + ["res/" + f for f in SEASON_IMAGES]:
+                shutil.copy(filename, os.path.join(dest_dir, os.path.basename(filename)))
 
 
 if __name__ == "__main__":
