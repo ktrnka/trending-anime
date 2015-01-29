@@ -394,6 +394,13 @@ def merge_by_link(animes):
     return filtered_anime + url_map.values()
 
 
+def sync_mongo(mongo_db, animes, data_date):
+    collection = mongo_db["animes"]
+    for anime in animes:
+        pass
+    assert False
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--template_dir", default="templates", help="Dir of templates")
@@ -442,6 +449,8 @@ def main():
         update_mal_link(anime, search_engine)
 
     animes = merge_by_link(animes.values())
+
+    sync_mongo(mongo_client["anime-trends"], animes, data_date)
 
     table_data = make_table_body(animes, templates)
     html_data = templates.sub("main",
