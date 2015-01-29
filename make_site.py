@@ -199,6 +199,11 @@ def date_to_season(date):
         return 3
 
 
+def median(data):
+    data = sorted(data)
+    return data[len(data) / 2]
+
+
 class Series(object):
     def __init__(self):
         self.num_downloads = 0
@@ -281,13 +286,13 @@ class Series(object):
                 computed_dates[episode] = self.episode_dates[episode]
             else:
                 estimated_dates = [d + datetime.timedelta((episode - e) * 7) for e, d in self.episode_dates.iteritems()]
-                computed_dates[episode] = min(estimated_dates)
+                computed_dates[episode] = median(estimated_dates)
 
         seasons = []
         for season in (date_to_season(d) for d in computed_dates.itervalues()):
             if season not in seasons:
                 seasons.append(season)
-        if len(seasons) > 2:
+        if len(seasons) > 3:
             return [4]
         else:
             return seasons
