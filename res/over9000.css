@@ -13,18 +13,23 @@ a:hover {
 a:active {
     text-decoration: underline;
 }
+table.main {
+    width: 100%;
+    table-layout: fixed;
+}
 td {
     padding: 4px 6px;
     height: 2em;
 }
 td.seasons {
-	width: 10em;
+	width: 80px;
 }
 td.name {
     width: 15em;
 }
 td.value {
-    padding:0;
+    width: 500px;
+    padding: 0;
     border-bottom: none;
 }
 td.number {
@@ -45,7 +50,6 @@ caption {
 div.rectangle {
     height: 16px;
     background-color: #336699;
-    width: 500px;
 }
 div.middle {
     width: 900px;
@@ -68,5 +72,3 @@ h2 {
     color: grey;
     margin: 0px 0px 20px 0px;
 }
-
-tr.child

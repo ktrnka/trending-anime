@@ -100,7 +100,7 @@ def format_row(index, series, top_series, html_templates):
                               extra="<br>".join(extras),
                               series_name=series.get_link(),
                               value="{:,}".format(series.num_downloads),
-                              bar_width=int(520. * series.num_downloads / top_series.num_downloads))
+                              bar_width=int(100 * series.num_downloads / top_series.num_downloads))
 
 
 def get_title_key(title):
