@@ -22,7 +22,7 @@ td {
     height: 2em;
 }
 td.seasons {
-	width: 80px;
+    white-space: nowrap;
 }
 td.name {
     width: 15em;
@@ -71,4 +71,21 @@ h2 {
     text-align: center;
     color: grey;
     margin: 0px 0px 20px 0px;
+}
+
+@media (min-width: 900px) {
+    div.middle {
+        width: 900px;
+    }
+}
+
+@media (max-width: 900px) {
+    div.middle {
+        width: 100%;
+        padding: 20px 0px;
+    }
+    td.value {
+        display: none;
+    }
+
 }
