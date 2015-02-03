@@ -22,6 +22,7 @@ MD5_PATTERN = re.compile(r"\s*\[[0-9A-F]+\]{6,}\s*", re.IGNORECASE)
 NORMALIZATION_MAP = {ord(c): None for c in "/:;._ -'\"!,~()"}
 SEASONS = ["Winter season", "Spring season", "Summer season", "Fall season", "Long running show"]
 SEASON_IMAGES = ["winter.svg", "spring.svg", "summer.svg", "fall.svg", "infinity.svg"]
+MONGO_TIME = "%Y/%m/%d %H:%M"
 
 class Templates(object):
     """Dict of templates"""
@@ -212,6 +213,43 @@ class Series(object):
         self.episode_counts = collections.Counter()
         self.sub_group_counts = collections.Counter()
         self.episode_dates = dict()
+        self.download_history = dict()
+
+    def get_mongo_key(self):
+        if not self.url:
+            raise ValueError("Missing URL, unable to build key")
+        return self.url
+
+    def sync_mongo(self, mongo_object, data_date):
+        date_changed = False
+
+        # sync release dates
+        for episode_str, release_date_str in mongo_object.get("release_dates", {}).iteritems():
+            episode = int(episode_str)
+            release_date = datetime.datetime.strptime(release_date_str, MONGO_TIME)
+            if episode in self.episode_dates:
+                self.episode_dates[episode] = min([self.episode_dates[episode], release_date])
+            else:
+                self.episode_dates[episode] = release_date
+        mongo_object["release_dates"] = {str(k): v.strftime(MONGO_TIME) for k, v in self.episode_dates.iteritems()}
+
+        # sync download history
+        for episode_str, download_history in mongo_object.get("download_history", {}).iteritems():
+            episode = int(episode_str)
+            self.download_history[episode] = dict()
+            for date_str, downloads_str in download_history.iteritems():
+                self.download_history[episode][datetime.datetime.strptime(date_str, MONGO_TIME)] = int(downloads_str)
+
+        for episode, downloads in self.episode_counts.iteritems():
+            if episode not in self.download_history:
+                self.download_history[episode] = {}
+
+            self.download_history[episode][data_date] = downloads
+            data_changed = True
+        mongo_object["download_history"] = {str(k): {k2.strftime(MONGO_TIME): str(v2) for k2, v2 in v.iteritems()} for k, v in self.download_history.iteritems()}
+
+        return data_changed
+
 
     def add_torrent(self, torrent, parsed_torrent):
         self.spelling_counts[parsed_torrent.series] += torrent.downloads
@@ -395,20 +433,26 @@ def merge_by_link(animes):
 
 
 def sync_mongo(mongo_db, animes, data_date):
+    logger = logging.getLogger(__name__)
+
     collection = mongo_db["animes"]
     for anime in animes:
-        mongo_entry = collection.find_one({"key": anime.get_mongo_key()})
+        try:
+            mongo_entry = collection.find_one({"key": anime.get_mongo_key()})
+        except ValueError:
+            logger.info("Skipping {}; no mongo key available".format(anime))
+            continue
         if mongo_entry:
-            # pull any past episode info
-            anime.sync_mongo(mongo_entry)
-
-            # add new info
-            collection.update()
+            if anime.sync_mongo(mongo_entry, data_date):
+                logger.info("Updating {}".format(mongo_entry))
+                collection.save(mongo_entry)
+            else:
+                logger.info("Not updating {}, no change".format(mongo_entry))
         else:
-            pass
-            # add new info
-
-    assert False
+            mongo_entry = {"key": anime.get_mongo_key()}
+            if anime.sync_mongo(mongo_entry, data_date):
+                logger.info("Inserting {}".format(mongo_entry))
+                collection.insert(mongo_entry)
 
 
 def main():
