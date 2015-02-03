@@ -397,7 +397,17 @@ def merge_by_link(animes):
 def sync_mongo(mongo_db, animes, data_date):
     collection = mongo_db["animes"]
     for anime in animes:
-        pass
+        mongo_entry = collection.find_one({"key": anime.get_mongo_key()})
+        if mongo_entry:
+            # pull any past episode info
+            anime.sync_mongo(mongo_entry)
+
+            # add new info
+            collection.update()
+        else:
+            pass
+            # add new info
+
     assert False
 
 
