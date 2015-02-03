@@ -460,6 +460,7 @@ def main():
     parser.add_argument("-t", "--template_dir", default="templates", help="Dir of templates")
     parser.add_argument("-v", "--verbose", default=False, action="store_true", help="Verbose logging")
     parser.add_argument("--style-file", default="res/over9000.css", help="CSS style")
+    parser.add_argument("--favicon-file", default="res/favicon.ico", help="Favicon to use")
     parser.add_argument("config", help="Config file")
     parser.add_argument("output", help="Output filename or 'bitballoon' to upload to bitballoon")
     args = parser.parse_args()
@@ -519,7 +520,7 @@ def main():
 
         dest_dir = os.path.dirname(args.output)
         if dest_dir:
-            for filename in [args.style_file] + ["res/" + f for f in SEASON_IMAGES]:
+            for filename in [args.style_file, args.favicon_file] + ["res/" + f for f in SEASON_IMAGES]:
                 shutil.copy(filename, os.path.join(dest_dir, os.path.basename(filename)))
 
 
