@@ -485,9 +485,10 @@ def main():
 
     # mongodb, google search
     mongo_client = pymongo.MongoClient(config.get("mongo", "uri"))
+    mongo_db = mongo_client.get_default_database()
     search_engine = SearchEngine(config.get("google", "api_key"),
                                  config.get("google", "cx"),
-                                 mongo_client["anime-trends"])
+                                 mongo_db)
 
     bb = bitballoon.BitBalloon(config.get("bitballoon", "access_key"),
                                config.get("bitballoon", "site_id"),
@@ -505,7 +506,7 @@ def main():
 
     animes = merge_by_link(animes.values())
 
-    sync_mongo(mongo_client["anime-trends"], animes, data_date)
+    sync_mongo(mongo_db, animes, data_date)
 
     table_data = make_table_body(animes, templates)
     html_data = templates.sub("main",
