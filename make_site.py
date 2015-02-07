@@ -366,7 +366,7 @@ class Series(object):
 
             # build the data
             datapoints = [((scan_date-release).total_seconds()/SEC_IN_DAY, download_count) for scan_date, download_count in self.download_history[episode].iteritems()]
-            # datapoints.append((0, 0))
+            datapoints.append((0, 0))
 
             datapoints = sorted(datapoints, key=lambda p: p[0])
 
@@ -381,7 +381,7 @@ class Series(object):
             print "Average error", numpy.abs(predicted - y_data).sum() / y_data.shape[0]
 
 def download_function(x, a, b, c):
-    return b * numpy.log(x + a + 0.1)
+    return b * numpy.power(numpy.log(x + a + 0.1), c)
 
 """
         print anime["key"]
