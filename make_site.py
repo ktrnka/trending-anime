@@ -215,13 +215,31 @@ class Series(object):
         self.episode_dates = dict()
         self.download_history = dict()
 
+    def clean_download_history(self):
+        logger = logging.getLogger(__name__)
+        for episode, history in self.download_history.items():
+            dates = sorted(history.iteritems(), key=lambda p: p[0])
+            good_dates = []
+            previous_count = None
+            for date in dates:
+                if not previous_count or previous_count <= date[1]:
+                    good_dates.append(date)
+                    previous_count = date[1]
+
+            if not good_dates:
+                del self.download_history[episode]
+            else:
+                self.download_history[episode] = {d: c for d, c in good_dates}
+            logger.info("Filtered {} dates for episode {}".format(len(dates) - len(good_dates), episode))
+
+
     def get_mongo_key(self):
         if not self.url:
             raise ValueError("Missing URL, unable to build key")
         return self.url
 
     def sync_mongo(self, mongo_object, data_date):
-        date_changed = False
+        data_changed = False
 
         # sync release dates
         for episode_str, release_date_str in mongo_object.get("release_dates", {}).iteritems():
@@ -335,6 +353,21 @@ class Series(object):
         else:
             return seasons
 
+
+"""
+        print anime["key"]
+
+        series = make_site.Series.from_mongo(anime)
+
+        episodes = [(int(ep), v) for ep, v in anime.get("download_history", {}).iteritems()]
+        episodes = sorted(episodes, key=lambda p: p[0])
+
+        for episode, download_counts in episodes:
+            print "Episode {}".format(episode)
+            download_counts = {datetime.datetime.strptime(k, make_site.MONGO_TIME):int(v) for k, v in download_counts.iteritems()}
+            for date, downloads in sorted(download_counts.iteritems(), key=lambda p: p[0]):
+                print "\t{}: {:,}".format(date.strftime("%Y-%m-%d"), downloads)
+                """
 
 def parse_timestamp(timestamp):
     """Parse a timestamp like Fri Jan 02 2015 22:04:11 GMT+0000 (UTC)"""

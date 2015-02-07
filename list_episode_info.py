@@ -25,16 +25,23 @@ def main():
     collection = mongo_client.get_default_database()["animes"]
 
     for anime in collection.find():
-        print anime["key"]
+        if "kise" not in anime["key"].lower():
+            continue
 
-        episodes = [(int(ep), v) for ep, v in anime.get("download_history", {}).iteritems()]
-        episodes = sorted(episodes, key=lambda p: p[0])
+        series = make_site.Series()
+        series.url = anime["key"]
+        series.sync_mongo(anime, None)
+
+        series.clean_download_history()
+
+        episodes = sorted(series.download_history.iteritems(), key=lambda p: p[0])
 
         for episode, download_counts in episodes:
             print "Episode {}".format(episode)
-            download_counts = {datetime.datetime.strptime(k, make_site.MONGO_TIME):int(v) for k, v in download_counts.iteritems()}
+
             for date, downloads in sorted(download_counts.iteritems(), key=lambda p: p[0]):
                 print "\t{}: {:,}".format(date.strftime("%Y-%m-%d"), downloads)
+
 
 
 
