@@ -36,8 +36,14 @@ def main():
 
         episodes = sorted(series.download_history.iteritems(), key=lambda p: p[0])
 
+        pprint(series.estimate_downloads(7))
+
         for episode, download_counts in episodes:
-            print "Episode {}".format(episode)
+            if episode not in series.episode_dates:
+                continue
+
+            release_date = series.episode_dates[episode]
+            print "Episode {}: {}".format(episode, release_date.strftime("%Y-%m-%d"))
 
             for date, downloads in sorted(download_counts.iteritems(), key=lambda p: p[0]):
                 print "\t{}: {:,}".format(date.strftime("%Y-%m-%d"), downloads)

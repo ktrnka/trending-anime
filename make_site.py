@@ -10,6 +10,9 @@ import sys
 import shutil
 import datetime
 import string
+import math
+import numpy
+import scipy.optimize
 import bitballoon
 
 import os
@@ -23,6 +26,7 @@ NORMALIZATION_MAP = {ord(c): None for c in "/:;._ -'\"!,~()"}
 SEASONS = ["Winter season", "Spring season", "Summer season", "Fall season", "Long running show"]
 SEASON_IMAGES = ["winter.svg", "spring.svg", "summer.svg", "fall.svg", "infinity.svg"]
 MONGO_TIME = "%Y/%m/%d %H:%M"
+SEC_IN_DAY = 60. * 60 * 24
 
 class Templates(object):
     """Dict of templates"""
@@ -353,6 +357,31 @@ class Series(object):
         else:
             return seasons
 
+    def estimate_downloads(self, days):
+        for episode in self.episode_dates:
+            if episode not in self.download_history:
+                continue
+
+            release = self.episode_dates[episode]
+
+            # build the data
+            datapoints = [((scan_date-release).total_seconds()/SEC_IN_DAY, download_count) for scan_date, download_count in self.download_history[episode].iteritems()]
+            # datapoints.append((0, 0))
+
+            datapoints = sorted(datapoints, key=lambda p: p[0])
+
+            x_data = numpy.array([val[0] for val in datapoints])
+            y_data = numpy.array([val[1] for val in datapoints])
+
+
+            opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data, y_data)
+            predicted = download_function(x_data, *opt_params)
+            print "Actual values", y_data
+            print "Predicted values", predicted
+            print "Average error", numpy.abs(predicted - y_data).sum() / y_data.shape[0]
+
+def download_function(x, a, b, c):
+    return b * numpy.log(x + a + 0.1)
 
 """
         print anime["key"]
