@@ -415,6 +415,11 @@ class Series(object):
         return predictions
 
     def evaluate_prediction(self, days):
+        """
+        Helper function to compute accuracy of predicting from 2 days of data, 3 days, etc.
+        :param days:
+        :return:
+        """
         errors = collections.defaultdict(list)
 
         for episode in self.episode_dates:
