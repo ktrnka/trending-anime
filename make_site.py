@@ -29,6 +29,9 @@ SEASON_IMAGES = ["winter.svg", "spring.svg", "summer.svg", "fall.svg", "infinity
 MONGO_TIME = "%Y/%m/%d %H:%M"
 SEC_IN_DAY = 60. * 60 * 24
 
+ACCURACY_TABLE = {"3": 84.60400510425866, "4": 86.6924739899726, "5": 91.60210393760404, "6": 92.09773148280004, "7": 92.90524222602687, "8": 95.61050273545129, "9": 97.96066608319538, "10": 97.94706928696975}
+ACCURACY_TABLE = {int(k): v for k, v in ACCURACY_TABLE.iteritems()}
+
 class Templates(object):
     """Dict of templates"""
 
@@ -210,6 +213,19 @@ def median(data):
     return data[len(data) / 2]
 
 
+def get_accuracy(num_datapoints):
+    if num_datapoints in ACCURACY_TABLE:
+        return ACCURACY_TABLE[num_datapoints]
+
+    if num_datapoints < min(ACCURACY_TABLE.iterkeys()):
+        return min(ACCURACY_TABLE.itervalues())
+
+    if num_datapoints > max(ACCURACY_TABLE.iterkeys()):
+        return max(ACCURACY_TABLE.itervalues())
+
+    return -1
+
+
 class Series(object):
     def __init__(self):
         self.num_downloads = 0
@@ -358,7 +374,47 @@ class Series(object):
         else:
             return seasons
 
+    def estimate_downloads_old(self):
+        return {episode: max(date_counts.itervalues()) for episode, date_counts in self.download_history.iteritems()}
+
     def estimate_downloads(self, days):
+        """
+        Compute the predicted number of downloads per episode at a given length out.
+        :param days: Number of days to extrapolate
+        """
+        logger = logging.getLogger(__name__)
+        predictions = dict()
+
+        for episode in self.episode_dates:
+            if episode not in self.download_history:
+                continue
+
+            release_date = self.episode_dates[episode]
+
+            # build the dataset
+            datapoints = [((scan_date-release_date).total_seconds()/SEC_IN_DAY, download_count) for scan_date, download_count in self.download_history[episode].iteritems()]
+            datapoints.append((0, 0))
+
+            datapoints = sorted(datapoints, key=lambda p: p[0])
+
+            # can't even guess when we only have 1 day of data plus origin
+            if len(datapoints) < 3:
+                continue
+
+            x_data = numpy.array([val[0] for val in datapoints])
+            y_data = numpy.array([val[1] for val in datapoints])
+
+            try:
+                opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data, y_data)
+            except RuntimeError:
+                logger.warning("Skipping prediction of {} episode {} with {} points due to scipy error".format(self.url, episode, len(datapoints)))
+                continue
+
+            predictions[episode] = {"value": download_function(7, *opt_params), "accuracy": get_accuracy(len(datapoints)) }
+
+        return predictions
+
+    def evaluate_prediction(self, days):
         errors = collections.defaultdict(list)
 
         for episode in self.episode_dates:
@@ -398,17 +454,6 @@ class Series(object):
 
                 errors[ending_index].append(100 * math.fabs(prediction - closest_point[1]) / closest_point[1])
                 print "Error @ {} points: {:.1f}%".format(ending_index, 100 * math.fabs(prediction - closest_point[1]) / closest_point[1])
-
-                # predicted = download_function(x_data, *opt_params)
-                # print "Actual values", y_data
-                # print "Predicted values", predicted
-                # print "Average error", numpy.abs(predicted - y_data).sum() / y_data.shape[0]
-
-                # matplotlib.pyplot.plot(x_data, y_data, "b-", label="Predicted")
-                # matplotlib.pyplot.plot(x_data, predicted, "b--", label="Actual")
-                # matplotlib.pyplot.legend(loc=4)
-                # matplotlib.pyplot.savefig("ghoul_{}.png".format(episode))
-                # matplotlib.pyplot.clf()
 
         return {k: sum(v)/len(v) for k, v in errors.iteritems()}
 
