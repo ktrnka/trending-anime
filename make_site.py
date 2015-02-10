@@ -11,6 +11,7 @@ import shutil
 import datetime
 import string
 import math
+import matplotlib.pyplot
 import numpy
 import scipy.optimize
 import bitballoon
@@ -358,6 +359,8 @@ class Series(object):
             return seasons
 
     def estimate_downloads(self, days):
+        errors = collections.defaultdict(list)
+
         for episode in self.episode_dates:
             if episode not in self.download_history:
                 continue
@@ -369,34 +372,48 @@ class Series(object):
             datapoints.append((0, 0))
 
             datapoints = sorted(datapoints, key=lambda p: p[0])
+            if len(datapoints) < 7:
+                print "Fewer than 7 datapoints: {}".format(datapoints)
+                return
 
-            x_data = numpy.array([val[0] for val in datapoints])
-            y_data = numpy.array([val[1] for val in datapoints])
+            closest_point = min(datapoints, key=lambda p: math.fabs(p[0] - days))
+            if math.fabs(closest_point[0] - days) > 1:
+                return
 
 
-            opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data, y_data)
-            predicted = download_function(x_data, *opt_params)
-            print "Actual values", y_data
-            print "Predicted values", predicted
-            print "Average error", numpy.abs(predicted - y_data).sum() / y_data.shape[0]
+            for ending_index in xrange(3, len(datapoints)):
+                x_data = numpy.array([val[0] for val in datapoints[:ending_index]])
+                y_data = numpy.array([val[1] for val in datapoints[:ending_index]])
+
+                try:
+                    opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data, y_data)
+                except RuntimeError:
+                    continue
+
+                prediction = download_function(7, *opt_params)
+
+
+                print "Prediction @ 7 from {} points: {}".format(ending_index, prediction)
+                print "Closest match: {}".format(closest_point)
+
+                errors[ending_index].append(100 * math.fabs(prediction - closest_point[1]) / closest_point[1])
+                print "Error @ {} points: {:.1f}%".format(ending_index, 100 * math.fabs(prediction - closest_point[1]) / closest_point[1])
+
+                # predicted = download_function(x_data, *opt_params)
+                # print "Actual values", y_data
+                # print "Predicted values", predicted
+                # print "Average error", numpy.abs(predicted - y_data).sum() / y_data.shape[0]
+
+                # matplotlib.pyplot.plot(x_data, y_data, "b-", label="Predicted")
+                # matplotlib.pyplot.plot(x_data, predicted, "b--", label="Actual")
+                # matplotlib.pyplot.legend(loc=4)
+                # matplotlib.pyplot.savefig("ghoul_{}.png".format(episode))
+                # matplotlib.pyplot.clf()
+
+        return {k: sum(v)/len(v) for k, v in errors.iteritems()}
 
 def download_function(x, a, b, c):
     return b * numpy.power(numpy.log(x + a + 0.1), c)
-
-"""
-        print anime["key"]
-
-        series = make_site.Series.from_mongo(anime)
-
-        episodes = [(int(ep), v) for ep, v in anime.get("download_history", {}).iteritems()]
-        episodes = sorted(episodes, key=lambda p: p[0])
-
-        for episode, download_counts in episodes:
-            print "Episode {}".format(episode)
-            download_counts = {datetime.datetime.strptime(k, make_site.MONGO_TIME):int(v) for k, v in download_counts.iteritems()}
-            for date, downloads in sorted(download_counts.iteritems(), key=lambda p: p[0]):
-                print "\t{}: {:,}".format(date.strftime("%Y-%m-%d"), downloads)
-                """
 
 def parse_timestamp(timestamp):
     """Parse a timestamp like Fri Jan 02 2015 22:04:11 GMT+0000 (UTC)"""
