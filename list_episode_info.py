@@ -14,6 +14,18 @@ __author__ = 'keith'
 import make_site
 
 
+def mean(values):
+    if not values:
+        return -1
+    return sum(values) / float(len(values))
+
+def weighted_average(values, weights):
+    if not values:
+        return -1
+
+    return sum((v * w for v, w in zip(values, weights))) / sum(weights)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("config", help="Config file")
@@ -27,6 +39,9 @@ def main():
     mongo_client = pymongo.MongoClient(config.get("mongo", "uri"))
     collection = mongo_client.get_default_database()["animes"]
 
+    scores_old = dict()
+    scores_new = dict()
+
     for anime in collection.find():
         # if "kise" not in anime["key"].lower():
         #     continue
@@ -35,12 +50,22 @@ def main():
         series.url = anime["key"]
         series.sync_mongo(anime, None)
 
+        print "Anime", series.url
+
         series.clean_download_history()
 
         episodes = sorted(series.download_history.iteritems(), key=lambda p: p[0])
 
         downloads_old = series.estimate_downloads_old()
         downloads_new = series.estimate_downloads(7)
+
+        print "Old value: {}".format(mean(downloads_old.values()))
+        scores_old[series.url] = mean(downloads_old.values())
+
+        downloads_new_values = [v["value"] for v in downloads_new.itervalues()]
+        downloads_new_weights = [v["accuracy"] for v in downloads_new.itervalues()]
+        print "New value: {}".format(weighted_average(downloads_new_values, downloads_new_weights))
+        scores_new[series.url] = weighted_average(downloads_new_values, downloads_new_weights)
 
         for episode, download_counts in episodes:
             if episode not in series.episode_dates:
@@ -52,9 +77,14 @@ def main():
             print "\tDownloads (new): {}".format(downloads_new.get(episode, -1))
 
 
-            # for date, downloads in sorted(download_counts.iteritems(), key=lambda p: p[0]):
-            #     print "\t{}: {:,}".format(date.strftime("%Y-%m-%d"), downloads)
+            for date, downloads in sorted(download_counts.iteritems(), key=lambda p: p[0]):
+                print "\t{}: {:,}".format(date.strftime("%Y-%m-%d %H:%M"), downloads)
 
+    for scores in [scores_old, scores_new]:
+        print "Scores:"
+        sorted_pairs = sorted(scores.iteritems(), key=lambda p: p[1], reverse=True)
+        for pair in sorted_pairs[:20]:
+            print "\t{}: {:,}".format(pair[0], int(pair[1]))
 
 
 

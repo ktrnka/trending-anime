@@ -251,7 +251,7 @@ class Series(object):
                 del self.download_history[episode]
             else:
                 self.download_history[episode] = {d: c for d, c in good_dates}
-            logger.info("Filtered {} dates for episode {}".format(len(dates) - len(good_dates), episode))
+            # logger.info("Filtered {} dates for episode {}".format(len(dates) - len(good_dates), episode))
 
 
     def get_mongo_key(self):
@@ -385,11 +385,17 @@ class Series(object):
         logger = logging.getLogger(__name__)
         predictions = dict()
 
-        for episode in self.episode_dates:
-            if episode not in self.download_history:
-                continue
-
-            release_date = self.episode_dates[episode]
+        for episode in self.download_history.iterkeys():
+            if episode not in self.episode_dates:
+                # try to estimate or give up
+                earliest_date = min(self.download_history[episode].iterkeys())
+                if earliest_date > datetime.datetime(2015, 1, 25):
+                    release_date = earliest_date - datetime.timedelta(0.5)
+                else:
+                    logger.info("Skipping {}, episode {} with dates {}".format(self.url, episode, self.download_history[episode].keys()))
+                    continue
+            else:
+                release_date = self.episode_dates[episode]
 
             # build the dataset
             datapoints = [((scan_date-release_date).total_seconds()/SEC_IN_DAY, download_count) for scan_date, download_count in self.download_history[episode].iteritems()]
@@ -406,11 +412,10 @@ class Series(object):
 
             try:
                 opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data, y_data)
+                predictions[episode] = {"value": download_function(7, *opt_params), "accuracy": get_accuracy(len(datapoints)) }
             except RuntimeError:
-                logger.warning("Skipping prediction of {} episode {} with {} points due to scipy error".format(self.url, episode, len(datapoints)))
-                continue
-
-            predictions[episode] = {"value": download_function(7, *opt_params), "accuracy": get_accuracy(len(datapoints)) }
+                logger.warning("Fallback prediction of {} episode {} with {} points due to scipy error".format(self.url, episode, len(datapoints)))
+                predictions[episode] = self.get_default_prediction(datapoints, days)
 
         return predictions
 
@@ -462,6 +467,17 @@ class Series(object):
 
         return {k: sum(v)/len(v) for k, v in errors.iteritems()}
 
+    @staticmethod
+    def get_default_prediction(datapoints, days):
+        # {"value": download_function(7, *opt_params), "accuracy": get_accuracy(len(datapoints)) }
+        closest_point = min(datapoints, key=lambda p: math.fabs(p[0] - days))
+        if math.fabs(closest_point[0] - days) < 1:
+            accuracy = 98.
+        else:
+            accuracy = 80.
+        return {"value": closest_point[1], "accuracy": accuracy}
+
+
 def download_function(x, a, b, c):
     return b * numpy.power(numpy.log(x + a + 0.1), c)
 
@@ -486,7 +502,16 @@ def load(endpoint):
         torrents.append(Torrent.from_json(torrent))
     logger.info("Loaded %d torrents", len(torrents))
 
-    return parse_timestamp(data["lastsuccess"]), torrents
+    # deduplicate based on the torrent url (sometimes kimono returns duplicates)
+    url_set = set()
+    unique_torrents = []
+    for torrent in torrents:
+        if not torrent.url or torrent.url not in url_set:
+            unique_torrents.append(torrent)
+            url_set.add(torrent.url)
+    logger.info("Removed %d duplicate torrent listings", len(torrents) - len(unique_torrents))
+
+    return parse_timestamp(data["thisversionrun"]), unique_torrents
 
 
 def make_table_body(series, html_templates):
@@ -584,12 +609,20 @@ def sync_mongo(mongo_db, animes, data_date):
                 collection.insert(mongo_entry)
 
 
+def inject_version(endpoint, api_version):
+    if api_version >= 0:
+        return endpoint.replace("/api/", "/api/{}/".format(api_version))
+    else:
+        return endpoint
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--template_dir", default="templates", help="Dir of templates")
     parser.add_argument("-v", "--verbose", default=False, action="store_true", help="Verbose logging")
     parser.add_argument("--style-file", default="res/over9000.css", help="CSS style")
     parser.add_argument("--favicon-file", default="res/favicon.ico", help="Favicon to use")
+    parser.add_argument("--api-version", default=-1, type=int, help="Optional version of the main Kimono endpoint to load")
     parser.add_argument("config", help="Config file")
     parser.add_argument("output", help="Output filename or 'bitballoon' to upload to bitballoon")
     args = parser.parse_args()
@@ -607,7 +640,7 @@ def main():
     templates = Templates(args.template_dir)
 
     # load torrent list
-    data_date, torrents = load(config.get("kimono", "endpoint"))
+    data_date, torrents = load(inject_version(config.get("kimono", "endpoint"), args.api_version))
 
     # load release dates
     release_data_date, release_date_torrents = load(config.get("kimono", "release_date_endpoint"))
