@@ -107,8 +107,8 @@ def format_row(index, series, top_series, html_templates):
                               season_images=season_images,
                               extra="<br>".join(extras),
                               series_name=series.get_link(),
-                              value="{:,}".format(series.num_downloads),
-                              bar_width=int(100 * series.num_downloads / top_series.num_downloads))
+                              value="{:,}".format(series.get_score()),
+                              bar_width=int(100 * series.get_score() / top_series.get_score()))
 
 
 def get_title_key(title):
@@ -235,6 +235,7 @@ class Series(object):
         self.sub_group_counts = collections.Counter()
         self.episode_dates = dict()
         self.download_history = dict()
+        self.score = None
 
     def clean_download_history(self):
         logger = logging.getLogger(__name__)
@@ -374,6 +375,16 @@ class Series(object):
         else:
             return seasons
 
+    def get_release_date(self, episode):
+        if episode in self.episode_dates:
+            return self.episode_dates[episode]
+
+        earliest_date = min(self.download_history[episode].iterkeys())
+        if earliest_date > datetime.datetime(2015, 1, 25):
+            return earliest_date - datetime.timedelta(0.5)
+
+        return None
+
     def estimate_downloads_old(self):
         return {episode: max(date_counts.itervalues()) for episode, date_counts in self.download_history.iteritems()}
 
@@ -386,97 +397,61 @@ class Series(object):
         predictions = dict()
 
         for episode in self.download_history.iterkeys():
-            if episode not in self.episode_dates:
-                # try to estimate or give up
-                earliest_date = min(self.download_history[episode].iterkeys())
-                if earliest_date > datetime.datetime(2015, 1, 25):
-                    release_date = earliest_date - datetime.timedelta(0.5)
-                else:
-                    logger.info("Skipping {}, episode {} with dates {}".format(self.url, episode, self.download_history[episode].keys()))
-                    continue
-            else:
-                release_date = self.episode_dates[episode]
+            release_date = self.get_release_date(episode)
+            if not release_date:
+                continue
 
             # build the dataset
             datapoints = [((scan_date-release_date).total_seconds()/SEC_IN_DAY, download_count) for scan_date, download_count in self.download_history[episode].iteritems()]
             datapoints.append((0, 0))
 
-            datapoints = sorted(datapoints, key=lambda p: p[0])
-
-            # can't even guess when we only have 1 day of data plus origin
-            if len(datapoints) < 3:
-                continue
-
-            x_data = numpy.array([val[0] for val in datapoints])
-            y_data = numpy.array([val[1] for val in datapoints])
-
-            try:
-                opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data, y_data)
-                predictions[episode] = {"value": download_function(7, *opt_params), "accuracy": get_accuracy(len(datapoints)) }
-            except RuntimeError:
-                logger.warning("Fallback prediction of {} episode {} with {} points due to scipy error".format(self.url, episode, len(datapoints)))
-                predictions[episode] = self.get_default_prediction(datapoints, days)
-
-        return predictions
-
-    def evaluate_prediction(self, days):
-        """
-        Helper function to compute accuracy of predicting from 2 days of data, 3 days, etc.
-        :param days:
-        :return:
-        """
-        errors = collections.defaultdict(list)
-
-        for episode in self.episode_dates:
-            if episode not in self.download_history:
-                continue
-
-            release = self.episode_dates[episode]
-
-            # build the data
-            datapoints = [((scan_date-release).total_seconds()/SEC_IN_DAY, download_count) for scan_date, download_count in self.download_history[episode].iteritems()]
-            datapoints.append((0, 0))
-
-            datapoints = sorted(datapoints, key=lambda p: p[0])
-            if len(datapoints) < 7:
-                print "Fewer than 7 datapoints: {}".format(datapoints)
-                return
-
-            closest_point = min(datapoints, key=lambda p: math.fabs(p[0] - days))
-            if math.fabs(closest_point[0] - days) > 1:
-                return
-
-
-            for ending_index in xrange(3, len(datapoints)):
-                x_data = numpy.array([val[0] for val in datapoints[:ending_index]])
-                y_data = numpy.array([val[1] for val in datapoints[:ending_index]])
+            default_prediction = self.get_default_prediction(datapoints, days)
+            if default_prediction.confidence > 90:
+                predictions[episode] = default_prediction
+            elif len(datapoints) >= 3:
+                x_data = numpy.array([val[0] for val in datapoints])
+                y_data = numpy.array([val[1] for val in datapoints])
 
                 try:
                     opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data, y_data)
+                    predictions[episode] = PredictedValue(download_function(7, *opt_params), get_accuracy(len(datapoints)))
                 except RuntimeError:
-                    continue
+                    logger.warning("Failed to predict {} episode {} with {} points".format(self.url, episode, len(datapoints)))
 
-                prediction = download_function(7, *opt_params)
+        return predictions
 
+    def get_score(self):
+        if self.score:
+            return self.score
 
-                print "Prediction @ 7 from {} points: {}".format(ending_index, prediction)
-                print "Closest match: {}".format(closest_point)
+        estimated_downloads = self.estimate_downloads(7)
 
-                errors[ending_index].append(100 * math.fabs(prediction - closest_point[1]) / closest_point[1])
-                print "Error @ {} points: {:.1f}%".format(ending_index, 100 * math.fabs(prediction - closest_point[1]) / closest_point[1])
-
-        return {k: sum(v)/len(v) for k, v in errors.iteritems()}
+        try:
+            self.score = int(PredictedValue.weighted_average(estimated_downloads.values()))
+        except ZeroDivisionError:
+            self.score = self.num_downloads
+        return self.score
 
     @staticmethod
     def get_default_prediction(datapoints, days):
-        # {"value": download_function(7, *opt_params), "accuracy": get_accuracy(len(datapoints)) }
         closest_point = min(datapoints, key=lambda p: math.fabs(p[0] - days))
         if math.fabs(closest_point[0] - days) < 1:
             accuracy = 98.
         else:
             accuracy = 80.
-        return {"value": closest_point[1], "accuracy": accuracy}
+        return PredictedValue(closest_point[1], accuracy)
 
+class PredictedValue(object):
+    def __init__(self, prediction, confidence):
+        self.prediction = prediction
+        self.confidence = confidence
+
+    @staticmethod
+    def weighted_average(predictions):
+        return sum(x.prediction * x.confidence for x in predictions) / float(sum(x.confidence for x in predictions))
+
+    def __str__(self):
+        return "{} ({})".format(self.prediction, self.confidence)
 
 def download_function(x, a, b, c):
     return b * numpy.power(numpy.log(x + a + 0.1), c)
@@ -515,7 +490,7 @@ def load(endpoint):
 
 
 def make_table_body(series, html_templates):
-    top_series = sorted(series, key=lambda s: s.num_downloads, reverse=True)
+    top_series = sorted(series, key=lambda s: s.get_score(), reverse=True)
     data_entries = [format_row(i, anime, top_series[0], html_templates) for i, anime in enumerate(top_series)]
     return "\n".join(data_entries)
 

@@ -59,13 +59,14 @@ def main():
         downloads_old = series.estimate_downloads_old()
         downloads_new = series.estimate_downloads(7)
 
-        print "Old value: {}".format(mean(downloads_old.values()))
         scores_old[series.url] = mean(downloads_old.values())
+        print "Old value: {}".format(mean(downloads_old.values()))
 
-        downloads_new_values = [v["value"] for v in downloads_new.itervalues()]
-        downloads_new_weights = [v["accuracy"] for v in downloads_new.itervalues()]
-        print "New value: {}".format(weighted_average(downloads_new_values, downloads_new_weights))
-        scores_new[series.url] = weighted_average(downloads_new_values, downloads_new_weights)
+        try:
+            scores_new[series.url] = make_site.PredictedValue.weighted_average(downloads_new.values())
+        except ZeroDivisionError:
+            scores_new[series.url] = -1
+        print "New value: {:.1f}".format(scores_new[series.url])
 
         for episode, download_counts in episodes:
             if episode not in series.episode_dates:
