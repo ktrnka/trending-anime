@@ -446,6 +446,12 @@ class Series(object):
             if episode - 1 not in estimated_downloads:
                 continue
 
+            if estimated_downloads[episode].confidence < 95:
+                continue
+
+            if estimated_downloads[episode-1].confidence < 95:
+                continue
+
             retentions[episode] = 100. * estimated_downloads[episode].prediction / estimated_downloads[episode-1].prediction
 
         return retentions
