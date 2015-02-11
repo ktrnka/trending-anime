@@ -11,9 +11,9 @@ import shutil
 import datetime
 import string
 import math
-import matplotlib.pyplot
-import numpy
-import scipy.optimize
+# import matplotlib.pyplot
+# import numpy
+# import scipy.optimize
 import bitballoon
 
 import os
@@ -414,15 +414,15 @@ class Series(object):
             default_prediction = self.get_default_prediction(datapoints, days)
             if default_prediction.confidence > 90:
                 predictions[episode] = default_prediction
-            elif len(datapoints) >= 3:
-                x_data = numpy.array([val[0] for val in datapoints])
-                y_data = numpy.array([val[1] for val in datapoints])
-
-                try:
-                    opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data, y_data)
-                    predictions[episode] = PredictedValue(download_function(7, *opt_params), get_accuracy(len(datapoints)))
-                except RuntimeError:
-                    logger.warning("Failed to predict {} episode {} with {} points".format(self.url, episode, len(datapoints)))
+            # elif len(datapoints) >= 3:
+            #     x_data = numpy.array([val[0] for val in datapoints])
+            #     y_data = numpy.array([val[1] for val in datapoints])
+            #
+            #     try:
+            #         opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data, y_data)
+            #         predictions[episode] = PredictedValue(download_function(7, *opt_params), get_accuracy(len(datapoints)))
+            #     except RuntimeError:
+            #         logger.warning("Failed to predict {} episode {} with {} points".format(self.url, episode, len(datapoints)))
 
         return predictions
 
@@ -477,8 +477,8 @@ class PredictedValue(object):
     def __str__(self):
         return "{} ({})".format(self.prediction, self.confidence)
 
-def download_function(x, a, b, c):
-    return b * numpy.power(numpy.log(x + a + 0.1), c)
+# def download_function(x, a, b, c):
+#     return b * numpy.power(numpy.log(x + a + 0.1), c)
 
 def parse_timestamp(timestamp):
     """Parse a timestamp like Fri Jan 02 2015 22:04:11 GMT+0000 (UTC)"""
@@ -630,6 +630,7 @@ def main():
         logging.basicConfig(level=logging.DEBUG)
     else:
         logging.basicConfig(level=logging.WARNING)
+    logger = logging.getLogger(__name__)
 
     # load config
     config = ConfigParser.RawConfigParser()
@@ -642,7 +643,12 @@ def main():
     data_date, torrents = load(inject_version(config.get("kimono", "endpoint"), args.api_version))
 
     # load release dates
-    release_data_date, release_date_torrents = load(config.get("kimono", "release_date_endpoint"))
+    try:
+        release_data_date, release_date_torrents = load(config.get("kimono", "release_date_endpoint"))
+    except requests.exceptions.HTTPError:
+        release_data_date = None
+        release_date_torrents = []
+        logger.exception("Failed to load release dates, skipping")
 
     # mongodb, google search
     mongo_client = pymongo.MongoClient(config.get("mongo", "uri"))
