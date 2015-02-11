@@ -100,6 +100,11 @@ def format_row(index, series, top_series, html_templates):
 
     extras.append(", ".join("Episode {}: {}".format(ep, date.strftime("%Y-%m-%d")) for ep, date in series.episode_dates.iteritems()))
 
+    retention_rates = series.compute_retention()
+    if retention_rates:
+        retention_rates = sorted(retention_rates.iteritems(), key=lambda x: x[0])
+        extras.append(", ".join("Episode {}: {:.1f}% viewer retention".format(rate[0], rate[1]) for rate in retention_rates))
+
     season_images = "".join(html_templates.sub("season_image", image=SEASON_IMAGES[season], season=SEASONS[season]) for season in series.get_seasons())
 
     return html_templates.sub("row",
@@ -432,6 +437,18 @@ class Series(object):
         except ZeroDivisionError:
             self.score = self.num_downloads
         return self.score
+
+    def compute_retention(self):
+        estimated_downloads = self.estimate_downloads(7)
+
+        retentions = dict()
+        for episode in estimated_downloads.iterkeys():
+            if episode - 1 not in estimated_downloads:
+                continue
+
+            retentions[episode] = 100. * estimated_downloads[episode].prediction / estimated_downloads[episode-1].prediction
+
+        return retentions
 
     @staticmethod
     def get_default_prediction(datapoints, days):
