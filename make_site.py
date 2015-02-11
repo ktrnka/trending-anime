@@ -333,7 +333,8 @@ class Series(object):
         return "{} {:,} DL".format(self.get_name(), self.num_downloads)
 
     def get_episode_counts(self):
-        return [(ep, self.episode_counts[ep]) for ep in sorted(self.episode_counts.iterkeys())]
+        episodes = sorted(self.download_history.iterkeys())
+        return [(ep, max(self.download_history[ep].itervalues())) for ep in episodes]
 
     def get_sub_groups(self):
         return [name for name, _ in self.sub_group_counts.most_common()]
