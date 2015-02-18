@@ -470,7 +470,6 @@ class Series(object):
         transformed_points = sorted((p[0] - days, p[1]) for p in datapoints)
 
         index = first_positive(transformed_points, lambda pair: pair[0])
-        closest_point = min(transformed_points, key=lambda pair: math.fabs(pair[0]))
 
         if index > 0:
             before = transformed_points[index-1]
@@ -479,21 +478,18 @@ class Series(object):
             if after[1] > 50000:
                 logger.info("Found before and after points: {}, {}".format(before, after))
 
-            range = after[0] - before[0]
-            estimate = after[1] * after[0] / range + before[1] * math.fabs(before[0]) / range
+            estimate = before[1] + (after[1] - before[1]) * -before[0] / (after[0] - before[0])
 
-            if before[0] > -1 and after[0] < 1:
+            if before[0] > -1 or after[0] < 1:
                 accuracy = 98.
-
-                if after[1] > 50000:
-                    logger.info("[GOOD] Old estimate {:.1f}, new estimate {:.1f}".format(closest_point[1], estimate))
-                return PredictedValue(estimate, accuracy)
             else:
-                if after[1] > 50000:
-                    logger.info("[BAD] Old estimate {:.1f}, new estimate {:.1f}".format(closest_point[1], estimate))
+                accuracy = 80.
+
+            return PredictedValue(estimate, accuracy)
 
 
-        accuracy = 80.
+        accuracy = 60.
+        closest_point = min(transformed_points, key=lambda pair: math.fabs(pair[0]))
         return PredictedValue(closest_point[1], accuracy)
 
 class PredictedValue(object):
