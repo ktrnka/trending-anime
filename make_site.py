@@ -231,6 +231,13 @@ def get_accuracy(num_datapoints):
     return -1
 
 
+def first_positive(datapoints, key):
+    for i, point in enumerate(datapoints):
+        if key(point) > 0:
+            return i
+    return -1
+
+
 class Series(object):
     def __init__(self):
         self.num_downloads = 0
@@ -241,6 +248,7 @@ class Series(object):
         self.episode_dates = dict()
         self.download_history = dict()
         self.score = None
+        self.episode_predictions = dict()
 
     def clean_download_history(self):
         logger = logging.getLogger(__name__)
@@ -458,11 +466,34 @@ class Series(object):
 
     @staticmethod
     def get_default_prediction(datapoints, days):
-        closest_point = min(datapoints, key=lambda p: math.fabs(p[0] - days))
-        if math.fabs(closest_point[0] - days) < 1:
-            accuracy = 98.
-        else:
-            accuracy = 80.
+        logger = logging.getLogger(__name__)
+        transformed_points = sorted((p[0] - days, p[1]) for p in datapoints)
+
+        index = first_positive(transformed_points, lambda pair: pair[0])
+        closest_point = min(transformed_points, key=lambda pair: math.fabs(pair[0]))
+
+        if index > 0:
+            before = transformed_points[index-1]
+            after = transformed_points[index]
+
+            if after[1] > 50000:
+                logger.info("Found before and after points: {}, {}".format(before, after))
+
+            range = after[0] - before[0]
+            estimate = after[1] * after[0] / range + before[1] * math.fabs(before[0]) / range
+
+            if before[0] > -1 and after[0] < 1:
+                accuracy = 98.
+
+                if after[1] > 50000:
+                    logger.info("[GOOD] Old estimate {:.1f}, new estimate {:.1f}".format(closest_point[1], estimate))
+                return PredictedValue(estimate, accuracy)
+            else:
+                if after[1] > 50000:
+                    logger.info("[BAD] Old estimate {:.1f}, new estimate {:.1f}".format(closest_point[1], estimate))
+
+
+        accuracy = 80.
         return PredictedValue(closest_point[1], accuracy)
 
 class PredictedValue(object):
