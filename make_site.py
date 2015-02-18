@@ -12,8 +12,8 @@ import datetime
 import string
 import math
 # import matplotlib.pyplot
-# import numpy
-# import scipy.optimize
+import numpy
+import scipy.optimize
 import bitballoon
 
 import os
@@ -422,15 +422,16 @@ class Series(object):
             default_prediction = self.get_default_prediction(datapoints, days)
             if default_prediction.confidence > 90:
                 predictions[episode] = default_prediction
-            # elif len(datapoints) >= 3:
-            #     x_data = numpy.array([val[0] for val in datapoints])
-            #     y_data = numpy.array([val[1] for val in datapoints])
-            #
-            #     try:
-            #         opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data, y_data)
-            #         predictions[episode] = PredictedValue(download_function(7, *opt_params), get_accuracy(len(datapoints)))
-            #     except RuntimeError:
-            #         logger.warning("Failed to predict {} episode {} with {} points".format(self.url, episode, len(datapoints)))
+            elif len(datapoints) >= 3:
+                x_data = numpy.array([val[0] for val in datapoints])
+                y_data = numpy.array([val[1] for val in datapoints])
+
+                try:
+                    opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data, y_data)
+                    predictions[episode] = PredictedValue(download_function(7, *opt_params), get_accuracy(len(datapoints)))
+                except RuntimeError:
+                    logger.warning("Failed to predict {} episode {} with {} points".format(self.url, episode, len(datapoints)))
+                    predictions[episode] = default_prediction
 
         return predictions
 
@@ -470,15 +471,19 @@ class Series(object):
         transformed_points = sorted((p[0] - days, p[1]) for p in datapoints)
 
         index = first_positive(transformed_points, lambda pair: pair[0])
+        closest_point = min(transformed_points, key=lambda pair: math.fabs(pair[0]))
 
         if index > 0:
             before = transformed_points[index-1]
             after = transformed_points[index]
 
+            estimate = before[1] + (after[1] - before[1]) * -before[0] / (after[0] - before[0])
+
             if after[1] > 50000:
                 logger.info("Found before and after points: {}, {}".format(before, after))
+                percent_diff = 100. * math.fabs(closest_point[1] - estimate) / closest_point[1]
+                logger.info("Old estimate: {:.0f}, New estimate: {:.0f} ({:.1f}% diff)".format(closest_point[1], estimate, percent_diff))
 
-            estimate = before[1] + (after[1] - before[1]) * -before[0] / (after[0] - before[0])
 
             if before[0] > -1 or after[0] < 1:
                 accuracy = 98.
@@ -487,9 +492,7 @@ class Series(object):
 
             return PredictedValue(estimate, accuracy)
 
-
         accuracy = 60.
-        closest_point = min(transformed_points, key=lambda pair: math.fabs(pair[0]))
         return PredictedValue(closest_point[1], accuracy)
 
 class PredictedValue(object):
@@ -504,8 +507,8 @@ class PredictedValue(object):
     def __str__(self):
         return "{} ({})".format(self.prediction, self.confidence)
 
-# def download_function(x, a, b, c):
-#     return b * numpy.power(numpy.log(x + a + 0.1), c)
+def download_function(x, a, b, c):
+    return b * numpy.power(numpy.log(x + a + 0.1), c)
 
 def parse_timestamp(timestamp):
     """Parse a timestamp like Fri Jan 02 2015 22:04:11 GMT+0000 (UTC)"""
