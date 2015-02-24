@@ -88,6 +88,29 @@ class SearchEngine(object):
         return first_result
 
 
+def format_episode(episode, count, release_date, download_estimate, retention_rate):
+    release_string = "???"
+    if release_date:
+        release_string = release_date.strftime("%Y-%m-%d")
+
+    retention_string = "???"
+    if retention_rate:
+        retention_string = "{:.1f}%".format(retention_rate)
+
+    download_estimate_string = "???"
+    if download_estimate:
+        download_estimate_string = "{:,} +/- {:,}".format(int(download_estimate.prediction), int(download_estimate.prediction * (1. - download_estimate.confidence / 100) / 2))
+    return """
+<td>
+Episode {}<br>
+Released {}<br>
+Current DLs: {:,}<br>
+DLs at 7d: {}<br>
+{} of previous ep
+</td>
+    """.format(episode, release_string, count, download_estimate_string, retention_string)
+
+
 def format_row(index, series, top_series, html_templates):
     extras = []
     alternate_names = series.get_alternate_names()
@@ -96,14 +119,20 @@ def format_row(index, series, top_series, html_templates):
 
     extras.append("Sub groups: {}".format(", ".join(series.get_sub_groups())))
 
-    extras.append(", ".join("Episode {}: {:,}".format(ep, count) for ep, count in series.get_episode_counts()))
-
-    extras.append(", ".join("Episode {}: {}".format(ep, date.strftime("%Y-%m-%d")) for ep, date in series.episode_dates.iteritems()))
-
+    episode_counts = series.get_episode_counts()
     retention_rates = series.compute_retention()
-    if retention_rates:
-        retention_rates = sorted(retention_rates.iteritems(), key=lambda x: x[0])
-        extras.append(", ".join("Episode {}: {:.1f}% viewer retention".format(rate[0], rate[1]) for rate in retention_rates))
+    download_estimates = series.estimate_downloads(7)
+    episode_cells = [format_episode(episode, count, series.get_release_date(episode), download_estimates.get(episode), retention_rates.get(episode)) for episode, count in episode_counts[-4:]]
+    extras.append("<table width='100%'><tr>{}</tr></table>".format("".join(episode_cells)))
+
+    # extras.append(", ".join("Episode {}: {:,}".format(ep, count) for ep, count in series.get_episode_counts()))
+
+    # extras.append(", ".join("Episode {}: {}".format(ep, date.strftime("%Y-%m-%d")) for ep, date in series.episode_dates.iteritems()))
+
+    # retention_rates = series.compute_retention()
+    # if retention_rates:
+    #     retention_rates = sorted(retention_rates.iteritems(), key=lambda x: x[0])
+    #     extras.append(", ".join("Episode {}: {:.1f}% viewer retention".format(rate[0], rate[1]) for rate in retention_rates))
 
     season_images = "".join(html_templates.sub("season_image", image=SEASON_IMAGES[season], season=SEASONS[season]) for season in series.get_seasons())
 
