@@ -267,22 +267,57 @@ def first_positive(datapoints, key):
     return -1
 
 
+class Episode(object):
+    def __init__(self):
+        self.downloads_current = 0
+        self.downloads_history = dict()
+        self.downloads_estimate = 0
+        self.release_date = None
+
+    def update(self, other):
+        """
+
+        :type other: Episode
+        """
+        self.downloads_current += other.downloads_current
+        self.downloads_history.update(other.downloads_history)
+        self.downloads_estimate += other.downloads_estimate
+
+        if self.release_date is None or self.release_date > other.release_date:
+            self.release_date = other.release_date
+
+    def get_release_date(self):
+        if self.release_date:
+            return self.release_date
+
+        earliest_date = min(self.downloads_history.iterkeys())
+        if earliest_date > datetime.datetime(2015, 1, 25):
+            return earliest_date - datetime.timedelta(0.5)
+
+        return None
+
+    def update_release_date(self, release_date):
+        if not self.release_date or self.release_date > release_date:
+            self.release_date = release_date
+
+    def downloads_history_to_mongo(self):
+        return {history_date.strftime(MONGO_TIME): str(count) for history_date, count in self.downloads_history.iteritems()}
+
+
 class Series(object):
     def __init__(self):
         self.num_downloads = 0
         self.spelling_counts = collections.Counter()
         self.url = None
-        self.episode_counts = collections.Counter()
         self.sub_group_counts = collections.Counter()
-        self.episode_dates = dict()
-        self.download_history = dict()
         self.score = None
-        self.episode_predictions = dict()
+
+        self.episodes = collections.defaultdict(Episode)
 
     def clean_download_history(self):
         logger = logging.getLogger(__name__)
-        for episode, history in self.download_history.items():
-            dates = sorted(history.iteritems(), key=lambda p: p[0])
+        for episode in self.episodes.itervalues():
+            dates = sorted(episode.downloads_history.iteritems(), key=lambda p: p[0])
             good_dates = []
             previous_count = None
             for date in dates:
@@ -291,11 +326,10 @@ class Series(object):
                     previous_count = date[1]
 
             if not good_dates:
-                del self.download_history[episode]
+                episode.downloads_history.clear()
             else:
-                self.download_history[episode] = {d: c for d, c in good_dates}
-            # logger.info("Filtered {} dates for episode {}".format(len(dates) - len(good_dates), episode))
-
+                episode.downloads_history = {d: c for d, c in good_dates}
+            logger.info("Filtered {} dates for episode {}".format(len(dates) - len(good_dates), episode))
 
     def get_mongo_key(self):
         if not self.url:
@@ -309,48 +343,44 @@ class Series(object):
         for episode_str, release_date_str in mongo_object.get("release_dates", {}).iteritems():
             episode = int(episode_str)
             release_date = datetime.datetime.strptime(release_date_str, MONGO_TIME)
-            if episode in self.episode_dates:
-                self.episode_dates[episode] = min([self.episode_dates[episode], release_date])
-            else:
-                self.episode_dates[episode] = release_date
-        mongo_object["release_dates"] = {str(k): v.strftime(MONGO_TIME) for k, v in self.episode_dates.iteritems()}
+            self.episodes[episode].update_release_date(release_date)
+        mongo_object["release_dates"] = {str(ep): self.episodes[ep].release_date.strftime(MONGO_TIME) for ep in self.episodes.iterkeys()}
 
         # sync download history
         for episode_str, download_history in mongo_object.get("download_history", {}).iteritems():
             episode = int(episode_str)
-            self.download_history[episode] = dict()
+            self.episodes[episode].downloads_history = dict()
             for date_str, downloads_str in download_history.iteritems():
-                self.download_history[episode][datetime.datetime.strptime(date_str, MONGO_TIME)] = int(downloads_str)
+                self.episodes[episode].downloads_history[datetime.datetime.strptime(date_str, MONGO_TIME)] = int(downloads_str)
 
-        for episode, downloads in self.episode_counts.iteritems():
-            if episode not in self.download_history:
-                self.download_history[episode] = {}
+        if data_date:
+            for episode in self.episodes.itervalues():
+                episode.downloads_history[data_date] = episode.downloads_current
+                data_changed = True
 
-            self.download_history[episode][data_date] = downloads
-            data_changed = True
-        mongo_object["download_history"] = {str(k): {k2.strftime(MONGO_TIME): str(v2) for k2, v2 in v.iteritems()} for k, v in self.download_history.iteritems()}
+        mongo_object["download_history"] = {str(k): v.downloads_history_to_mongo() for k, v in self.episodes.iteritems()}
 
         return data_changed
-
 
     def add_torrent(self, torrent, parsed_torrent):
         self.spelling_counts[parsed_torrent.series] += torrent.downloads
         self.num_downloads += torrent.downloads
 
-        self.episode_counts[parsed_torrent.episode] += torrent.downloads
         self.sub_group_counts[parsed_torrent.sub_group] += torrent.downloads
+
+        self.episodes[parsed_torrent.episode].downloads_current += torrent.downloads
 
     def add_release_date_torrent(self, torrent, parsed_torrent):
         logger = logging.getLogger(__name__)
         if not torrent.release_date:
             return
 
-        if parsed_torrent.episode in self.episode_dates:
-            if torrent.downloads > 1000 and torrent.release_date < self.episode_dates[parsed_torrent.episode]:
-                logger.info("Updating release date of %s, episode %d from %s tp %s", self.get_name(), parsed_torrent.episode, self.episode_dates[parsed_torrent.episode], torrent.release_date)
-                self.episode_dates[parsed_torrent.episode] = torrent.release_date
+        if parsed_torrent.episode in self.episodes:
+            if torrent.downloads > 1000 and torrent.release_date < self.episodes[parsed_torrent.episode].release_date:
+                logger.info("Updating release date of %s, episode %d from %s tp %s", self.get_name(), parsed_torrent.episode, self.episodes[parsed_torrent.episode].release_date, torrent.release_date)
+                self.episodes[parsed_torrent.episode].release_date = torrent.release_date
         else:
-            self.episode_dates[parsed_torrent.episode] = torrent.release_date
+            self.episodes[parsed_torrent.episode].release_date = torrent.release_date
 
     def get_name(self):
         """Get the best name for this anime"""
@@ -368,15 +398,15 @@ class Series(object):
         return name
 
     def normalize_counts(self):
-        if self.episode_counts:
-            self.num_downloads /= len(self.episode_counts)
+        if self.episodes:
+            self.num_downloads /= len(self.episodes)
 
     def __repr__(self):
         return "{} {:,} DL".format(self.get_name(), self.num_downloads)
 
     def get_episode_counts(self):
-        episodes = sorted(self.download_history.iterkeys())
-        return [(ep, max(self.download_history[ep].itervalues())) for ep in episodes]
+        episodes = sorted(self.episodes.iterkeys())
+        return [(ep, max(self.episodes[ep].downloads_history.itervalues())) for ep in episodes]
 
     def get_sub_groups(self):
         return [name for name, _ in self.sub_group_counts.most_common()]
@@ -386,27 +416,20 @@ class Series(object):
         logger.info("Merging by URL %s and %s", self, other)
         self.num_downloads += other.num_downloads
         self.spelling_counts.update(other.spelling_counts)
-        self.episode_counts.update(other.episode_counts)
         self.sub_group_counts.update(other.sub_group_counts)
 
-        for episode, release_date in other.episode_dates.iteritems():
-            if episode in self.episode_dates:
-                self.episode_dates[episode] = min(self.episode_dates[episode], release_date)
-            else:
-                self.episode_dates[episode] = release_date
+        for episode in other.episodes.iterkeys():
+            self.episodes[episode].update(other.episodes[episode])
 
     def get_seasons(self):
-        if not self.episode_dates:
-            return []
-
-        max_episode = max(self.episode_dates.iterkeys())
+        max_episode = max(self.episodes.iterkeys())
 
         computed_dates = dict()
         for episode in xrange(1, max_episode + 1):
-            if episode in self.episode_dates:
-                computed_dates[episode] = self.episode_dates[episode]
+            if episode in self.episodes:
+                computed_dates[episode] = self.episodes[episode].get_release_date()
             else:
-                estimated_dates = [d + datetime.timedelta((episode - e) * 7) for e, d in self.episode_dates.iteritems()]
+                estimated_dates = [val.release_date + datetime.timedelta((episode - e) * 7) for e, val in self.episodes.iteritems()]
                 computed_dates[episode] = median(estimated_dates)
 
         seasons = []
@@ -418,18 +441,8 @@ class Series(object):
         else:
             return seasons
 
-    def get_release_date(self, episode):
-        if episode in self.episode_dates:
-            return self.episode_dates[episode]
-
-        earliest_date = min(self.download_history[episode].iterkeys())
-        if earliest_date > datetime.datetime(2015, 1, 25):
-            return earliest_date - datetime.timedelta(0.5)
-
-        return None
-
     def estimate_downloads_old(self):
-        return {episode: max(date_counts.itervalues()) for episode, date_counts in self.download_history.iteritems()}
+        return {episode: max(val.downloads_history.itervalues()) for episode, val in self.episodes.iteritems()}
 
     def estimate_downloads(self, days):
         """
@@ -439,13 +452,13 @@ class Series(object):
         logger = logging.getLogger(__name__)
         predictions = dict()
 
-        for episode in self.download_history.iterkeys():
-            release_date = self.get_release_date(episode)
+        for episode in self.episodes.iterkeys():
+            release_date = self.episodes[episode].get_release_date()
             if not release_date:
                 continue
 
             # build the dataset
-            datapoints = [((scan_date-release_date).total_seconds()/SEC_IN_DAY, download_count) for scan_date, download_count in self.download_history[episode].iteritems()]
+            datapoints = [((scan_date-release_date).total_seconds()/SEC_IN_DAY, download_count) for scan_date, download_count in self.episodes[episode].downloads_history.iteritems()]
             datapoints.append((0, 0))
 
             default_prediction = self.get_default_prediction(datapoints, days)
