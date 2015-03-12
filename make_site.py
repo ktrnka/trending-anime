@@ -544,7 +544,7 @@ class PredictedValue(object):
 
     @staticmethod
     def weighted_average(predictions):
-        return sum(x.prediction * x.confidence for x in predictions) / float(sum(x.confidence for x in predictions))
+        return sum(x.prediction * x.confidence for x in predictions) / float(sum(x.confidence for x in predictions) + 0.0001)
 
     def __str__(self):
         return "{} ({})".format(self.prediction, self.confidence)
