@@ -98,7 +98,9 @@ def format_episode(episode, count, release_date, download_estimate, retention_ra
         retention_string = "{:.1f}%".format(retention_rate)
 
     download_estimate_string = "???"
-    if download_estimate:
+    if download_estimate and math.isnan(download_estimate.prediction):
+        download_estimate_string = "NaN"
+    elif download_estimate:
         download_estimate_string = "{:,} +/- {:,}".format(int(download_estimate.prediction), int(download_estimate.prediction * (1. - download_estimate.confidence / 100) / 2))
     return """
 <td>
@@ -122,7 +124,7 @@ def format_row(index, series, top_series, html_templates):
     episode_counts = series.get_episode_counts()
     retention_rates = series.compute_retention()
     download_estimates = series.estimate_downloads(7)
-    episode_cells = [format_episode(episode, count, series.get_release_date(episode), download_estimates.get(episode), retention_rates.get(episode)) for episode, count in episode_counts[-4:]]
+    episode_cells = [format_episode(episode, count, series.episodes[episode].get_release_date(), download_estimates.get(episode), retention_rates.get(episode)) for episode, count in episode_counts[-4:]]
     extras.append("<table width='100%'><tr>{}</tr></table>".format("".join(episode_cells)))
 
     # extras.append(", ".join("Episode {}: {:,}".format(ep, count) for ep, count in series.get_episode_counts()))
@@ -283,7 +285,7 @@ class Episode(object):
         self.downloads_history.update(other.downloads_history)
         self.downloads_estimate += other.downloads_estimate
 
-        if self.release_date is None or self.release_date > other.release_date:
+        if other.release_date and (self.release_date is None or self.release_date > other.release_date):
             self.release_date = other.release_date
 
     def get_release_date(self):
@@ -344,7 +346,7 @@ class Series(object):
             episode = int(episode_str)
             release_date = datetime.datetime.strptime(release_date_str, MONGO_TIME)
             self.episodes[episode].update_release_date(release_date)
-        mongo_object["release_dates"] = {str(ep): self.episodes[ep].release_date.strftime(MONGO_TIME) for ep in self.episodes.iterkeys()}
+        mongo_object["release_dates"] = {str(ep): self.episodes[ep].release_date.strftime(MONGO_TIME) for ep in self.episodes.iterkeys() if self.episodes[ep].release_date}
 
         # sync download history
         for episode_str, download_history in mongo_object.get("download_history", {}).iteritems():
@@ -376,7 +378,7 @@ class Series(object):
             return
 
         if parsed_torrent.episode in self.episodes:
-            if torrent.downloads > 1000 and torrent.release_date < self.episodes[parsed_torrent.episode].release_date:
+            if torrent.downloads > 1000 and (not self.episodes[parsed_torrent.episode].release_date or torrent.release_date < self.episodes[parsed_torrent.episode].release_date):
                 logger.info("Updating release date of %s, episode %d from %s tp %s", self.get_name(), parsed_torrent.episode, self.episodes[parsed_torrent.episode].release_date, torrent.release_date)
                 self.episodes[parsed_torrent.episode].release_date = torrent.release_date
         else:
@@ -429,11 +431,11 @@ class Series(object):
             if episode in self.episodes:
                 computed_dates[episode] = self.episodes[episode].get_release_date()
             else:
-                estimated_dates = [val.release_date + datetime.timedelta((episode - e) * 7) for e, val in self.episodes.iteritems()]
+                estimated_dates = [val.get_release_date() + datetime.timedelta((episode - e) * 7) for e, val in self.episodes.iteritems() if val.get_release_date()]
                 computed_dates[episode] = median(estimated_dates)
 
         seasons = []
-        for season in (date_to_season(d) for d in computed_dates.itervalues()):
+        for season in (date_to_season(d) for d in computed_dates.itervalues() if d):
             if season not in seasons:
                 seasons.append(season)
         if len(seasons) > 3:
@@ -544,10 +546,14 @@ class PredictedValue(object):
 
     @staticmethod
     def weighted_average(predictions):
-        return sum(x.prediction * x.confidence for x in predictions) / float(sum(x.confidence for x in predictions) + 0.0001)
+        predictions = [p for p in predictions if not math.isnan(p.prediction)]
+        return sum(x.prediction * x.confidence for x in predictions) / float(sum(x.confidence for x in predictions))
 
     def __str__(self):
         return "{} ({})".format(self.prediction, self.confidence)
+
+    def __repr__(self):
+        return str(self)
 
 def download_function(x, a, b, c):
     return b * numpy.power(numpy.log(x + a + 0.1), c)

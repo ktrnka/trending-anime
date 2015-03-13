@@ -54,7 +54,7 @@ def main():
 
         series.clean_download_history()
 
-        episodes = sorted(series.episodes.iterkeys())
+        episodes = sorted(series.download_history.iteritems(), key=lambda p: p[0])
 
         downloads_old = series.estimate_downloads_old()
         downloads_new = series.estimate_downloads(7)
@@ -68,13 +68,17 @@ def main():
             scores_new[series.url] = -1
         print "New value: {:.1f}".format(scores_new[series.url])
 
-        for episode in episodes:
-            release_date = series.episodes[episode].get_release_date()
+        for episode, download_counts in episodes:
+            if episode not in series.episode_dates:
+                continue
+
+            release_date = series.episode_dates[episode]
             print "Episode {}: {}".format(episode, release_date.strftime("%Y-%m-%d"))
             print "\tDownloads (old): {}".format(downloads_old.get(episode, -1))
             print "\tDownloads (new): {}".format(downloads_new.get(episode, -1))
 
-            for date, downloads in sorted(series.episodes[episode].downloads_history.iteritems(), key=lambda p: p[0]):
+
+            for date, downloads in sorted(download_counts.iteritems(), key=lambda p: p[0]):
                 print "\t{}: {:,}".format(date.strftime("%Y-%m-%d %H:%M"), downloads)
 
     for scores in [scores_old, scores_new]:
