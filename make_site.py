@@ -693,6 +693,16 @@ def inject_version(endpoint, api_version):
         return endpoint
 
 
+def is_stale(data_date):
+    logger = logging.getLogger(__name__)
+    now = datetime.datetime.now()
+    diff = now - data_date
+    logger.info("%s days between %s and %s", diff.days, now, data_date)
+    if diff.days > 1:
+        return True
+    return False
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--template_dir", default="templates", help="Dir of templates")
@@ -719,6 +729,9 @@ def main():
 
     # load torrent list
     data_date, torrents = load(inject_version(config.get("kimono", "endpoint"), args.api_version))
+    if args.api_version < 0 and is_stale(data_date):
+        logger.error("Data is stale, not rebuilding")
+        return -1
 
     # load release dates
     try:
