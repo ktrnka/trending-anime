@@ -43,7 +43,7 @@ def main():
     scores_new = dict()
 
     for anime in collection.find():
-        if "parade" not in anime["key"].lower():
+        if "ghoul" not in anime["key"].lower():
             continue
 
         series = make_site.Series()

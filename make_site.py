@@ -5,13 +5,13 @@ import collections
 import io
 import json
 import logging
-import pprint
 import sys
 import shutil
 import datetime
 import string
 import math
 # import matplotlib.pyplot
+from kimono import inject_version, is_stale
 import numpy
 import scipy.optimize
 import bitballoon
@@ -29,8 +29,10 @@ SEASON_IMAGES = ["winter.svg", "spring.svg", "summer.svg", "fall.svg", "infinity
 MONGO_TIME = "%Y/%m/%d %H:%M"
 SEC_IN_DAY = 60. * 60 * 24
 
-ACCURACY_TABLE = {"3": 84.60400510425866, "4": 86.6924739899726, "5": 91.60210393760404, "6": 92.09773148280004, "7": 92.90524222602687, "8": 95.61050273545129, "9": 97.96066608319538, "10": 97.94706928696975}
+ACCURACY_TABLE = {"3": 84.60400510425866, "4": 86.6924739899726, "5": 91.60210393760404, "6": 92.09773148280004,
+                  "7": 92.90524222602687, "8": 95.61050273545129, "9": 97.96066608319538, "10": 97.94706928696975}
 ACCURACY_TABLE = {int(k): v for k, v in ACCURACY_TABLE.iteritems()}
+
 
 class Templates(object):
     """Dict of templates"""
@@ -101,7 +103,8 @@ def format_episode(episode, count, release_date, download_estimate, retention_ra
     if download_estimate and math.isnan(download_estimate.prediction):
         download_estimate_string = "NaN"
     elif download_estimate:
-        download_estimate_string = "{:,} +/- {:,}".format(int(download_estimate.prediction), int(download_estimate.prediction * (1. - download_estimate.confidence / 100) / 2))
+        download_estimate_string = "{:,} +/- {:,}".format(int(download_estimate.prediction), int(
+            download_estimate.prediction * (1. - download_estimate.confidence / 100) / 2))
     return """
 <td>
 Episode {}<br>
@@ -124,7 +127,9 @@ def format_row(index, series, top_series, html_templates):
     episode_counts = series.get_episode_counts()
     retention_rates = series.compute_retention()
     download_estimates = series.estimate_downloads(7)
-    episode_cells = [format_episode(episode, count, series.episodes[episode].get_release_date(), download_estimates.get(episode), retention_rates.get(episode)) for episode, count in episode_counts[-4:]]
+    episode_cells = [
+        format_episode(episode, count, series.episodes[episode].get_release_date(), download_estimates.get(episode),
+                       retention_rates.get(episode)) for episode, count in episode_counts[-4:]]
     extras.append("<table width='100%'><tr>{}</tr></table>".format("".join(episode_cells)))
 
     # extras.append(", ".join("Episode {}: {:,}".format(ep, count) for ep, count in series.get_episode_counts()))
@@ -133,10 +138,12 @@ def format_row(index, series, top_series, html_templates):
 
     # retention_rates = series.compute_retention()
     # if retention_rates:
-    #     retention_rates = sorted(retention_rates.iteritems(), key=lambda x: x[0])
+    # retention_rates = sorted(retention_rates.iteritems(), key=lambda x: x[0])
     #     extras.append(", ".join("Episode {}: {:.1f}% viewer retention".format(rate[0], rate[1]) for rate in retention_rates))
 
-    season_images = "".join(html_templates.sub("season_image", image=SEASON_IMAGES[season], season=SEASONS[season]) for season in series.get_seasons())
+    season_images = "".join(
+        html_templates.sub("season_image", image=SEASON_IMAGES[season], season=SEASONS[season]) for season in
+        series.get_seasons())
 
     return html_templates.sub("row",
                               id="row_{}".format(index),
@@ -303,7 +310,8 @@ class Episode(object):
             self.release_date = release_date
 
     def downloads_history_to_mongo(self):
-        return {history_date.strftime(MONGO_TIME): str(count) for history_date, count in self.downloads_history.iteritems()}
+        return {history_date.strftime(MONGO_TIME): str(count) for history_date, count in
+                self.downloads_history.iteritems()}
 
 
 class Series(object):
@@ -346,21 +354,24 @@ class Series(object):
             episode = int(episode_str)
             release_date = datetime.datetime.strptime(release_date_str, MONGO_TIME)
             self.episodes[episode].update_release_date(release_date)
-        mongo_object["release_dates"] = {str(ep): self.episodes[ep].release_date.strftime(MONGO_TIME) for ep in self.episodes.iterkeys() if self.episodes[ep].release_date}
+        mongo_object["release_dates"] = {str(ep): self.episodes[ep].release_date.strftime(MONGO_TIME) for ep in
+                                         self.episodes.iterkeys() if self.episodes[ep].release_date}
 
         # sync download history
         for episode_str, download_history in mongo_object.get("download_history", {}).iteritems():
             episode = int(episode_str)
             self.episodes[episode].downloads_history = dict()
             for date_str, downloads_str in download_history.iteritems():
-                self.episodes[episode].downloads_history[datetime.datetime.strptime(date_str, MONGO_TIME)] = int(downloads_str)
+                self.episodes[episode].downloads_history[datetime.datetime.strptime(date_str, MONGO_TIME)] = int(
+                    downloads_str)
 
         if data_date:
             for episode in self.episodes.itervalues():
                 episode.downloads_history[data_date] = episode.downloads_current
                 data_changed = True
 
-        mongo_object["download_history"] = {str(k): v.downloads_history_to_mongo() for k, v in self.episodes.iteritems()}
+        mongo_object["download_history"] = {str(k): v.downloads_history_to_mongo() for k, v in
+                                            self.episodes.iteritems()}
 
         return data_changed
 
@@ -378,8 +389,12 @@ class Series(object):
             return
 
         if parsed_torrent.episode in self.episodes:
-            if torrent.downloads > 1000 and (not self.episodes[parsed_torrent.episode].release_date or torrent.release_date < self.episodes[parsed_torrent.episode].release_date):
-                logger.info("Updating release date of %s, episode %d from %s tp %s", self.get_name(), parsed_torrent.episode, self.episodes[parsed_torrent.episode].release_date, torrent.release_date)
+            if torrent.downloads > 1000 and (
+                        not self.episodes[parsed_torrent.episode].release_date or torrent.release_date < self.episodes[
+                        parsed_torrent.episode].release_date):
+                logger.info("Updating release date of %s, episode %d from %s tp %s", self.get_name(),
+                            parsed_torrent.episode, self.episodes[parsed_torrent.episode].release_date,
+                            torrent.release_date)
                 self.episodes[parsed_torrent.episode].release_date = torrent.release_date
         else:
             self.episodes[parsed_torrent.episode].release_date = torrent.release_date
@@ -431,7 +446,8 @@ class Series(object):
             if episode in self.episodes:
                 computed_dates[episode] = self.episodes[episode].get_release_date()
             else:
-                estimated_dates = [val.get_release_date() + datetime.timedelta((episode - e) * 7) for e, val in self.episodes.iteritems() if val.get_release_date()]
+                estimated_dates = [val.get_release_date() + datetime.timedelta((episode - e) * 7) for e, val in
+                                   self.episodes.iteritems() if val.get_release_date()]
                 computed_dates[episode] = median(estimated_dates)
 
         seasons = []
@@ -460,7 +476,8 @@ class Series(object):
                 continue
 
             # build the dataset
-            datapoints = [((scan_date-release_date).total_seconds()/SEC_IN_DAY, download_count) for scan_date, download_count in self.episodes[episode].downloads_history.iteritems()]
+            datapoints = [((scan_date - release_date).total_seconds() / SEC_IN_DAY, download_count) for
+                          scan_date, download_count in self.episodes[episode].downloads_history.iteritems()]
             datapoints.append((0, 0))
 
             default_prediction = self.get_default_prediction(datapoints, days)
@@ -472,9 +489,11 @@ class Series(object):
 
                 try:
                     opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data, y_data)
-                    predictions[episode] = PredictedValue(download_function(7, *opt_params), get_accuracy(len(datapoints)))
+                    predictions[episode] = PredictedValue(download_function(7, *opt_params),
+                                                          get_accuracy(len(datapoints)))
                 except RuntimeError:
-                    logger.warning("Failed to predict {} episode {} with {} points".format(self.url, episode, len(datapoints)))
+                    logger.warning(
+                        "Failed to predict {} episode {} with {} points".format(self.url, episode, len(datapoints)))
                     predictions[episode] = default_prediction
 
         return predictions
@@ -502,10 +521,11 @@ class Series(object):
             if estimated_downloads[episode].confidence < 95:
                 continue
 
-            if estimated_downloads[episode-1].confidence < 95:
+            if estimated_downloads[episode - 1].confidence < 95:
                 continue
 
-            retentions[episode] = 100. * estimated_downloads[episode].prediction / estimated_downloads[episode-1].prediction
+            retentions[episode] = 100. * estimated_downloads[episode].prediction / estimated_downloads[
+                episode - 1].prediction
 
         return retentions
 
@@ -518,7 +538,7 @@ class Series(object):
         closest_point = min(transformed_points, key=lambda pair: math.fabs(pair[0]))
 
         if index > 0:
-            before = transformed_points[index-1]
+            before = transformed_points[index - 1]
             after = transformed_points[index]
 
             estimate = before[1] + (after[1] - before[1]) * -before[0] / (after[0] - before[0])
@@ -526,8 +546,9 @@ class Series(object):
             if after[1] > 50000:
                 logger.info("Found before and after points: {}, {}".format(before, after))
                 percent_diff = 100. * math.fabs(closest_point[1] - estimate) / closest_point[1]
-                logger.info("Old estimate: {:.0f}, New estimate: {:.0f} ({:.1f}% diff)".format(closest_point[1], estimate, percent_diff))
-
+                logger.info(
+                    "Old estimate: {:.0f}, New estimate: {:.0f} ({:.1f}% diff)".format(closest_point[1], estimate,
+                                                                                       percent_diff))
 
             if before[0] > -1 or after[0] < 1:
                 accuracy = 98.
@@ -538,6 +559,7 @@ class Series(object):
 
         accuracy = 60.
         return PredictedValue(closest_point[1], accuracy)
+
 
 class PredictedValue(object):
     def __init__(self, prediction, confidence):
@@ -555,8 +577,10 @@ class PredictedValue(object):
     def __repr__(self):
         return str(self)
 
+
 def download_function(x, a, b, c):
     return b * numpy.power(numpy.log(x + a + 0.1), c)
+
 
 def parse_timestamp(timestamp):
     """Parse a timestamp like Fri Jan 02 2015 22:04:11 GMT+0000 (UTC)"""
@@ -628,7 +652,8 @@ def process_torrents(torrents, release_date_torrents):
         else:
             parse_fail[torrent.title] += torrent.downloads
             success_counts[False] += torrent.downloads
-    logger.debug("Parsed {:.1f}% of downloads".format(100. * success_counts[True] / (success_counts[True] + success_counts[False])))
+    logger.debug("Parsed {:.1f}% of downloads".format(
+        100. * success_counts[True] / (success_counts[True] + success_counts[False])))
     logger.debug("Failed to parse %s", parse_fail.most_common(40))
 
     # add release dates when possible
@@ -686,21 +711,7 @@ def sync_mongo(mongo_db, animes, data_date):
                 collection.insert(mongo_entry)
 
 
-def inject_version(endpoint, api_version):
-    if api_version >= 0:
-        return endpoint.replace("/api/", "/api/{}/".format(api_version))
-    else:
-        return endpoint
 
-
-def is_stale(data_date):
-    logger = logging.getLogger(__name__)
-    now = datetime.datetime.now()
-    diff = now - data_date
-    logger.info("%s days between %s and %s", diff.days, now, data_date)
-    if diff.days > 1:
-        return True
-    return False
 
 
 def main():
@@ -709,7 +720,8 @@ def main():
     parser.add_argument("-v", "--verbose", default=False, action="store_true", help="Verbose logging")
     parser.add_argument("--style-file", default="res/over9000.css", help="CSS style")
     parser.add_argument("--favicon-file", default="res/favicon.ico", help="Favicon to use")
-    parser.add_argument("--api-version", default=-1, type=int, help="Optional version of the main Kimono endpoint to load")
+    parser.add_argument("--api-version", default=-1, type=int,
+                        help="Optional version of the main Kimono endpoint to load")
     parser.add_argument("config", help="Config file")
     parser.add_argument("output", help="Output filename or 'bitballoon' to upload to bitballoon")
     args = parser.parse_args()
