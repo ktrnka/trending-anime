@@ -11,7 +11,8 @@ import datetime
 import string
 import math
 # import matplotlib.pyplot
-from kimono import inject_version, is_stale
+from google_search import SearchEngine
+from kimono import inject_version, is_stale, parse_timestamp
 import numpy
 import scipy.optimize
 import bitballoon
@@ -49,45 +50,6 @@ class Templates(object):
 
     def sub(self, template_name, **kwargs):
         return self.templates[template_name].substitute(**kwargs)
-
-
-class SearchEngine(object):
-    """Wrap Google Custom Search Engine requests"""
-
-    def __init__(self, api_key, cx, mongo_db, max_requests=10):
-        self.api_key = api_key
-        self.cx = cx
-        self.url = "https://www.googleapis.com/customsearch/v1"
-
-        self.max_requests = max_requests
-        self.requests = 0
-        self.logger = logging.getLogger(__name__)
-        self.db = mongo_db
-
-    def get_link(self, series_name):
-        cached = self.db["links"].find_one({"title": series_name})
-        if cached:
-            self.logger.info("Found cached object in database: %s", cached)
-            return cached["url"]
-
-        if self.requests >= self.max_requests:
-            return None
-
-        try:
-            r = requests.get(self.url, params={"key": self.api_key, "cx": self.cx, "q": series_name})
-            self.logger.info("Request URL: {}".format(r.url))
-            r.raise_for_status()
-        except (requests.exceptions.HTTPError, requests.exceptions.SSLError):
-            self.logger.exception("Failed to query API, skipping further requests")
-            self.requests = self.max_requests
-            return None
-
-        self.requests += 1
-        data = r.json()
-        first_result = data["items"][0]["link"]
-        self.logger.info("Link for {}: {}".format(series_name, first_result))
-        self.db["links"].insert({"title": series_name, "url": first_result})
-        return first_result
 
 
 def format_episode(episode, count, release_date, download_estimate, retention_rate):
@@ -305,8 +267,12 @@ class Episode(object):
 
         return None
 
-    def update_release_date(self, release_date):
-        if not self.release_date or self.release_date > release_date:
+    def update_release_date(self, release_date, num_downloads):
+        """Update the release date to the earlier date and filter unreliable data"""
+        if not self.release_date:
+            self.release_date = release_date
+
+        if num_downloads > 1000 and self.release_date > release_date:
             self.release_date = release_date
 
     def downloads_history_to_mongo(self):
@@ -388,16 +354,7 @@ class Series(object):
         if not torrent.release_date:
             return
 
-        if parsed_torrent.episode in self.episodes:
-            if torrent.downloads > 1000 and (
-                        not self.episodes[parsed_torrent.episode].release_date or torrent.release_date < self.episodes[
-                        parsed_torrent.episode].release_date):
-                logger.info("Updating release date of %s, episode %d from %s tp %s", self.get_name(),
-                            parsed_torrent.episode, self.episodes[parsed_torrent.episode].release_date,
-                            torrent.release_date)
-                self.episodes[parsed_torrent.episode].release_date = torrent.release_date
-        else:
-            self.episodes[parsed_torrent.episode].release_date = torrent.release_date
+        self.episodes[parsed_torrent.episode].update_release_date(torrent.release_date, torrent.downloads)
 
     def get_name(self):
         """Get the best name for this anime"""
@@ -582,10 +539,18 @@ def download_function(x, a, b, c):
     return b * numpy.power(numpy.log(x + a + 0.1), c)
 
 
-def parse_timestamp(timestamp):
-    """Parse a timestamp like Fri Jan 02 2015 22:04:11 GMT+0000 (UTC)"""
-    timestamp = timestamp.replace(" GMT+0000 (UTC)", "")
-    return datetime.datetime.strptime(timestamp, "%a %b %d %Y %H:%M:%S")
+def deduplicate_torrents(torrents):
+    """Remove duplicate torrents based on the torrent URL because Kimono may scrape while the pages are updating"""
+    logger = logging.getLogger(__name__)
+
+    url_set = set()
+    unique_torrents = []
+    for torrent in torrents:
+        if not torrent.url or torrent.url not in url_set:
+            unique_torrents.append(torrent)
+            url_set.add(torrent.url)
+    logger.info("Removed %d duplicate torrent listings", len(torrents) - len(unique_torrents))
+    return unique_torrents
 
 
 def load(endpoint):
@@ -603,16 +568,9 @@ def load(endpoint):
         torrents.append(Torrent.from_json(torrent))
     logger.info("Loaded %d torrents", len(torrents))
 
-    # deduplicate based on the torrent url (sometimes kimono returns duplicates)
-    url_set = set()
-    unique_torrents = []
-    for torrent in torrents:
-        if not torrent.url or torrent.url not in url_set:
-            unique_torrents.append(torrent)
-            url_set.add(torrent.url)
-    logger.info("Removed %d duplicate torrent listings", len(torrents) - len(unique_torrents))
+    torrents = deduplicate_torrents(torrents)
 
-    return parse_timestamp(data["thisversionrun"]), unique_torrents
+    return parse_timestamp(data["thisversionrun"]), torrents
 
 
 def make_table_body(series, html_templates):
@@ -621,7 +579,7 @@ def make_table_body(series, html_templates):
     return "\n".join(data_entries)
 
 
-def process_torrents(torrents, release_date_torrents):
+def torrents_to_series(torrents, release_date_torrents):
     """
 
     :param torrents:
@@ -632,19 +590,13 @@ def process_torrents(torrents, release_date_torrents):
     success_counts = collections.Counter()
     parse_fail = collections.Counter()
 
-    animes = dict()
+    animes = collections.defaultdict(Series)
 
     for torrent in torrents:
         episode = ParsedTorrent.from_name(torrent.title)
         if episode:
             episode_key = get_title_key(episode.series)
-            if episode_key in animes:
-                anime = animes[episode_key]
-            else:
-                anime = Series()
-                animes[episode_key] = anime
-
-            anime.add_torrent(torrent, episode)
+            animes[episode_key].add_torrent(torrent, episode)
 
             success_counts[True] += torrent.downloads
         elif torrent.size > 1000 or "OVA" in torrent.title:
@@ -652,8 +604,7 @@ def process_torrents(torrents, release_date_torrents):
         else:
             parse_fail[torrent.title] += torrent.downloads
             success_counts[False] += torrent.downloads
-    logger.debug("Parsed {:.1f}% of downloads".format(
-        100. * success_counts[True] / (success_counts[True] + success_counts[False])))
+    logger.info("Parsed {:.1f}% of downloads".format(100. * success_counts[True] / (success_counts[True] + success_counts[False])))
     logger.debug("Failed to parse %s", parse_fail.most_common(40))
 
     # add release dates when possible
@@ -665,10 +616,6 @@ def process_torrents(torrents, release_date_torrents):
                 animes[episode_key].add_release_date_torrent(torrent, episode)
 
     return animes
-
-
-def update_mal_link(anime, search_engine):
-    anime.url = search_engine.get_link(anime.get_name())
 
 
 def merge_by_link(animes):
@@ -709,10 +656,6 @@ def sync_mongo(mongo_db, animes, data_date):
             if anime.sync_mongo(mongo_entry, data_date):
                 logger.info("Inserting {}".format(mongo_entry))
                 collection.insert(mongo_entry)
-
-
-
-
 
 def main():
     parser = argparse.ArgumentParser()
@@ -764,7 +707,7 @@ def main():
                                config.get("bitballoon", "site_id"),
                                config.get("bitballoon", "email"))
 
-    animes = process_torrents(torrents, release_date_torrents)
+    animes = torrents_to_series(torrents, release_date_torrents)
 
     for anime in animes.itervalues():
         anime.normalize_counts()
@@ -772,7 +715,7 @@ def main():
     animes = collections.Counter({k: v for k, v in animes.iteritems() if v.num_downloads > 1000})
 
     for anime in animes.itervalues():
-        update_mal_link(anime, search_engine)
+        anime.url = search_engine.get_link(anime.get_name())
 
     animes = merge_by_link(animes.values())
 

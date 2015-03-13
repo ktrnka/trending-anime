@@ -28,3 +28,9 @@ def is_stale(data_date, refresh_days=1):
     if diff.days > refresh_days:
         return True
     return False
+
+
+def parse_timestamp(timestamp):
+    """Parse a Kimono timestamp like Fri Jan 02 2015 22:04:11 GMT+0000 (UTC)"""
+    timestamp = timestamp.replace(" GMT+0000 (UTC)", "")
+    return datetime.datetime.strptime(timestamp, "%a %b %d %Y %H:%M:%S")
