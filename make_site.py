@@ -22,8 +22,6 @@ import re
 import requests
 import pymongo
 
-BASIC_PATTERN = re.compile(r"\[([^]]+)\] (.+) - (\d+)\s*(?:\[([\d]+p)\])?.(\w+)")
-MD5_PATTERN = re.compile(r"\s*\[[0-9A-F]+\]{6,}\s*", re.IGNORECASE)
 NORMALIZATION_MAP = {ord(c): None for c in "/:;._ -'\"!,~()"}
 SEASONS = ["Winter season", "Spring season", "Summer season", "Fall season", "Long running show"]
 SEASON_IMAGES = ["winter.svg", "spring.svg", "summer.svg", "fall.svg", "infinity.svg"]
@@ -94,15 +92,6 @@ def format_row(index, series, top_series, html_templates):
                        retention_rates.get(episode)) for episode, count in episode_counts[-4:]]
     extras.append("<table width='100%'><tr>{}</tr></table>".format("".join(episode_cells)))
 
-    # extras.append(", ".join("Episode {}: {:,}".format(ep, count) for ep, count in series.get_episode_counts()))
-
-    # extras.append(", ".join("Episode {}: {}".format(ep, date.strftime("%Y-%m-%d")) for ep, date in series.episode_dates.iteritems()))
-
-    # retention_rates = series.compute_retention()
-    # if retention_rates:
-    # retention_rates = sorted(retention_rates.iteritems(), key=lambda x: x[0])
-    #     extras.append(", ".join("Episode {}: {:.1f}% viewer retention".format(rate[0], rate[1]) for rate in retention_rates))
-
     season_images = "".join(
         html_templates.sub("season_image", image=SEASON_IMAGES[season], season=SEASONS[season]) for season in
         series.get_seasons())
@@ -121,6 +110,10 @@ def get_title_key(title):
 
 
 class ParsedTorrent(object):
+    """A torrent filename that's been parsed into components"""
+    _MD5_PATTERN = re.compile(r"\s*\[[0-9A-F]+\]{6,}\s*", re.IGNORECASE)
+    _FILENAME_PATTERN = re.compile(r"\[([^]]+)\] (.+) - (\d+)\s*(?:\[([\d]+p)\])?.(\w+)")
+
     def __init__(self, series, episode, sub_group, resolution, file_type):
         self.series = series
         self.episode = int(episode)
@@ -130,9 +123,9 @@ class ParsedTorrent(object):
 
     @staticmethod
     def from_name(title):
-        title_cleaned = MD5_PATTERN.sub("", title)
+        title_cleaned = ParsedTorrent._MD5_PATTERN.sub("", title)
         title_cleaned = title_cleaned.translate({0x2012: "-"})
-        m = BASIC_PATTERN.match(title_cleaned)
+        m = ParsedTorrent._FILENAME_PATTERN.match(title_cleaned)
         if m:
             return ParsedTorrent(m.group(2), m.group(3), m.group(1), m.group(4), m.group(5))
         else:
@@ -475,8 +468,7 @@ class Series(object):
             if estimated_downloads[episode - 1].confidence < 95:
                 continue
 
-            retentions[episode] = 100. * estimated_downloads[episode].prediction / estimated_downloads[
-                episode - 1].prediction
+            retentions[episode] = 100. * estimated_downloads[episode].prediction / estimated_downloads[episode - 1].prediction
 
         return retentions
 
