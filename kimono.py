@@ -21,9 +21,9 @@ def is_stale(data_date, refresh_days=1):
     """
     assert isinstance(data_date, datetime.datetime)
     logger = logging.getLogger(__name__)
-    now = datetime.datetime.now()
+    now = datetime.datetime.utcnow()
     diff = now - data_date
-    logger.info("Data is %s days old", diff.days)
+    logger.info("Data is %s days old %s - %s", diff.days, now, data_date)
 
     if diff.days > refresh_days:
         return True

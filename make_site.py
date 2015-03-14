@@ -304,7 +304,7 @@ class Series(object):
         for ep_num, episode in self.episodes.iteritems():
             num_removed = episode.clean_data()
             if num_removed:
-                logger.info("Filtered {} dates for {} episode {}".format(num_removed, self.get_name(), episode))
+                logger.info("Filtered {} dates for {} episode {}".format(num_removed, self.get_name(), ep_num))
 
     def get_mongo_key(self):
         if not self.url:
@@ -442,6 +442,7 @@ class Series(object):
                     logger.warning("Failed to predict {} episode {} with {} points".format(self.url, episode, len(datapoints)))
                     for point in sorted(datapoints, key=lambda p: p[0]):
                         logger.warning("{:.1f}, {:,}".format(point[0], point[1]))
+                    logger.warning("Setting to {}".format(default_prediction))
                     predictions[episode] = default_prediction
 
         return predictions
@@ -472,13 +473,15 @@ class Series(object):
             if estimated_downloads[episode - 1].confidence < 95:
                 continue
 
+            if not estimated_downloads[episode - 1].prediction:
+                continue
+
             retentions[episode] = 100. * estimated_downloads[episode].prediction / estimated_downloads[episode - 1].prediction
 
         return retentions
 
     @staticmethod
     def get_default_prediction(datapoints, days):
-        logger = logging.getLogger(__name__)
         transformed_points = sorted((p[0] - days, p[1]) for p in datapoints)
 
         index = first_positive(transformed_points, lambda pair: pair[0])
@@ -489,18 +492,12 @@ class Series(object):
             after = transformed_points[index]
 
             estimate = before[1] + (after[1] - before[1]) * -before[0] / (after[0] - before[0])
+            accuracy = 100. - 100. * (estimate - before[1]) / (1 + (after[1] + before[1]) / 2)
 
-            # if after[1] > 50000:
-            #     logger.info("Found before and after points: {}, {}".format(before, after))
-            #     percent_diff = 100. * math.fabs(closest_point[1] - estimate) / closest_point[1]
-            #     logger.info(
-            #         "Old estimate: {:.0f}, New estimate: {:.0f} ({:.1f}% diff)".format(closest_point[1], estimate,
-            #                                                                            percent_diff))
-
-            if before[0] > -1 or after[0] < 1:
-                accuracy = 98.
-            else:
-                accuracy = 80.
+            # if before[0] > -1 or after[0] < 1:
+            #     accuracy = 98.
+            # else:
+            #     accuracy = 80.
 
             return PredictedValue(estimate, accuracy)
 
