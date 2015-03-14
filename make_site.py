@@ -232,6 +232,7 @@ def first_positive(datapoints, key):
 
 
 class Episode(object):
+    """An episode of a series with all the related info"""
     def __init__(self):
         self.downloads_current = 0
         self.downloads_history = dict()
@@ -239,16 +240,11 @@ class Episode(object):
         self.release_date = None
 
     def update(self, other):
-        """
-
-        :type other: Episode
-        """
         self.downloads_current += other.downloads_current
         self.downloads_history.update(other.downloads_history)
         self.downloads_estimate += other.downloads_estimate
 
-        if other.release_date and (self.release_date is None or self.release_date > other.release_date):
-            self.release_date = other.release_date
+        self.update_release_date(other.release_date)
 
     def get_release_date(self):
         if self.release_date:
@@ -260,20 +256,40 @@ class Episode(object):
 
         return None
 
-    def update_release_date(self, release_date, num_downloads):
+    def update_release_date(self, release_date, num_downloads=None):
         """Update the release date to the earlier date and filter unreliable data"""
         if not self.release_date:
             self.release_date = release_date
 
-        if num_downloads > 1000 and self.release_date > release_date:
+        if num_downloads and num_downloads < 1000:
+            return
+
+        if release_date and self.release_date > release_date:
             self.release_date = release_date
 
     def downloads_history_to_mongo(self):
         return {history_date.strftime(MONGO_TIME): str(count) for history_date, count in
                 self.downloads_history.iteritems()}
 
+    def clean_data(self):
+        dates = sorted(self.downloads_history.iteritems(), key=lambda p: p[0])
+        good_dates = []
+        previous_count = None
+        for date in dates:
+            if not previous_count or previous_count <= date[1]:
+                good_dates.append(date)
+                previous_count = date[1]
+
+        if not good_dates:
+            self.downloads_history.clear()
+        else:
+            self.downloads_history = {d: c for d, c in good_dates}
+
+        return len(dates) - len(good_dates)
+
 
 class Series(object):
+    """An anime series"""
     def __init__(self):
         self.num_downloads = 0
         self.spelling_counts = collections.Counter()
@@ -283,22 +299,11 @@ class Series(object):
 
         self.episodes = collections.defaultdict(Episode)
 
-    def clean_download_history(self):
+    def clean_data(self):
         logger = logging.getLogger(__name__)
         for episode in self.episodes.itervalues():
-            dates = sorted(episode.downloads_history.iteritems(), key=lambda p: p[0])
-            good_dates = []
-            previous_count = None
-            for date in dates:
-                if not previous_count or previous_count <= date[1]:
-                    good_dates.append(date)
-                    previous_count = date[1]
-
-            if not good_dates:
-                episode.downloads_history.clear()
-            else:
-                episode.downloads_history = {d: c for d, c in good_dates}
-            logger.info("Filtered {} dates for episode {}".format(len(dates) - len(good_dates), episode))
+            num_removed = episode.clean_data()
+            logger.info("Filtered {} dates for episode {}".format(num_removed, episode))
 
     def get_mongo_key(self):
         if not self.url:
@@ -310,7 +315,7 @@ class Series(object):
         for episode_str, release_date_str in mongo_object.get("release_dates", {}).iteritems():
             episode = int(episode_str)
             release_date = datetime.datetime.strptime(release_date_str, MONGO_TIME)
-            self.episodes[episode].update_release_date(release_date, 2000)
+            self.episodes[episode].update_release_date(release_date)
         mongo_object["release_dates"] = {str(ep): self.episodes[ep].release_date.strftime(MONGO_TIME) for ep in
                                          self.episodes.iterkeys() if self.episodes[ep].release_date}
 

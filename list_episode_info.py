@@ -52,7 +52,7 @@ def main():
 
         print "Anime", series.url
 
-        series.clean_download_history()
+        series.clean_data()
 
         episodes = sorted(series.episodes.iterkeys())
 
