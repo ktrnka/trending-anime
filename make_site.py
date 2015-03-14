@@ -60,9 +60,7 @@ def format_episode(episode, count, release_date, download_estimate, retention_ra
         retention_string = "{:.1f}%".format(retention_rate)
 
     download_estimate_string = "???"
-    if download_estimate and math.isnan(download_estimate.prediction):
-        download_estimate_string = "NaN"
-    elif download_estimate:
+    if download_estimate:
         download_estimate_string = "{:,} +/- {:,}".format(int(download_estimate.prediction), int(
             download_estimate.prediction * (1. - download_estimate.confidence / 100) / 2))
     return """
@@ -438,7 +436,7 @@ class Series(object):
                     opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data, y_data)
                     predictions[episode] = PredictedValue(download_function(7, *opt_params),
                                                           get_accuracy(len(datapoints)))
-                except RuntimeError:
+                except (RuntimeError, ValueError):
                     logger.warning("Failed to predict {} episode {} with {} points".format(self.url, episode, len(datapoints)))
                     for point in sorted(datapoints, key=lambda p: p[0]):
                         logger.warning("{:.1f}, {:,}".format(point[0], point[1]))
@@ -507,12 +505,14 @@ class Series(object):
 
 class PredictedValue(object):
     def __init__(self, prediction, confidence):
+        if math.isnan(prediction) or math.isnan(confidence):
+            raise ValueError()
         self.prediction = prediction
         self.confidence = confidence
 
     @staticmethod
     def weighted_average(predictions):
-        predictions = [p for p in predictions if not math.isnan(p.prediction)]
+        predictions = [p for p in predictions]
         return sum(x.prediction * x.confidence for x in predictions) / float(sum(x.confidence for x in predictions))
 
     def __str__(self):
