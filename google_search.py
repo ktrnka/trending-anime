@@ -20,7 +20,7 @@ class SearchEngine(object):
     def get_link(self, series_name):
         cached = self.db["links"].find_one({"title": series_name})
         if cached:
-            self.logger.info("Found cached object in database: %s", cached)
+            self.logger.debug("Found cached object in database: %s", cached)
             return cached["url"]
 
         if self.requests >= self.max_requests:

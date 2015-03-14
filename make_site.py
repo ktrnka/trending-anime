@@ -276,7 +276,7 @@ class Episode(object):
         good_dates = []
         previous_count = None
         for date in dates:
-            if not previous_count or previous_count <= date[1]:
+            if not previous_count or previous_count < date[1]:
                 good_dates.append(date)
                 previous_count = date[1]
 
@@ -301,9 +301,10 @@ class Series(object):
 
     def clean_data(self):
         logger = logging.getLogger(__name__)
-        for episode in self.episodes.itervalues():
+        for ep_num, episode in self.episodes.iteritems():
             num_removed = episode.clean_data()
-            logger.info("Filtered {} dates for episode {}".format(num_removed, episode))
+            if num_removed:
+                logger.info("Filtered {} dates for {} episode {}".format(num_removed, self.get_name(), episode))
 
     def get_mongo_key(self):
         if not self.url:
@@ -316,23 +317,20 @@ class Series(object):
             episode = int(episode_str)
             release_date = datetime.datetime.strptime(release_date_str, MONGO_TIME)
             self.episodes[episode].update_release_date(release_date)
-        mongo_object["release_dates"] = {str(ep): self.episodes[ep].release_date.strftime(MONGO_TIME) for ep in
-                                         self.episodes.iterkeys() if self.episodes[ep].release_date}
+        mongo_object["release_dates"] = {str(ep): self.episodes[ep].release_date.strftime(MONGO_TIME) for ep in self.episodes.iterkeys() if self.episodes[ep].release_date}
 
         # sync download history
         for episode_str, download_history in mongo_object.get("download_history", {}).iteritems():
             episode = int(episode_str)
             self.episodes[episode].downloads_history = dict()
             for date_str, downloads_str in download_history.iteritems():
-                self.episodes[episode].downloads_history[datetime.datetime.strptime(date_str, MONGO_TIME)] = int(
-                    downloads_str)
+                self.episodes[episode].downloads_history[datetime.datetime.strptime(date_str, MONGO_TIME)] = int(downloads_str)
 
         if data_date:
             for episode in self.episodes.itervalues():
                 episode.downloads_history[data_date] = episode.downloads_current
 
-        mongo_object["download_history"] = {str(k): v.downloads_history_to_mongo() for k, v in
-                                            self.episodes.iteritems()}
+        mongo_object["download_history"] = {str(k): v.downloads_history_to_mongo() for k, v in self.episodes.iteritems()}
 
     def add_torrent(self, torrent, parsed_torrent):
         self.spelling_counts[parsed_torrent.series] += torrent.downloads
@@ -379,7 +377,7 @@ class Series(object):
 
     def merge(self, other):
         logger = logging.getLogger(__name__)
-        logger.info("Merging by URL %s and %s", self, other)
+        logger.info("Merging by URL: %s and %s", self, other)
         self.num_downloads += other.num_downloads
         self.spelling_counts.update(other.spelling_counts)
         self.sub_group_counts.update(other.sub_group_counts)
@@ -441,8 +439,9 @@ class Series(object):
                     predictions[episode] = PredictedValue(download_function(7, *opt_params),
                                                           get_accuracy(len(datapoints)))
                 except RuntimeError:
-                    logger.warning(
-                        "Failed to predict {} episode {} with {} points".format(self.url, episode, len(datapoints)))
+                    logger.warning("Failed to predict {} episode {} with {} points".format(self.url, episode, len(datapoints)))
+                    for point in sorted(datapoints, key=lambda p: p[0]):
+                        logger.warning("{:.1f}, {:,}".format(point[0], point[1]))
                     predictions[episode] = default_prediction
 
         return predictions
@@ -491,12 +490,12 @@ class Series(object):
 
             estimate = before[1] + (after[1] - before[1]) * -before[0] / (after[0] - before[0])
 
-            if after[1] > 50000:
-                logger.info("Found before and after points: {}, {}".format(before, after))
-                percent_diff = 100. * math.fabs(closest_point[1] - estimate) / closest_point[1]
-                logger.info(
-                    "Old estimate: {:.0f}, New estimate: {:.0f} ({:.1f}% diff)".format(closest_point[1], estimate,
-                                                                                       percent_diff))
+            # if after[1] > 50000:
+            #     logger.info("Found before and after points: {}, {}".format(before, after))
+            #     percent_diff = 100. * math.fabs(closest_point[1] - estimate) / closest_point[1]
+            #     logger.info(
+            #         "Old estimate: {:.0f}, New estimate: {:.0f} ({:.1f}% diff)".format(closest_point[1], estimate,
+            #                                                                            percent_diff))
 
             if before[0] > -1 or after[0] < 1:
                 accuracy = 98.
@@ -715,6 +714,9 @@ def main():
     animes = merge_by_link(animes.values())
 
     sync_mongo(mongo_db, animes, data_date)
+
+    for anime in animes:
+        anime.clean_data()
 
     table_data = make_table_body(animes, templates)
     html_data = templates.sub("main",
