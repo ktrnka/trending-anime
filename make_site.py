@@ -111,7 +111,7 @@ def format_row(index, series, top_series, html_templates):
                               id="row_{}".format(index),
                               season_images=season_images,
                               extra="<br>".join(extras),
-                              series_name=series.get_link(),
+                              series_name=series.get_linked_name(),
                               value="{:,}".format(series.get_score()),
                               bar_width=int(100 * series.get_score() / top_series.get_score()))
 
@@ -313,13 +313,11 @@ class Series(object):
         return self.url
 
     def sync_mongo(self, mongo_object, data_date):
-        data_changed = False
-
         # sync release dates
         for episode_str, release_date_str in mongo_object.get("release_dates", {}).iteritems():
             episode = int(episode_str)
             release_date = datetime.datetime.strptime(release_date_str, MONGO_TIME)
-            self.episodes[episode].update_release_date(release_date)
+            self.episodes[episode].update_release_date(release_date, 2000)
         mongo_object["release_dates"] = {str(ep): self.episodes[ep].release_date.strftime(MONGO_TIME) for ep in
                                          self.episodes.iterkeys() if self.episodes[ep].release_date}
 
@@ -334,12 +332,9 @@ class Series(object):
         if data_date:
             for episode in self.episodes.itervalues():
                 episode.downloads_history[data_date] = episode.downloads_current
-                data_changed = True
 
         mongo_object["download_history"] = {str(k): v.downloads_history_to_mongo() for k, v in
                                             self.episodes.iteritems()}
-
-        return data_changed
 
     def add_torrent(self, torrent, parsed_torrent):
         self.spelling_counts[parsed_torrent.series] += torrent.downloads
@@ -350,7 +345,6 @@ class Series(object):
         self.episodes[parsed_torrent.episode].downloads_current += torrent.downloads
 
     def add_release_date_torrent(self, torrent, parsed_torrent):
-        logger = logging.getLogger(__name__)
         if not torrent.release_date:
             return
 
@@ -365,7 +359,7 @@ class Series(object):
         assert len(self.spelling_counts) > 0
         return [name for name, _ in self.spelling_counts.most_common()[1:]]
 
-    def get_link(self):
+    def get_linked_name(self):
         name = self.get_name()
         if self.url:
             return '<a href="{}">{}</a>'.format(self.url, name)
@@ -639,23 +633,36 @@ def sync_mongo(mongo_db, animes, data_date):
     logger = logging.getLogger(__name__)
 
     collection = mongo_db["animes"]
+    num_updated = 0
+    num_added = 0
     for anime in animes:
         try:
             mongo_entry = collection.find_one({"key": anime.get_mongo_key()})
         except ValueError:
             logger.info("Skipping {}; no mongo key available".format(anime))
             continue
+
         if mongo_entry:
-            if anime.sync_mongo(mongo_entry, data_date):
-                logger.info("Updating {}".format(mongo_entry))
-                collection.save(mongo_entry)
-            else:
-                logger.info("Not updating {}, no change".format(mongo_entry))
+            anime.sync_mongo(mongo_entry, data_date)
+            collection.save(mongo_entry)
+            num_updated += 1
         else:
             mongo_entry = {"key": anime.get_mongo_key()}
-            if anime.sync_mongo(mongo_entry, data_date):
-                logger.info("Inserting {}".format(mongo_entry))
-                collection.insert(mongo_entry)
+            anime.sync_mongo(mongo_entry, data_date)
+            collection.insert(mongo_entry)
+            num_added += 1
+
+    logger.info("%d mongo records updated", num_updated)
+    logger.info("%d mongo records added", num_added)
+
+
+def update_anime_links(animes, config, mongo_db):
+    search_engine = SearchEngine(config.get("google", "api_key"),
+                                 config.get("google", "cx"),
+                                 mongo_db)
+    for anime in animes.itervalues():
+        anime.url = search_engine.get_link(anime.get_name())
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -696,16 +703,8 @@ def main():
         release_date_torrents = []
         logger.exception("Failed to load release dates, skipping")
 
-    # mongodb, google search
     mongo_client = pymongo.MongoClient(config.get("mongo", "uri"))
     mongo_db = mongo_client.get_default_database()
-    search_engine = SearchEngine(config.get("google", "api_key"),
-                                 config.get("google", "cx"),
-                                 mongo_db)
-
-    bb = bitballoon.BitBalloon(config.get("bitballoon", "access_key"),
-                               config.get("bitballoon", "site_id"),
-                               config.get("bitballoon", "email"))
 
     animes = torrents_to_series(torrents, release_date_torrents)
 
@@ -714,8 +713,7 @@ def main():
 
     animes = collections.Counter({k: v for k, v in animes.iteritems() if v.num_downloads > 1000})
 
-    for anime in animes.itervalues():
-        anime.url = search_engine.get_link(anime.get_name())
+    update_anime_links(animes, config, mongo_db)
 
     animes = merge_by_link(animes.values())
 
@@ -727,6 +725,10 @@ def main():
                               table_body=table_data)
 
     if args.output == "bitballoon":
+        bb = bitballoon.BitBalloon(config.get("bitballoon", "access_key"),
+                                   config.get("bitballoon", "site_id"),
+                                   config.get("bitballoon", "email"))
+
         bb.update_file_data(html_data.encode("UTF-8"), "index.html", deploy=True)
     else:
         with io.open(args.output, "w", encoding="UTF-8") as html_out:
