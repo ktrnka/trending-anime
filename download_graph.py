@@ -56,6 +56,7 @@ def make_downloads_graph(data, filename):
 
     plt.axis([x_min, x_max, y_min, y_max])
     plt.savefig(filename, bbox_inches="tight")
+    plt.close()
 
 
 def main():

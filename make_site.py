@@ -10,13 +10,13 @@ import shutil
 import datetime
 import string
 import math
-# import matplotlib.pyplot
+
 from google_search import SearchEngine
 from kimono import inject_version, is_stale, parse_timestamp
 import numpy
 import scipy.optimize
 import bitballoon
-
+import download_graph
 import os
 import re
 import requests
@@ -50,8 +50,9 @@ class Templates(object):
         return self.templates[template_name].substitute(**kwargs)
 
 
-def format_episode(episode, count, release_date, download_estimate, retention_rate):
+def format_episode(episode_no, count, episode, download_estimate, retention_rate, diagnostics=False, image_path=None):
     release_string = "???"
+    release_date = episode.get_release_date()
     if release_date:
         release_string = release_date.strftime("%Y-%m-%d")
 
@@ -63,6 +64,15 @@ def format_episode(episode, count, release_date, download_estimate, retention_ra
     if download_estimate:
         download_estimate_string = "{:,} +/- {:,}".format(int(download_estimate.prediction), int(
             download_estimate.prediction * (1. - download_estimate.confidence / 100) / 2))
+
+    extras = ""
+    if diagnostics:
+        downloads = sorted(episode.downloads_history.iteritems())
+        extras = "<br>".join("{}: {:,}".format(scrape_date.strftime(MONGO_TIME), download_count) for scrape_date, download_count in downloads)
+
+        download_graph.make_downloads_graph(episode.transform_downloads_history(), image_path)
+        extras += '<img src="{}" style="max-width: 200px; height: auto;"/>'.format(os.path.basename(image_path))
+
     return """
 <td>
 Episode {}<br>
@@ -70,11 +80,12 @@ Released {}<br>
 Current DLs: {:,}<br>
 DLs at 7d: {}<br>
 {} of previous ep
+{}
 </td>
-    """.format(episode, release_string, count, download_estimate_string, retention_string)
+    """.format(episode_no, release_string, count, download_estimate_string, retention_string, extras)
 
 
-def format_row(index, series, top_series, html_templates):
+def format_row(index, series, top_series, html_templates, diagnostics=False, image_dir=None):
     extras = []
     alternate_names = series.get_alternate_names()
     if alternate_names:
@@ -85,9 +96,10 @@ def format_row(index, series, top_series, html_templates):
     episode_counts = series.get_episode_counts()
     retention_rates = series.compute_retention()
     download_estimates = series.estimate_downloads(7)
+    image_path = os.path.join(image_dir, series.get_name())
     episode_cells = [
-        format_episode(episode, count, series.episodes[episode].get_release_date(), download_estimates.get(episode),
-                       retention_rates.get(episode)) for episode, count in episode_counts[-4:]]
+        format_episode(episode, count, series.episodes[episode], download_estimates.get(episode),
+                       retention_rates.get(episode), diagnostics=diagnostics, image_path="{}_{}.png".format(image_path, episode)) for episode, count in episode_counts[-4:]]
     extras.append("<table width='100%'><tr>{}</tr></table>".format("".join(episode_cells)))
 
     season_images = "".join(
@@ -285,6 +297,17 @@ class Episode(object):
 
         return len(dates) - len(good_dates)
 
+    def transform_downloads_history(self):
+        """Convert download history dates to deltas from the release date, sort them, add (0, 0)"""
+        release_date = self.get_release_date()
+
+        datapoints = [((scan_date - release_date).total_seconds() / SEC_IN_DAY, download_count) for
+                          scan_date, download_count in self.downloads_history.iteritems()]
+        datapoints.append((0, 0))
+        datapoints = sorted(datapoints)
+
+        return datapoints
+
 
 class Series(object):
     """An anime series"""
@@ -421,9 +444,7 @@ class Series(object):
                 continue
 
             # build the dataset
-            datapoints = [((scan_date - release_date).total_seconds() / SEC_IN_DAY, download_count) for
-                          scan_date, download_count in self.episodes[episode].downloads_history.iteritems()]
-            datapoints.append((0, 0))
+            datapoints = self.episodes[episode].transform_downloads_history()
 
             default_prediction = self.get_default_prediction(datapoints, days)
             if default_prediction.confidence > 90:
@@ -560,9 +581,9 @@ def load(endpoint):
     return parse_timestamp(data["thisversionrun"]), torrents
 
 
-def make_table_body(series, html_templates):
+def make_table_body(series, html_templates, diagnostics=False, image_dir=None):
     top_series = sorted(series, key=lambda s: s.get_score(), reverse=True)
-    data_entries = [format_row(i, anime, top_series[0], html_templates) for i, anime in enumerate(top_series)]
+    data_entries = [format_row(i, anime, top_series[0], html_templates, diagnostics=diagnostics, image_dir=image_dir) for i, anime in enumerate(top_series)]
     return "\n".join(data_entries)
 
 
@@ -665,6 +686,7 @@ def main():
     parser.add_argument("--favicon-file", default="res/favicon.ico", help="Favicon to use")
     parser.add_argument("--api-version", default=-1, type=int,
                         help="Optional version of the main Kimono endpoint to load")
+    parser.add_argument("--diagnostic", default=False, action="store_true", help="Include detailed diagnostics in the output")
     parser.add_argument("config", help="Config file")
     parser.add_argument("output", help="Output filename or 'bitballoon' to upload to bitballoon")
     args = parser.parse_args()
@@ -715,7 +737,7 @@ def main():
     for anime in animes:
         anime.clean_data()
 
-    table_data = make_table_body(animes, templates)
+    table_data = make_table_body(animes, templates, diagnostics=args.diagnostic, image_dir=os.path.dirname(args.output))
     html_data = templates.sub("main",
                               refreshed_timestamp=data_date.strftime("%A, %B %d"),
                               table_body=table_data)
