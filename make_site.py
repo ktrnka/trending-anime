@@ -50,7 +50,7 @@ class Templates(object):
         return self.templates[template_name].substitute(**kwargs)
 
 
-def format_episode(episode_no, count, episode, download_estimate, retention_rate, diagnostics=False, image_path=None):
+def format_episode(html_templates, episode_no, current_downloads, episode, download_estimate, retention_rate, diagnostics=False, image_path=None):
     release_string = "???"
     release_date = episode.get_release_date()
     if release_date:
@@ -58,7 +58,7 @@ def format_episode(episode_no, count, episode, download_estimate, retention_rate
 
     retention_string = "???"
     if retention_rate:
-        retention_string = "{:.1f}%".format(retention_rate)
+        retention_string = "{:.1f}".format(retention_rate)
 
     download_estimate_string = "???"
     if download_estimate:
@@ -73,34 +73,28 @@ def format_episode(episode_no, count, episode, download_estimate, retention_rate
         download_graph.make_downloads_graph(episode.transform_downloads_history(), image_path)
         extras += '<img src="{}" style="max-width: 200px; height: auto;"/>'.format(os.path.basename(image_path))
 
-    return """
-<td>
-Episode {}<br>
-Released {}<br>
-Current DLs: {:,}<br>
-DLs at 7d: {}<br>
-{} of previous ep
-{}
-</td>
-    """.format(episode_no, release_string, count, download_estimate_string, retention_string, extras)
+    return html_templates.sub("episode",
+                              episode_number=episode_no,
+                              release_date=release_string,
+                              downloads=current_downloads,
+                              downloads_at_7=download_estimate_string,
+                              retention_percent=retention_string,
+                              extras=extras)
 
 
 def format_row(index, series, top_series, html_templates, diagnostics=False, image_dir=None):
-    extras = []
-    alternate_names = series.get_alternate_names()
-    if alternate_names:
-        extras.append("Alternate titles: {}".format(", ".join(alternate_names)))
+    alternate_names = ", ".join(series.get_alternate_names())
 
-    extras.append("Sub groups: {}".format(", ".join(series.get_sub_groups())))
+    sub_groups = ", ".join(series.get_sub_groups())
 
     episode_counts = series.get_episode_counts()
     retention_rates = series.compute_retention()
     download_estimates = series.estimate_downloads(7)
     image_path = os.path.join(image_dir, series.get_name())
     episode_cells = [
-        format_episode(episode, count, series.episodes[episode], download_estimates.get(episode),
-                       retention_rates.get(episode), diagnostics=diagnostics, image_path="{}_{}.png".format(image_path, episode)) for episode, count in episode_counts[-4:]]
-    extras.append("<table width='100%'><tr>{}</tr></table>".format("".join(episode_cells)))
+        format_episode(html_templates, episode, count, series.episodes[episode], download_estimates.get(episode),
+                       retention_rates.get(episode), diagnostics=diagnostics, image_path="{}_{}.png".format(image_path, episode)) for episode, count in episode_counts[-3:]]
+    episode_html = "\n".join(episode_cells)
 
     season_images = "".join(
         html_templates.sub("season_image", image=SEASON_IMAGES[season], season=SEASONS[season]) for season in
@@ -109,8 +103,10 @@ def format_row(index, series, top_series, html_templates, diagnostics=False, ima
     return html_templates.sub("row",
                               id="row_{}".format(index),
                               season_images=season_images,
-                              extra="<br>".join(extras),
+                              alternate_titles=alternate_names,
+                              sub_groups=sub_groups,
                               series_name=series.get_linked_name(),
+                              episodes=episode_html,
                               value="{:,}".format(series.get_score()),
                               bar_width=int(100 * series.get_score() / top_series.get_score()))
 

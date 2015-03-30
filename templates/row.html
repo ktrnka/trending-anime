@@ -2,8 +2,20 @@
     <td class="seasons">$season_images</td>
     <td class="name">$series_name</td>
     <td class="number">$value</td>
-    <td class="value"><div class="rectangle" style="width: ${bar_width}%;"></div></td>
+    <td class="value hide-on-med-and-down"><div class="rectangle" style="width: ${bar_width}%;"></div></td>
 </tr>
+
 <tr class="child-$id" style="display: none;">
-    <td colspan="4" class="extra">$extra</td>
+<td colspan="4" class="extra">
+
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> $alternate_titles</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> $sub_groups</div>
+</div>
+
+<div class="row">
+$episodes
+</div>
+
+</td>
 </tr>

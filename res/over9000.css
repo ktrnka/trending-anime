@@ -18,11 +18,16 @@ table.main {
     table-layout: fixed;
 }
 td {
-    padding: 4px 6px;
+    padding: 6px 6px;
     height: 2em;
 }
 td.seasons {
     white-space: nowrap;
+    width: 64px;
+}
+img.season {
+    width: 26px;
+    height: auto;
 }
 td.name {
     width: 15em;
@@ -36,7 +41,6 @@ td.number {
     text-align: right;
 }
 body {
-    font-family: Roboto, sans-serif;
     background: lightgrey;
 }
 th {
@@ -49,10 +53,11 @@ caption {
 }
 div.rectangle {
     height: 16px;
-    background-color: #336699;
+    border-radius: 8px;
+    background: linear-gradient(to right, #336699, #4d80b3);
+    /*background-color: #336699;*/
 }
 div.middle {
-    width: 900px;
     margin: 30px auto;
     background: #ffffff;
     padding: 20px 20px;
@@ -73,19 +78,4 @@ h2 {
     margin: 0px 0px 20px 0px;
 }
 
-@media (min-width: 900px) {
-    div.middle {
-        width: 900px;
-    }
-}
 
-@media (max-width: 900px) {
-    div.middle {
-        width: 100%;
-        padding: 20px 0px;
-    }
-    td.value {
-        display: none;
-    }
-
-}
