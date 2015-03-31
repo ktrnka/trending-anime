@@ -650,7 +650,7 @@ def merge_by_link(animes):
     return filtered_anime + url_map.values()
 
 
-def sync_mongo(mongo_db, animes, data_date):
+def sync_mongo(mongo_db, animes, data_date, disable_update=False):
     logger = logging.getLogger(__name__)
 
     collection = mongo_db["animes"]
@@ -665,13 +665,17 @@ def sync_mongo(mongo_db, animes, data_date):
 
         if mongo_entry:
             anime.sync_mongo(mongo_entry, data_date)
-            collection.save(mongo_entry)
-            num_updated += 1
+
+            if not disable_update:
+                collection.save(mongo_entry)
+                num_updated += 1
         else:
             mongo_entry = {"key": anime.get_mongo_key()}
             anime.sync_mongo(mongo_entry, data_date)
-            collection.insert(mongo_entry)
-            num_added += 1
+
+            if not disable_update:
+                collection.insert(mongo_entry)
+                num_added += 1
 
     logger.info("%d mongo records updated", num_updated)
     logger.info("%d mongo records added", num_added)
@@ -694,6 +698,7 @@ def main():
     parser.add_argument("--api-version", default=-1, type=int,
                         help="Optional version of the main Kimono endpoint to load")
     parser.add_argument("--diagnostic", default=False, action="store_true", help="Include detailed diagnostics in the output")
+    parser.add_argument("--one-way-sync", default=False, action="store_true", help="Only sync from mongo but not back to mongo")
     parser.add_argument("config", help="Config file")
     parser.add_argument("output", help="Output filename or 'bitballoon' to upload to bitballoon")
     args = parser.parse_args()
@@ -739,7 +744,7 @@ def main():
 
     animes = merge_by_link(animes.values())
 
-    sync_mongo(mongo_db, animes, data_date)
+    sync_mongo(mongo_db, animes, data_date, disable_update=args.one_way_sync)
 
     for anime in animes:
         anime.clean_data()
