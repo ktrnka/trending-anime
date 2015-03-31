@@ -76,7 +76,7 @@ def format_episode(html_templates, episode_no, current_downloads, episode, downl
     return html_templates.sub("episode",
                               episode_number=episode_no,
                               release_date=release_string,
-                              downloads=current_downloads,
+                              downloads="{:,}".format(current_downloads),
                               downloads_at_7=download_estimate_string,
                               retention_percent=retention_string,
                               extras=extras)
@@ -370,7 +370,18 @@ class Series(object):
 
     def get_alternate_names(self):
         assert len(self.spelling_counts) > 0
-        return [name for name, _ in self.spelling_counts.most_common()[1:]]
+        logger = logging.getLogger(__name__)
+
+        normalized_names = set()
+        names = []
+        for name, _ in self.spelling_counts.most_common():
+            normalized_name = get_title_key(name)
+            if normalized_name not in normalized_names:
+                normalized_names.add(normalized_name)
+                names.append(name)
+            else:
+                logger.info("Filtering %s from alternate names %s", name, ", ".join(names))
+        return names[1:]
 
     def get_linked_name(self):
         name = self.get_name()
