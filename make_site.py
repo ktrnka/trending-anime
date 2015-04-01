@@ -25,6 +25,8 @@ import pymongo
 NORMALIZATION_MAP = {ord(c): None for c in "/:;._ -'\"!,~()"}
 SEASONS = ["Winter season", "Spring season", "Summer season", "Fall season", "Long running show"]
 SEASON_IMAGES = ["winter.svg", "spring.svg", "summer.svg", "fall.svg", "infinity.svg"]
+SEASON_COLOR_STYLES = ["light-blue-text", "light-green-text text-accent-2", "green-text", "amber-text text-darken-1"]
+SEASON_DEFAULT_COLOR_STYLE = "grey-text text-lighten-3"
 MONGO_TIME = "%Y/%m/%d %H:%M"
 SEC_IN_DAY = 60. * 60 * 24
 
@@ -82,10 +84,16 @@ def format_episode(html_templates, episode_no, current_downloads, episode, downl
                               extras=extras)
 
 
-def format_season_info(html_templates, series):
-    return "".join(
-        html_templates.sub("season_image", image=SEASON_IMAGES[season], season=SEASONS[season]) for season in
-        series.get_seasons())
+def format_season_info(series):
+    seasons = series.get_seasons()
+
+    season_html = ""
+    for i, season_color in enumerate(SEASON_COLOR_STYLES):
+        color = SEASON_DEFAULT_COLOR_STYLE
+        if i in seasons or 4 in seasons:
+            color = season_color
+        season_html += '<i class="mdi-file-cloud {}" style="font-size: 2rem;" title="{}"></i>'.format(color, SEASONS[i])
+    return season_html
 
 
 def format_row(index, series, top_series, html_templates, diagnostics=False, image_dir=None):
@@ -102,7 +110,7 @@ def format_row(index, series, top_series, html_templates, diagnostics=False, ima
                        retention_rates.get(episode), diagnostics=diagnostics, image_path="{}_{}.png".format(image_path, episode)) for episode, count in episode_counts[-3:]]
     episode_html = "\n".join(episode_cells)
 
-    season_images = format_season_info(html_templates, series)
+    season_images = format_season_info(series)
 
     return html_templates.sub("row",
                               id="row_{}".format(index),
