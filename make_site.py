@@ -82,6 +82,12 @@ def format_episode(html_templates, episode_no, current_downloads, episode, downl
                               extras=extras)
 
 
+def format_season_info(html_templates, series):
+    return "".join(
+        html_templates.sub("season_image", image=SEASON_IMAGES[season], season=SEASONS[season]) for season in
+        series.get_seasons())
+
+
 def format_row(index, series, top_series, html_templates, diagnostics=False, image_dir=None):
     alternate_names = ", ".join(series.get_alternate_names())
 
@@ -96,9 +102,7 @@ def format_row(index, series, top_series, html_templates, diagnostics=False, ima
                        retention_rates.get(episode), diagnostics=diagnostics, image_path="{}_{}.png".format(image_path, episode)) for episode, count in episode_counts[-3:]]
     episode_html = "\n".join(episode_cells)
 
-    season_images = "".join(
-        html_templates.sub("season_image", image=SEASON_IMAGES[season], season=SEASONS[season]) for season in
-        series.get_seasons())
+    season_images = format_season_info(html_templates, series)
 
     return html_templates.sub("row",
                               id="row_{}".format(index),
@@ -544,7 +548,7 @@ class PredictedValue(object):
         return sum(x.prediction * x.confidence for x in predictions) / float(sum(x.confidence for x in predictions))
 
     def __str__(self):
-        return "{} ({})".format(self.prediction, self.confidence)
+        return "{} ({:.1f}%)".format(self.prediction, self.confidence)
 
     def __repr__(self):
         return str(self)
