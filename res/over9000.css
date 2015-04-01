@@ -77,5 +77,8 @@ h2 {
     color: grey;
     margin: 0px 0px 20px 0px;
 }
-
+div.parent {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
 

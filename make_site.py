@@ -591,7 +591,7 @@ def load(endpoint):
 def make_table_body(series, html_templates, diagnostics=False, image_dir=None):
     top_series = sorted(series, key=lambda s: s.get_score(), reverse=True)
     data_entries = [format_row(i, anime, top_series[0], html_templates, diagnostics=diagnostics, image_dir=image_dir) for i, anime in enumerate(top_series)]
-    return "\n".join(data_entries)
+    return '<div class="divider"></div>\n'.join(data_entries)
 
 
 def torrents_to_series(torrents, release_date_torrents):

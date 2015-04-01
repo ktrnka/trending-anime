@@ -14,9 +14,7 @@
 <div class="container middle">
 <h1>Over 9000: Anime Trends</h1>
 <div id="timestamp">Popular anime in the past month, refreshed $refreshed_timestamp</div>
-<table cellspacing="0" cellpadding="0" class="bordered">
 $table_body
-</table>
 </div>
 
 <div class="container middle">
@@ -30,13 +28,13 @@ The average number of downloads per episode on nyaatorrents.
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/js/materialize.min.js"></script>
 <script>
 $$(function() {
-    $$('tr.parent')
-        .css("cursor","pointer")
+    $$('div.parent')
+        .css("cursor", "pointer")
         .attr("title", "Click to expand/collapse")
         .click(function(){
-            $$(this).siblings('.child-' + this.id).toggle("slow");
+            $$(this).siblings(".child-" + this.id).toggle("slow");
         });
-    $$('tr[@class^=child-]').hide().children('td');
+    $$('div[@class^=child-]').hide().children('div');
 });
 </script>
 </body>
