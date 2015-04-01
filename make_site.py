@@ -24,7 +24,7 @@ import pymongo
 
 NORMALIZATION_MAP = {ord(c): None for c in "/:;._ -'\"!,~()"}
 SEASONS = ["Winter season", "Spring season", "Summer season", "Fall season", "Long running show"]
-SEASON_IMAGES = ["winter.svg", "spring.svg", "summer.svg", "fall.svg", "infinity.svg"]
+# SEASON_IMAGES = ["winter.svg", "spring.svg", "summer.svg", "fall.svg", "infinity.svg"]
 SEASON_COLOR_STYLES = ["light-blue-text", "light-green-text text-accent-2", "green-text", "amber-text text-darken-1"]
 SEASON_DEFAULT_COLOR_STYLE = "grey-text text-lighten-3"
 MONGO_TIME = "%Y/%m/%d %H:%M"
@@ -56,7 +56,7 @@ def format_episode(html_templates, episode_no, current_downloads, episode, downl
     release_string = "???"
     release_date = episode.get_release_date()
     if release_date:
-        release_string = release_date.strftime("%Y-%m-%d")
+        release_string = release_date.strftime("%a, %b %d")
 
     retention_string = "???"
     if retention_rate:
@@ -96,8 +96,15 @@ def format_season_info(series):
     return season_html
 
 
+def format_alternate_names(names):
+    if names:
+        return ", ".join(names)
+    else:
+        return '<span class="grey-text">None</span>'
+
+
 def format_row(index, series, top_series, html_templates, diagnostics=False, image_dir=None):
-    alternate_names = ", ".join(series.get_alternate_names())
+    alternate_names = format_alternate_names(series.get_alternate_names())
 
     sub_groups = ", ".join(series.get_sub_groups())
 
@@ -776,10 +783,10 @@ def main():
         with io.open(args.output, "w", encoding="UTF-8") as html_out:
             html_out.write(html_data)
 
-        dest_dir = os.path.dirname(args.output)
-        if dest_dir:
-            for filename in [args.style_file, args.favicon_file] + ["res/" + f for f in SEASON_IMAGES]:
-                shutil.copy(filename, os.path.join(dest_dir, os.path.basename(filename)))
+        # dest_dir = os.path.dirname(args.output)
+        # if dest_dir:
+        #     for filename in [args.style_file, args.favicon_file] + ["res/" + f for f in SEASON_IMAGES]:
+        #         shutil.copy(filename, os.path.join(dest_dir, os.path.basename(filename)))
 
 
 if __name__ == "__main__":
