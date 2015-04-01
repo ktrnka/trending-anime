@@ -16,7 +16,7 @@ from kimono import inject_version, is_stale, parse_timestamp
 import numpy
 import scipy.optimize
 import bitballoon
-import download_graph
+# import download_graph
 import os
 import re
 import requests
@@ -70,8 +70,8 @@ def format_episode(html_templates, episode_no, current_downloads, episode, downl
         downloads = sorted(episode.downloads_history.iteritems())
         extras = "<br>".join("{}: {:,}".format(scrape_date.strftime(MONGO_TIME), download_count) for scrape_date, download_count in downloads)
 
-        download_graph.make_downloads_graph(episode.transform_downloads_history(), image_path)
-        extras += '<img src="{}" style="max-width: 200px; height: auto;"/>'.format(os.path.basename(image_path))
+        # download_graph.make_downloads_graph(episode.transform_downloads_history(), image_path)
+        # extras += '<img src="{}" style="max-width: 200px; height: auto;"/>'.format(os.path.basename(image_path))
 
     return html_templates.sub("episode",
                               episode_number=episode_no,
