@@ -92,7 +92,7 @@ def format_season_info(series):
         color = SEASON_DEFAULT_COLOR_STYLE
         if i in seasons or 4 in seasons:
             color = season_color
-        season_html += '<i class="mdi-file-cloud {}" style="font-size: 2rem;" title="{}"></i>'.format(color, SEASONS[i])
+        season_html += '<i class="mdi-file-cloud {}" style="font-size: 1.5rem;" title="{}"></i>'.format(color, SEASONS[i])
     return season_html
 
 
