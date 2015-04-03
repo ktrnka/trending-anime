@@ -1,3 +1,4 @@
+import json
 import logging
 import requests
 
@@ -37,7 +38,15 @@ class SearchEngine(object):
 
         self.requests += 1
         data = r.json()
-        first_result = data["items"][0]["link"]
+
+        # not found, but maybe another day
+        if int(data["searchInformation"]["totalResults"]) == 0:
+            return None
+
+        try:
+            first_result = data["items"][0]["link"]
+        except KeyError:
+            self.logger.exception("Bad search result from %s: %s", series_name, json.dumps(data))
         self.logger.info("Link for {}: {}".format(series_name, first_result))
         self.db["links"].insert({"title": series_name, "url": first_result})
         return first_result

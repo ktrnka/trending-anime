@@ -90,6 +90,8 @@ def format_season_info(series):
     season_html = ""
     for i, season_color in enumerate(SEASON_COLOR_STYLES):
         color = SEASON_DEFAULT_COLOR_STYLE
+        if i == 2:
+            season_html += '<br class="hide-on-med-and-up"/>';
         if i in seasons or 4 in seasons:
             color = season_color
         season_html += '<i class="mdi-file-cloud {}" style="font-size: 1.5rem;" title="{}"></i>'.format(color, SEASONS[i])
@@ -275,6 +277,9 @@ class Episode(object):
         if self.release_date:
             return self.release_date
 
+        if not self.downloads_history:
+            return None
+
         earliest_date = min(self.downloads_history.iterkeys())
         if earliest_date > datetime.datetime(2015, 1, 25):
             return earliest_date - datetime.timedelta(0.5)
@@ -417,7 +422,7 @@ class Series(object):
 
     def get_episode_counts(self):
         episodes = sorted(self.episodes.iterkeys())
-        return [(ep, max(self.episodes[ep].downloads_history.itervalues())) for ep in episodes]
+        return [(ep, max([0] + self.episodes[ep].downloads_history.values())) for ep in episodes]
 
     def get_sub_groups(self):
         return [name for name, _ in self.sub_group_counts.most_common()]
@@ -442,7 +447,8 @@ class Series(object):
             else:
                 estimated_dates = [val.get_release_date() + datetime.timedelta((episode - e) * 7) for e, val in
                                    self.episodes.iteritems() if val.get_release_date()]
-                computed_dates[episode] = median(estimated_dates)
+                if estimated_dates:
+                    computed_dates[episode] = median(estimated_dates)
 
         seasons = []
         for season in (date_to_season(d) for d in computed_dates.itervalues() if d):
