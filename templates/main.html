@@ -33,6 +33,7 @@ $$(function() {
         .attr("title", "Click to expand/collapse")
         .click(function(){
             $$(this).siblings(".child-" + this.id).toggle("slow");
+            $$(this).toggleClass("shadeonhover");
         });
 });
 </script>
