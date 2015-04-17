@@ -48,6 +48,7 @@ def main():
 
         series = make_site.Series()
         series.url = anime["key"]
+        series.spelling_counts[series.url] += 1
         series.sync_mongo(anime, None)
 
         print "Anime", series.url
