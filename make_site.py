@@ -485,10 +485,15 @@ class Series(object):
                 x_data = numpy.array([val[0] for val in datapoints])
                 y_data = numpy.array([val[1] for val in datapoints])
 
+                prediction_max = y_data.max() * 2.
+
                 try:
                     opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data, y_data)
                     predictions[episode] = PredictedValue(download_function(7, *opt_params),
                                                           get_accuracy(len(datapoints)))
+                    if predictions[episode].prediction > prediction_max:
+                        logger.warn("Clipping prediction from %d to %d", int(predictions[episode].prediction), int(prediction_max))
+                        predictions[episode] = PredictedValue(prediction_max, 1.)
                 except (RuntimeError, ValueError):
                     logger.warning("Failed to predict {} episode {} with {} points".format(self.url, episode, len(datapoints)))
                     for point in sorted(datapoints, key=lambda p: p[0]):
@@ -789,10 +794,10 @@ def main():
         with io.open(args.output, "w", encoding="UTF-8") as html_out:
             html_out.write(html_data)
 
-        # dest_dir = os.path.dirname(args.output)
-        # if dest_dir:
-        #     for filename in [args.style_file, args.favicon_file] + ["res/" + f for f in SEASON_IMAGES]:
-        #         shutil.copy(filename, os.path.join(dest_dir, os.path.basename(filename)))
+        dest_dir = os.path.dirname(args.output)
+        if dest_dir:
+            for filename in [args.style_file, args.favicon_file]:
+                shutil.copy(filename, os.path.join(dest_dir, os.path.basename(filename)))
 
 
 if __name__ == "__main__":
