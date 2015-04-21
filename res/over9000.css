@@ -57,6 +57,13 @@ div.parent {
     margin-bottom: 0px;
     margin-top: 0px;
 }
+div.header_row {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    color: grey;
+}
 div.shadeonhover:hover {
     background-color: #EEE;
 }
