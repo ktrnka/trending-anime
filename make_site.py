@@ -598,7 +598,7 @@ def deduplicate_torrents(torrents):
     return unique_torrents
 
 
-def load(endpoint):
+def load(endpoint, timestamp_optional=False):
     logger = logging.getLogger(__name__)
     torrents = []
     if endpoint.startswith("https:"):
@@ -615,7 +615,11 @@ def load(endpoint):
 
     torrents = deduplicate_torrents(torrents)
 
-    return parse_timestamp(data["thisversionrun"]), torrents
+    timestamp = None
+    if not timestamp_optional or "thisversionrun" in data:
+        timestamp = parse_timestamp(data["thisversionrun"])
+
+    return timestamp, torrents
 
 
 def make_table_body(series, html_templates, diagnostics=False, image_dir=None):
@@ -754,9 +758,8 @@ def main():
 
     # load release dates
     try:
-        release_data_date, release_date_torrents = load(config.get("kimono", "release_date_endpoint"))
+        _, release_date_torrents = load(config.get("kimono", "release_date_endpoint"), True)
     except requests.exceptions.HTTPError:
-        release_data_date = None
         release_date_torrents = []
         logger.exception("Failed to load release dates, skipping")
 
