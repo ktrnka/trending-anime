@@ -28,8 +28,28 @@ $table_body
 <div class="container middle z-depth-1">
 <h1>About</h1>
 <h2>What are the numbers?</h2>
-The average number of downloads per episode on nyaatorrents.
-</div>
+<p>Short version: The average number of downloads per episode on nyaatorrents.</p>
+<p>Long version: When we were just averaging the total number of downloads per episode it led to issues.
+A new episode would come out and have maybe 10,000 downloads on day 1 but that would drag down the average.
+As a result the most popular shows would drop several ranks every time a new episode was released.</p>
+<p>We compensate by estimating the number of downloads each episode had or will have 7 days from release.
+For an episode that's been out 10 days it's fairly easy. Say we have 52,000 downloads 6.5 days from release and 54,000 downloads 7.5 days from release.
+Then we estimate the downloads as 53,000.</p>
+<p>When we only have the first few days though it's harder and we fit a log curve to the available data then extrapolate. For more info, see <a href="https://kwtrnka.wordpress.com/2015/02/13/projecting-the-number-of-downloads-for-torrents/">my blog</a>.</p>
+
+<h2>Why make this?</h2>
+<p>If you're watching shows with friends it's really tough to find something good that noone's seen before. The easiest way is to find a current show that's popular but there weren't many sites showing that aside from hand-written recommendations say searching for "best anime spring 2015".</p>
+
+<h2>What's your technology stack like?</h2>
+<ul class="collection">
+<li class="collection-item"><a href="https://www.kimonolabs.com/">Kimono</a> for scraping the data from nyaatorrents. One tricky part is that the release dates are only on the individual detail pages so it scrapes thousands of URLs for that over a period of hours.</li>
+<li class="collection-item"><a href="https://www.python.org/">Python</a> to process the data from Kimono and generate the webpage. <a href="http://www.scipy.org/">Scipy</a> and <a href="http://www.numpy.org/">Numpy</a> to fit log curves to the data.</li>
+<li class="collection-item">Heroku to run the Python job once per day, using it as a cron server with the Heroku Scheduler addon. The scipy dependency breaks everything so I needed to use the <a href="https://github.com/kennethreitz/conda-buildpack">conda buildpack</a>.</li>
+<li class="collection-item">Google Custom Search API to search MyAnimeList for the show names to get links. The links also serve to group together when one sub group uses an English name and another uses Romaji.</li>
+<li class="collection-item"><a href="https://www.mongolab.com/">MongoLab</a> for MongoDB hosting to store download history, release dates, and previous URL lookups.</li>
+<li class="collection-item"><a href="https://www.bitballoon.com">BitBalloon</a> for static HTML hosting and  API to upload changes.</li>
+<li class="collection-item"><a href="http://materializecss.com/">Materialize</a> to help the page look nice and make it work on mobile.</li>
+</ul></div>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
