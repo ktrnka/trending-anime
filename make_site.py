@@ -728,6 +728,25 @@ def update_anime_links(animes, config, mongo_db):
         anime.url = search_engine.get_link(anime.get_name())
 
 
+def filter_old_series(animes):
+    logger = logging.getLogger(__name__)
+    today = datetime.datetime.now()
+
+    for series in animes:
+        release_dates = series.get_release_dates()
+        if not release_dates:
+            logger.warn("No release dates for series {}".format(series))
+            yield series
+            continue
+
+        most_recent = max(release_dates)
+        age = today - most_recent
+        if age.days <= 30:
+            yield series
+        else:
+            logger.info("Removing old series {}, age {}".format(series, age))
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--template_dir", default="templates", help="Dir of templates")
@@ -786,6 +805,8 @@ def main():
 
     for anime in animes:
         anime.clean_data()
+
+    animes = list(filter_old_series(animes))
 
     table_data = make_table_body(animes, templates, diagnostics=args.diagnostic, image_dir=os.path.dirname(args.output))
     html_data = templates.sub("main",
