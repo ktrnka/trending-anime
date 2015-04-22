@@ -392,6 +392,11 @@ class Series(object):
         assert len(self.spelling_counts) > 0
         return self.spelling_counts.most_common(1)[0][0]
 
+    def get_release_dates(self):
+        dates = [episode.get_release_date() for episode in self.episodes.itervalues()]
+        dates = [d for d in dates if d]
+        return dates
+
     def get_alternate_names(self):
         assert len(self.spelling_counts) > 0
         logger = logging.getLogger(__name__)
