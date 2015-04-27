@@ -86,6 +86,7 @@ def format_episode(html_templates, episode_no, current_downloads, episode, downl
 
 def format_season_info(series):
     seasons = series.get_seasons()
+    season_classes = ["icon-snowflake", "icon-grass", "icon-sun", "icon-tree"]
 
     season_html = ""
     for i, season_color in enumerate(SEASON_COLOR_STYLES):
@@ -93,8 +94,11 @@ def format_season_info(series):
         if i == 2:
             season_html += '<br class="hide-on-med-and-up"/>';
         if i in seasons or 4 in seasons:
-            color = season_color
-        season_html += '<i class="mdi-file-cloud {}" style="font-size: 1.5rem;" title="{}"></i>'.format(color, SEASONS[i])
+            season_class = season_classes[i]
+        else:
+            season_class = season_classes[i] + "-grey"
+        season_html += '<i class="icon {}" style="font-size: 1.5rem;" title="{}"></i>'.format(season_class, SEASONS[i])
+        # season_html += '<i class="mdi-file-cloud {}" style="font-size: 1.5rem;" title="{}"></i>'.format(color, SEASONS[i])
     return season_html
 
 
@@ -302,20 +306,25 @@ class Episode(object):
                 self.downloads_history.iteritems()}
 
     def clean_data(self):
-        dates = sorted(self.downloads_history.iteritems(), key=lambda p: p[0])
-        good_dates = []
+        # logger = logging.getLogger(__name__)
+        samples = sorted(self.downloads_history.iteritems(), key=lambda p: p[0])
+        good_samples = []
         previous_count = None
-        for date in dates:
-            if not previous_count or previous_count < date[1]:
-                good_dates.append(date)
-                previous_count = date[1]
+        # logger.info("Filtering download history for episode from {}".format(self.get_release_date()))
+        for sample in samples:
+            if not previous_count or previous_count < sample[1]:
+                # logger.info("\t{}".format(sample))
+                good_samples.append(sample)
+                previous_count = sample[1]
+            # else:
+            #     logger.info("\t{} *".format(sample))
 
-        if not good_dates:
+        if not good_samples:
             self.downloads_history.clear()
         else:
-            self.downloads_history = {d: c for d, c in good_dates}
+            self.downloads_history = {d: c for d, c in good_samples}
 
-        return len(dates) - len(good_dates)
+        return len(samples) - len(good_samples)
 
     def transform_downloads_history(self):
         """Convert download history dates to deltas from the release date, sort them, add (0, 0)"""
@@ -759,6 +768,7 @@ def main():
     parser.add_argument("--one-way-sync", default=False, action="store_true", help="Only sync from mongo but not back to mongo")
     parser.add_argument("config", help="Config file")
     parser.add_argument("output", help="Output filename or 'bitballoon' to upload to bitballoon")
+    parser.add_argument("additional_files", nargs="*", help="Additional files or directories to copy to site release")
     args = parser.parse_args()
 
     if args.verbose:
@@ -827,6 +837,13 @@ def main():
         if dest_dir:
             for filename in [args.style_file, args.favicon_file]:
                 shutil.copy(filename, os.path.join(dest_dir, os.path.basename(filename)))
+            for filename in args.additional_files:
+                dest_path = os.path.join(dest_dir, os.path.basename(filename))
+                if os.path.isdir(filename):
+                    shutil.rmtree(dest_path, True)
+                    shutil.copytree(filename, dest_path)
+                else:
+                    shutil.copy(filename, dest_path)
 
 
 if __name__ == "__main__":
