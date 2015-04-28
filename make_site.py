@@ -86,11 +86,10 @@ def format_episode(html_templates, episode_no, current_downloads, episode, downl
 
 def format_season_info(series):
     seasons = series.get_seasons()
-    season_classes = ["icon-snowflake", "icon-grass", "icon-sun", "icon-tree"]
+    season_classes = ["icon-snowflake", "icon-tulip", "icon-sun", "icon-tree"]
 
     season_html = ""
     for i, season_color in enumerate(SEASON_COLOR_STYLES):
-        color = SEASON_DEFAULT_COLOR_STYLE
         if i == 2:
             season_html += '<br class="hide-on-med-and-up"/>';
         if i in seasons or 4 in seasons:
@@ -98,7 +97,7 @@ def format_season_info(series):
         else:
             season_class = season_classes[i] + "-grey"
         season_html += '<i class="icon {}" style="font-size: 1.5rem;" title="{}"></i>'.format(season_class, SEASONS[i])
-        # season_html += '<i class="mdi-file-cloud {}" style="font-size: 1.5rem;" title="{}"></i>'.format(color, SEASONS[i])
+
     return season_html
 
 

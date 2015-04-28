@@ -54,6 +54,11 @@
   color: #ffa000;
   content: "\e003";
 }
+.icon-tulip:before {
+  color: #e91e63;
+  content: "\e004";
+}
+
 
 .icon-snowflake-grey:before {
   color: #eeeeee;
@@ -70,4 +75,8 @@
 .icon-tree-grey:before {
   color: #eeeeee;
   content: "\e003";
+}
+.icon-tulip-grey:before {
+  color: #eeeeee;
+  content: "\e004";
 }
