@@ -91,7 +91,7 @@ def format_season_info(series):
     season_html = ""
     for i, season_color in enumerate(SEASON_COLOR_STYLES):
         if i == 2:
-            season_html += '<br class="hide-on-med-and-up"/>';
+            season_html += '<br class="hide-on-med-and-up"/>'
         if i in seasons or 4 in seasons:
             season_class = season_classes[i]
         else:

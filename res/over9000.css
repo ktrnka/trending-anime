@@ -47,9 +47,10 @@ h2 {
     font-size: 2rem;
 }
 #timestamp {
+    font-style: italic;
     text-align: center;
     color: grey;
-    margin: 0px 0px 20px 0px;
+    margin: 10px 0px 10px 0px;
 }
 div.parent {
     padding-bottom: 10px;
@@ -66,4 +67,12 @@ div.header_row {
 }
 div.shadeonhover:hover {
     background-color: #EEE;
+}
+
+nav {
+    background: #336699;
+}
+.brand-logo {
+    margin-left: 2rem;
+    margin-left: 2rem;
 }
