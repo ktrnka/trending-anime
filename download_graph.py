@@ -28,7 +28,7 @@ def choose_ticks(y_min, y_max):
     raise ValueError("No appropriate axis ticks found")
 
 
-def make_downloads_graph(data, filename):
+def make_downloads_graph(data, filename, prediction_data=None):
     x_data, y_data = zip(*data)
 
     x_min = 0
@@ -38,6 +38,13 @@ def make_downloads_graph(data, filename):
 
     plt.figure(figsize=(12, 9))
     plt.plot(x_data, y_data, lw=2, color=tableau20[0])
+    if prediction_data:
+        x_pred, y_pred = zip(*prediction_data)
+
+        x_max = max(x_max, max(x_pred) * 1.02)
+        y_max = max(y_max, max(y_pred) * 1.02)
+
+        plt.plot(x_pred, y_pred, "--", lw=2, color=tableau20[1])
 
     plt.xlabel("Days since release", fontsize=16)
     plt.ylabel("Downloads", fontsize=16)
