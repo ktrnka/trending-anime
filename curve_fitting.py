@@ -73,15 +73,17 @@ class EvaluationSuite(object):
 
 
 class Curve(object):
-    def __init__(self, function, name, format_string, backoff_curve=None):
+    def __init__(self, function, name, format_string, min_points=None, backoff_curve=None):
         self.logger = logging.getLogger(__name__ + ".Curve")
         self.function = function
+        self.min_points = min_points
         self.backoff_curve = backoff_curve
         self.name = name
         self.format_string = format_string
-        self.params = None
 
+        self.params = None
         self.y_max = None
+        self.use_backoff = False
 
     def fit(self, datapoints):
         x, y = zip(*datapoints)
@@ -90,24 +92,33 @@ class Curve(object):
 
         self.y_max = y.max()
 
-        try:
-            self.params, opt_covariance = scipy.optimize.curve_fit(self.function, x, y)
-        except (TypeError, RuntimeError):
-            self.logger.info("Fitting curve failed, backing off")
-            if self.backoff_curve:
-                self.backoff_curve.fit(datapoints)
+        # reset values to prevent carrying over
+        self.params = None
+        self.use_backoff = False
+
+        if not self.min_points or len(datapoints) >= self.min_points:
+            try:
+                self.params, opt_covariance = scipy.optimize.curve_fit(self.function, x, y)
+            except (TypeError, RuntimeError):
+                self.logger.info("Fitting curve failed, backing off")
+        else:
+            self.logger.info("Too few points, backing off")
+
+        if self.params is None and self.backoff_curve:
+            self.use_backoff = True
+            self.backoff_curve.fit(datapoints)
 
     def predict(self, x):
-        if self.params is not None:
-            return min(self.function(x, *self.params), self.y_max * 2)
-        elif self.backoff_curve:
+        if self.use_backoff:
             return self.backoff_curve.predict(x)
+        elif self.params is not None:
+            return min(self.function(x, *self.params), self.y_max * 2)
 
     def __str__(self):
-        if self.params is not None:
-            return self.name + "(" + self.format_string.format(*self.params) + ")"
-        elif self.backoff_curve:
+        if self.use_backoff:
             return "{}-Backoff({})".format(self.name, self.backoff_curve)
+        elif self.params is not None:
+            return self.name + "(" + self.format_string.format(*self.params) + ")"
         else:
             return "Unfit curve"
 

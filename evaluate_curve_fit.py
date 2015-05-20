@@ -38,13 +38,15 @@ def main():
 
     backoff_zero = curve_fitting.ConstantCurve(lambda x: 0, "Zero", "0")
 
-    log_curve = curve_fitting.Curve(lambda x, a, b, c: b * numpy.power(numpy.log(x + a + 1), c), "log", "{1} * (log(x + {0} + 1) ^ {2}",
+    log_curve = curve_fitting.Curve(lambda x, a, b, c: b * numpy.power(numpy.log(x + a + 1), c), "log3", "{1} * (log(x + {0} + 1) ^ {2}",
                       backoff_curve=backoff_zero)
-    log_curve_simple = curve_fitting.Curve(lambda x, b: b * numpy.power(numpy.log(x + 1), 0.5), "log root", "{0} * log(x + 1) ^ 0.5",
+    log_curve_simple = curve_fitting.Curve(lambda x, b: b * numpy.power(numpy.log(x + 1), 0.5), "log1", "{0} * log(x + 1) ^ 0.5",
                              backoff_curve=backoff_zero)
+    log_curve_plus = curve_fitting.Curve(lambda x, a, b, c: b * numpy.power(numpy.log(x + a + 1), c), "log3+1", "{1} * (log(x + {0} + 1) ^ {2}",
+                      backoff_curve=log_curve_simple, min_points=4)
     inverse_curve = curve_fitting.Curve(lambda x, a, b: x / (x + a ** 2) * b, "inv", "x / (x + {0}^2) * {1}", backoff_curve=backoff_zero)
 
-    evaluation_suite = curve_fitting.EvaluationSuite([curve_fitting.Evaluation(2), curve_fitting.Evaluation(3), curve_fitting.Evaluation(4), curve_fitting.Evaluation(5), curve_fitting.Evaluation(10), curve_fitting.Evaluation(100)], [log_curve, log_curve_simple, inverse_curve])
+    evaluation_suite = curve_fitting.EvaluationSuite([curve_fitting.Evaluation(2), curve_fitting.Evaluation(3), curve_fitting.Evaluation(4), curve_fitting.Evaluation(5), curve_fitting.Evaluation(10), curve_fitting.Evaluation(100)], [log_curve, log_curve_simple, log_curve_plus, inverse_curve])
 
     scores = collections.defaultdict(lambda: collections.defaultdict(list))
 
@@ -56,6 +58,7 @@ def main():
         if series.get_max_history_downloads() < 5000:
             continue
 
+        # be sure to filter out any old junky data when I had only partial snapshots of download history
         if any(e.get_release_date() < datetime.datetime(2015, 3, 1) for e in series.episodes.itervalues()):
             continue
 
