@@ -6,9 +6,11 @@ import pprint
 import collections
 import datetime
 import numpy
+import pandas
 
 import pymongo
 import download_graph
+import matplotlib.pyplot as plt
 
 
 __author__ = 'keith'
@@ -99,7 +101,14 @@ def main():
         scored_models = {model: numpy.array(scores) for model, scores in scored_models.iteritems()}
         for model_name, scores in scored_models.iteritems():
             print "\t{}: {:.3f} +/- {:.3f} in {:,} tests".format(model_name, numpy.nanmean(scores), numpy.nanstd(scores), scores.shape[0])
-            print "\t{}".format(list(scores))
+
+            scores = pandas.Series(scores)
+            plt.clf()
+            scores.hist(bins=25)
+            plt.savefig("model_scores_{}_{}.png".format(model_name, evaluation))
+            plt.close()
+
+
 
 
 
