@@ -277,17 +277,14 @@ class Episode(object):
         self.update_release_date(other.release_date)
 
     def get_release_date(self):
-        if self.release_date:
+        if not self.downloads_history:
             return self.release_date
 
-        if not self.downloads_history:
-            return None
-
         earliest_date = min(self.downloads_history.iterkeys())
-        if earliest_date > datetime.datetime(2015, 1, 25):
+        if not self.release_date or earliest_date < self.release_date and earliest_date > datetime.datetime(2015, 1, 25):
             return earliest_date - datetime.timedelta(0.5)
 
-        return None
+        return self.release_date
 
     def update_release_date(self, release_date, num_downloads=None):
         """Update the release date to the earlier date and filter unreliable data"""
@@ -305,18 +302,14 @@ class Episode(object):
                 self.downloads_history.iteritems()}
 
     def clean_data(self):
-        # logger = logging.getLogger(__name__)
         samples = sorted(self.downloads_history.iteritems(), key=lambda p: p[0])
         good_samples = []
         previous_count = None
-        # logger.info("Filtering download history for episode from {}".format(self.get_release_date()))
+
         for sample in samples:
             if not previous_count or previous_count < sample[1]:
-                # logger.info("\t{}".format(sample))
                 good_samples.append(sample)
                 previous_count = sample[1]
-            # else:
-            #     logger.info("\t{} *".format(sample))
 
         if not good_samples:
             self.downloads_history.clear()
@@ -335,6 +328,9 @@ class Episode(object):
         datapoints = sorted(datapoints)
 
         return datapoints
+
+    def get_max_history_downloads(self):
+        return max(self.downloads_history.itervalues())
 
 
 class Series(object):
@@ -502,6 +498,8 @@ class Series(object):
 
                 try:
                     opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data, y_data)
+                    logger.info("Fitting curve to {}".format(datapoints))
+                    logger.info("Fit {1} * [log x + {0} + 0.1] ^ {2} to data".format(*opt_params))
                     predictions[episode] = PredictedValue(download_function(7, *opt_params),
                                                           get_accuracy(len(datapoints)))
                     if predictions[episode].prediction > prediction_max:
@@ -513,6 +511,33 @@ class Series(object):
                         logger.warning("{:.1f}, {:,}".format(point[0], point[1]))
                     logger.warning("Setting to {}".format(default_prediction))
                     predictions[episode] = default_prediction
+
+        return predictions
+
+    def estimate_downloads_debug(self, days, n_points=-1):
+        logger = logging.getLogger(__name__)
+        predictions = dict()
+
+        for episode in self.episodes.iterkeys():
+            release_date = self.episodes[episode].get_release_date()
+            if not release_date:
+                continue
+
+            # build the dataset
+            datapoints = self.episodes[episode].transform_downloads_history()
+            if len(datapoints) >= 3:
+                x_data = numpy.array([val[0] for val in datapoints])
+                y_data = numpy.array([val[1] for val in datapoints])
+
+                try:
+                    opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data[:n_points], y_data[:n_points])
+                    logger.info("Fitting curve to {}".format(datapoints))
+                    logger.info("Fit params {} to data".format(opt_params))
+                    x_padded = numpy.append(x_data, [5, 6, 7, 8, 9, 10, 14])
+                    x_padded.sort()
+                    predictions[episode] = ((x_data, y_data), (x_padded, [download_function(x, *opt_params) for x in x_padded]))
+                except (RuntimeError, ValueError):
+                    pass
 
         return predictions
 
@@ -572,6 +597,9 @@ class Series(object):
 
         accuracy = 60.
         return PredictedValue(closest_point[1], accuracy)
+
+    def get_max_history_downloads(self):
+        return max(ep.get_max_history_downloads() for ep in self.episodes.itervalues())
 
 
 class PredictedValue(object):
