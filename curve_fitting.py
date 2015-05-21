@@ -134,6 +134,16 @@ class ConstantCurve(Curve):
         return self.format_string
 
 
+class SimpleLogCurve(Curve):
+    def __init__(self):
+        super(SimpleLogCurve, self).__init__(lambda x, a: a * numpy.pow(numpy.log(x + 1), 0.5), "simple log",
+                                             "{0} * log(x + 1) ^ 0.5")
+
+    def fit(self, datapoints):
+        max_point = max(datapoints, key=lambda p: p[0])
+        self.params = [max_point[1] / self.function(max_point[0], 1.)]
+
+
 def parse_args():
     parser = argparse.ArgumentParser()
     return parser.parse_args()
@@ -153,11 +163,13 @@ def main():
 
     backoff_zero = ConstantCurve(lambda x: 0, "Zero", "0")
 
-    log_curve = Curve(lambda x, a, b, c: b * numpy.power(numpy.log(x + a + 1), c), "log", "{1} * (log(x + {0} + 1) ^ {2}",
+    log_curve = Curve(lambda x, a, b, c: b * numpy.power(numpy.log(x + a + 1), c), "log",
+                      "{1} * (log(x + {0} + 1) ^ {2}",
                       backoff_curve=backoff_zero)
     log_curve_simple = Curve(lambda x, b: b * numpy.power(numpy.log(x + 1), 0.5), "log root", "{0} * log(x + 1) ^ 0.5",
                              backoff_curve=backoff_zero)
-    inverse_curve = Curve(lambda x, a, b: x / (x + a ** 2) * b, "inv", "x / (x + {0}^2) * {1}", backoff_curve=backoff_zero)
+    inverse_curve = Curve(lambda x, a, b: x / (x + a ** 2) * b, "inv", "x / (x + {0}^2) * {1}",
+                          backoff_curve=backoff_zero)
 
     evaluation_suite = EvaluationSuite([Evaluation(3), Evaluation(4), Evaluation(5)],
                                        [log_curve, log_curve_simple, inverse_curve])
