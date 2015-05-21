@@ -281,7 +281,7 @@ class Episode(object):
             return self.release_date
 
         earliest_date = min(self.downloads_history.iterkeys())
-        if not self.release_date or earliest_date < self.release_date and earliest_date > datetime.datetime(2015, 1, 25):
+        if not self.release_date or earliest_date < self.release_date:
             return earliest_date - datetime.timedelta(0.5)
 
         return self.release_date
