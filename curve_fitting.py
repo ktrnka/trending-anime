@@ -89,6 +89,7 @@ class Curve(object):
         x, y = zip(*datapoints)
         x = numpy.array(x)
         y = numpy.array(y)
+        uncertainties = [1 / (xval + 0.5) for xval in x]
 
         self.y_max = y.max()
 
@@ -98,7 +99,7 @@ class Curve(object):
 
         if not self.min_points or len(datapoints) >= self.min_points:
             try:
-                self.params, opt_covariance = scipy.optimize.curve_fit(self.function, x, y)
+                self.params, opt_covariance = scipy.optimize.curve_fit(self.function, x, y, sigma=uncertainties)
             except (TypeError, RuntimeError):
                 self.logger.info("Fitting curve failed, backing off")
         else:
@@ -142,6 +143,26 @@ class SimpleLogCurve(Curve):
     def fit(self, datapoints):
         max_point = max(datapoints, key=lambda p: p[0])
         self.params = [max_point[1] / self.function(max_point[0], 1.)]
+
+class LinearMetaCurve(Curve):
+    def __init__(self, curves):
+        super(LinearMetaCurve, self).__init__(None, "LinearMetaCurve", None)
+        self.curves = list(curves)
+
+    def fit(self, datapoints):
+        for curve in self.curves:
+            curve.fit(datapoints)
+
+    def predict(self, x):
+        predictions = [curve.predict(x) for curve in self.curves]
+
+        # filter any that fail and fall to backoff
+        predictions = [p for p in predictions if p > 0]
+
+        return numpy.mean(predictions)
+
+    def __str__(self):
+        return "LinearMetaCurve: {}".format(" | ".join(str(c) for c in self.curves))
 
 
 def parse_args():

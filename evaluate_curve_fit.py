@@ -37,7 +37,8 @@ def learning_curve(data, filename):
     plt.xlabel("Number of days of training data available")
     plt.ylabel("Fraction difference from actual values")
 
-    plt.ylim((0., 1.))
+    plt.ylim((0., 0.55))
+    plt.xlim((0.5, 8.5))
 
     plt.grid()
 
@@ -68,34 +69,23 @@ def main():
 
     backoff_zero = curve_fitting.ConstantCurve(lambda x: 0, "Zero", "0")
 
-    # simplest_log = curve_fitting.SimpleLogCurve()
-
-    log_curve_3 = curve_fitting.Curve(lambda x, a, b, c: b * numpy.power(numpy.log(x + a + 1), c), "log 3p",
-                                      "{1} * (log(x + {0} + 1) ^ {2}",
-                                      backoff_curve=backoff_zero)
-
-    log_curve_2exp = curve_fitting.Curve(lambda x, a, b: b * numpy.power(numpy.log(x + 1), a), "log 2p_exp",
-                                      "{1} * (log(x + 1) ^ {0}",
-                                      backoff_curve=backoff_zero)
-
-    log_curve_2shift = curve_fitting.Curve(lambda x, a, b: b * numpy.power(numpy.log(x + a + 1), 0.5), "log 2p_shift",
-                                      "{1} * (log(x + {0} + 1) ^ 0.5",
-                                      backoff_curve=backoff_zero)
-
     log_curve_1 = curve_fitting.Curve(lambda x, b: b * numpy.power(numpy.log(x + 1), 0.5), "log 1p",
                                       "{0} * log(x + 1) ^ 0.5",
                                       backoff_curve=backoff_zero)
 
-    # log_curve_plus = curve_fitting.Curve(lambda x, a, b, c: b * numpy.power(numpy.log(x + a + 1), c), "log3+1", "{1} * (log(x + {0} + 1) ^ {2}",
-    # backoff_curve=log_curve_simple, min_points=4)
+    log_curve_3 = curve_fitting.Curve(lambda x, a, b, c: b * numpy.power(numpy.log(x + a + 1), c), "log 3p backoff",
+                                      "{1} * (log(x + {0} + 1) ^ {2}",
+                                      backoff_curve=log_curve_1, min_points=4)
 
-    inverse_curve = curve_fitting.Curve(lambda x, a, b: x / (x + a ** 2) * b, "inv 2p", "x / (x + {0}^2) * {1}",
-                                        backoff_curve=backoff_zero, min_points=3)
+    inverse_curve = curve_fitting.Curve(lambda x, a, b: x / (x + a ** 2) * b, "inv 2p backoff", "x / (x + {0}^2) * {1}",
+                                        backoff_curve=log_curve_1, min_points=3)
+
+    combined_curve = curve_fitting.LinearMetaCurve([log_curve_3, inverse_curve])
 
     evaluation_suite = curve_fitting.EvaluationSuite(
         [curve_fitting.Evaluation(1), curve_fitting.Evaluation(2), curve_fitting.Evaluation(3),
          curve_fitting.Evaluation(4), curve_fitting.Evaluation(5), curve_fitting.Evaluation(6),
-         curve_fitting.Evaluation(7), curve_fitting.Evaluation(8)], [log_curve_1, log_curve_2exp, log_curve_2shift, log_curve_3, inverse_curve])
+         curve_fitting.Evaluation(7), curve_fitting.Evaluation(8)], [log_curve_1, log_curve_3, inverse_curve, combined_curve])
 
     scores = collections.defaultdict(lambda: collections.defaultdict(list))
 
