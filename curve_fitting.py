@@ -73,13 +73,15 @@ class EvaluationSuite(object):
 
 
 class Curve(object):
-    def __init__(self, function, name, format_string, min_points=None, backoff_curve=None):
+    def __init__(self, function, name, format_string, min_points=None, backoff_curve=None, default_prediction=0):
         self.logger = logging.getLogger(__name__ + ".Curve")
         self.function = function
-        self.min_points = min_points
-        self.backoff_curve = backoff_curve
         self.name = name
         self.format_string = format_string
+
+        self.default_prediction = 0
+        self.min_points = min_points
+        self.backoff_curve = backoff_curve
 
         self.params = None
         self.y_max = None
@@ -89,7 +91,7 @@ class Curve(object):
         x, y = zip(*datapoints)
         x = numpy.array(x)
         y = numpy.array(y)
-        uncertainties = [1 / (xval + 0.5) for xval in x]
+        uncertainties = 1 / (x + 0.5)
 
         self.y_max = y.max()
 
@@ -114,6 +116,8 @@ class Curve(object):
             return self.backoff_curve.predict(x)
         elif self.params is not None:
             return min(self.function(x, *self.params), self.y_max * 2)
+        else:
+            return self.default_prediction
 
     def __str__(self):
         if self.use_backoff:
@@ -121,7 +125,7 @@ class Curve(object):
         elif self.params is not None:
             return self.name + "(" + self.format_string.format(*self.params) + ")"
         else:
-            return "Unfit curve"
+            return "Default({})".format(self.default_prediction)
 
 
 class ConstantCurve(Curve):
@@ -145,8 +149,8 @@ class SimpleLogCurve(Curve):
         self.params = [max_point[1] / self.function(max_point[0], 1.)]
 
 class LinearMetaCurve(Curve):
-    def __init__(self, curves):
-        super(LinearMetaCurve, self).__init__(None, "LinearMetaCurve", None)
+    def __init__(self, curves, name="LinearMetaCurve"):
+        super(LinearMetaCurve, self).__init__(None, name, None)
         self.curves = list(curves)
 
     def fit(self, datapoints):
