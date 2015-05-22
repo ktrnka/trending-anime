@@ -31,7 +31,8 @@ class Evaluation(object):
         training_data = [p for p in datapoints if p[0] < self.x_max]
         testing_data = [p for p in datapoints if self.testing_x_range[0] <= p[0] <= self.testing_x_range[1]]
 
-        if not training_data:
+        # filter anything that has no points other than (0, 0)
+        if len([p for p in training_data if p[0] > 0]) == 0:
             raise InsufficientDataError()
 
         if not testing_data:
@@ -131,10 +132,12 @@ class Curve(object):
         if not self.min_points or len(datapoints) >= self.min_points:
             try:
                 self.params, opt_covariance = scipy.optimize.curve_fit(self.function, x, y, sigma=uncertainties)
-            except (TypeError, RuntimeError) as e:
-                self.logger.exception("Fitting curve failed, backing off")
+            except (TypeError, RuntimeError):
+                pass
+                # self.logger.exception("Fitting curve failed, backing off")
         else:
-            self.logger.info("Too few points, backing off")
+            pass
+            # self.logger.info("Too few points, backing off")
 
         if self.params is None and self.backoff_curve:
             self.use_backoff = True

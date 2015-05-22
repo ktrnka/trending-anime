@@ -72,17 +72,22 @@ def main():
 
     log_curve_3 = curve_fitting.Curve(lambda x, a, b, c: b * numpy.power(numpy.log(x + a + 1), c), "log 3p backoff",
                                       "{1} * (log(x + {0} + 1) ^ {2}",
-                                      backoff_curve=log_curve_1, min_points=4)
+                                      backoff_curve=log_curve_1, min_points=6)
 
-    inverse_curve = curve_fitting.Curve(lambda x, a, b: x / (x + a ** 2) * b, "inv 2p backoff", "x / (x + {0}^2) * {1}",
+    # log_curve_3 = curve_fitting.Curve(lambda x, a, b, c: b * numpy.power(numpy.log(x + a + 1), c), "log 3p",
+    #                                   "{1} * (log(x + {0} + 1) ^ {2}")
+
+    asymptote_curve = curve_fitting.Curve(lambda x, a, b: x / (x + a ** 2) * b, "asymptote 2p backoff", "x / (x + {0}^2) * {1}",
                                         backoff_curve=log_curve_1, min_points=3)
 
-    combined_curve = curve_fitting.LinearMetaCurve([log_curve_3, inverse_curve])
+    # asymptote_curve = curve_fitting.Curve(lambda x, a, b: x / (x + a ** 2) * b, "asymptote 2p", "x / (x + {0}^2) * {1}")
+
+    combined_curve = curve_fitting.LinearMetaCurve([log_curve_3, asymptote_curve], name="average")
 
     evaluation_suite = curve_fitting.EvaluationSuite(
         [curve_fitting.Evaluation(1), curve_fitting.Evaluation(2), curve_fitting.Evaluation(3),
          curve_fitting.Evaluation(4), curve_fitting.Evaluation(5), curve_fitting.Evaluation(6),
-         curve_fitting.Evaluation(7), curve_fitting.Evaluation(8)], [log_curve_1, log_curve_3, inverse_curve, combined_curve])
+         curve_fitting.Evaluation(7), curve_fitting.Evaluation(8)], [log_curve_1, log_curve_3, asymptote_curve, combined_curve])
 
     scores = collections.defaultdict(lambda: collections.defaultdict(list))
 
@@ -103,17 +108,14 @@ def main():
         for episode in episodes:
             release_date = series.episodes[episode].get_release_date()
 
+            if not release_date:
+                continue
+
             # 3/1-5/1
             if release_date < datetime.datetime(2015, 3, 1) or release_date >= datetime.datetime(2015, 5, 1):
                 continue
 
             print "Episode {}: {}".format(episode, release_date.strftime("%Y-%m-%d") if release_date else "???")
-
-            for date, downloads in sorted(series.episodes[episode].downloads_history.iteritems(), key=lambda p: p[0]):
-                print "\t{}: {:,}".format(date.strftime("%Y-%m-%d %H:%M"), downloads)
-
-            if not release_date:
-                continue
 
             datapoints = series.episodes[episode].transform_downloads_history()
             if len(datapoints) < 2:
@@ -121,12 +123,12 @@ def main():
 
             try:
                 all_scores = []
-                for evaluation, model, score, effective_training_size in evaluation_suite.evaluate(datapoints):
-                    scores[model.name][evaluation.x_max].append(score)
+                for evaluation_xmax, model, score, effective_training_size in evaluation_suite.evaluate(datapoints):
+                    scores[model.name][evaluation_xmax.x_max].append(score)
                     all_scores.append(score)
 
                     if 0.5 < score < 1.0:
-                        print "Hard data set [{:.3f}] for {}, {}:".format(score, evaluation, model)
+                        print "Hard data set [{:.3f}] for {}, {}:".format(score, evaluation_xmax, model)
                         print "\t{}".format(datapoints)
                         print "\tPredict @ 7: {}".format(model.predict(7.))
 
@@ -153,8 +155,8 @@ def main():
     for model_name, scored_models in scores.iteritems():
         print "Model {}".format(model_name)
 
-        for evaluation, scores in scored_models.iteritems():
-            print "\t{}: {:.3f} +/- {:.3f} in {:,} tests".format(evaluation, scores.mean(), scores.std(),
+        for evaluation_xmax, scores in scored_models.iteritems():
+            print "\t{}: {:.3f} +/- {:.3f} in {:,} tests".format(evaluation_xmax, scores.mean(), scores.std(),
                                                                  scores.shape[0])
 
             nondefault = scores[scores < 0.99]
@@ -162,8 +164,11 @@ def main():
                                                                            nondefault.shape[0])
 
             plt.clf()
-            scores.hist(bins=25)
-            plt.savefig("model_scores_{}_{}.png".format(evaluation, model_name))
+            axes = scores.hist(bins=25)
+            axes.set_xlabel("Average error")
+            axes.set_ylabel("Number of predictions per error bucket")
+            axes.set_title("Histogram of error with model {} from {} days of data".format(model_name, evaluation_xmax))
+            plt.savefig("model_scores_{}_{}.png".format(evaluation_xmax, model_name))
             plt.close()
 
 
