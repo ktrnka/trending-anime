@@ -82,11 +82,23 @@ class EvaluationSuite(object):
     def describe(self):
         for model in self.models:
             print model.name
+
             for evaluation in sorted(self.evaluations, key=lambda e: e.x_max):
                 scores = numpy.array(self.scores_by_xmax[evaluation.x_max][model.name])
-                nans = numpy.isnan(scores).sum()
-                print "\t{}: {:.3f} +/- {:.3f} ({} nan values)".format(evaluation.x_max, scores.mean(), scores.std(),
-                                                                       nans)
+                num_nan = numpy.isnan(scores).sum()
+                num_default = (scores >= 1.0).sum()
+
+                print "\t{} days: {:.3f} +/- {:.3f} ({} nan values, {} failed to predict)".format(evaluation.x_max, scores.mean(), scores.std(),
+                                                                       num_nan, num_default)
+
+            for num_points in sorted(self.scores_by_training_size.iterkeys()):
+                scores = numpy.array(self.scores_by_training_size[num_points][model.name])
+                num_nan = numpy.isnan(scores).sum()
+                num_default = (scores >= 1.0).sum()
+
+                print "\t{} points: {:.3f} +/- {:.3f} ({} nan values, {} failed to predict)".format(num_points, scores.mean(), scores.std(),
+                                                                       num_nan, num_default)
+
 
 
 class Curve(object):
@@ -145,17 +157,6 @@ class Curve(object):
             return "Default({})".format(self.default_prediction)
 
 
-class ConstantCurve(Curve):
-    def fit(self, datapoints):
-        pass
-
-    def predict(self, x):
-        return self.function(x)
-
-    def __str__(self):
-        return self.format_string
-
-
 class SimpleLogCurve(Curve):
     def __init__(self):
         super(SimpleLogCurve, self).__init__(lambda x, a: a * numpy.pow(numpy.log(x + 1), 0.5), "simple log",
@@ -207,15 +208,9 @@ def main():
             (21.417361111111113, 104915), (22.42013888888889, 105829), (23.42361111111111, 106560),
             (24.426388888888887, 107230), (25.429166666666667, 107795)]
 
-    backoff_zero = ConstantCurve(lambda x: 0, "Zero", "0")
-
-    log_curve = Curve(lambda x, a, b, c: b * numpy.power(numpy.log(x + a + 1), c), "log",
-                      "{1} * (log(x + {0} + 1) ^ {2}",
-                      backoff_curve=backoff_zero)
-    log_curve_simple = Curve(lambda x, b: b * numpy.power(numpy.log(x + 1), 0.5), "log root", "{0} * log(x + 1) ^ 0.5",
-                             backoff_curve=backoff_zero)
-    inverse_curve = Curve(lambda x, a, b: x / (x + a ** 2) * b, "inv", "x / (x + {0}^2) * {1}",
-                          backoff_curve=backoff_zero)
+    log_curve = Curve(lambda x, a, b, c: b * numpy.power(numpy.log(x + a + 1), c), "log", "{1} * (log(x + {0} + 1) ^ {2}")
+    log_curve_simple = Curve(lambda x, b: b * numpy.power(numpy.log(x + 1), 0.5), "log root", "{0} * log(x + 1) ^ 0.5")
+    inverse_curve = Curve(lambda x, a, b: x / (x + a ** 2) * b, "inv", "x / (x + {0}^2) * {1}")
 
     evaluation_suite = EvaluationSuite([Evaluation(3), Evaluation(4), Evaluation(5)],
                                        [log_curve, log_curve_simple, inverse_curve])
