@@ -194,6 +194,18 @@ class LinearMetaCurve(Curve):
         return "{}: {}".format(self.name, " | ".join(str(c) for c in self.curves))
 
 
+def get_best_curve():
+    log_curve_1 = Curve(lambda x, b: b * numpy.power(numpy.log(x + 1), 0.5), "log 1p", "{0} * log(x + 1) ^ 0.5")
+
+    log_curve_3 = Curve(lambda x, a, b, c: b * numpy.power(numpy.log(x + a + 1), c), "log 3p backoff", "{1} * (log(x + {0} + 1) ^ {2}", backoff_curve=log_curve_1, min_points=6)
+
+    asymptote_curve = Curve(lambda x, a, b: x / (x + a ** 2) * b, "asymptote 2p backoff", "x / (x + {0}^2) * {1}", backoff_curve=log_curve_1, min_points=3)
+
+    combined_curve = LinearMetaCurve([log_curve_3, asymptote_curve], name="average")
+
+    return combined_curve
+
+
 def parse_args():
     parser = argparse.ArgumentParser()
     return parser.parse_args()
