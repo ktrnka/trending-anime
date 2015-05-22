@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 import logging
 import sys
 import argparse
+import collections
 import download_graph
 
 import numpy
@@ -44,7 +45,7 @@ class Evaluation(object):
             download_graph.make_downloads_graph(datapoints, graph_file, prediction_data=pred)
 
         predictions = [model.predict(p[0]) for p in testing_data]
-        return self.score([p[1] for p in testing_data], predictions)
+        return self.score([p[1] for p in testing_data], predictions), len(training_data)
 
     def score(self, reference_y, predicted_y):
         errors = []
@@ -63,13 +64,29 @@ class EvaluationSuite(object):
         self.evaluations = evaluations
         self.models = models
 
+        self.scores_by_xmax = collections.defaultdict(lambda: collections.defaultdict(list))
+        self.scores_by_training_size = collections.defaultdict(lambda: collections.defaultdict(list))
+
     def evaluate(self, datapoints):
         for evaluation in self.evaluations:
             assert isinstance(evaluation, Evaluation)
 
-            scores = [evaluation.evaluate(model, datapoints) for model in self.models]
-            for model, score in zip(self.models, scores):
-                yield evaluation, model, score
+            score_pairs = [evaluation.evaluate(model, datapoints) for model in self.models]
+            for model, score_pair in zip(self.models, score_pairs):
+                score, effective_training_size = score_pair
+
+                self.scores_by_xmax[evaluation.x_max][model.name].append(score)
+                self.scores_by_training_size[effective_training_size][model.name].append(score)
+                yield evaluation, model, score, effective_training_size
+
+    def describe(self):
+        for model in self.models:
+            print model.name
+            for evaluation in sorted(self.evaluations, key=lambda e: e.x_max):
+                scores = numpy.array(self.scores_by_xmax[evaluation.x_max][model.name])
+                nans = numpy.isnan(scores).sum()
+                print "\t{}: {:.3f} +/- {:.3f} ({} nan values)".format(evaluation.x_max, scores.mean(), scores.std(),
+                                                                       nans)
 
 
 class Curve(object):
@@ -102,8 +119,8 @@ class Curve(object):
         if not self.min_points or len(datapoints) >= self.min_points:
             try:
                 self.params, opt_covariance = scipy.optimize.curve_fit(self.function, x, y, sigma=uncertainties)
-            except (TypeError, RuntimeError):
-                self.logger.info("Fitting curve failed, backing off")
+            except (TypeError, RuntimeError) as e:
+                self.logger.exception("Fitting curve failed, backing off")
         else:
             self.logger.info("Too few points, backing off")
 
@@ -148,6 +165,7 @@ class SimpleLogCurve(Curve):
         max_point = max(datapoints, key=lambda p: p[0])
         self.params = [max_point[1] / self.function(max_point[0], 1.)]
 
+
 class LinearMetaCurve(Curve):
     def __init__(self, curves, name="LinearMetaCurve"):
         super(LinearMetaCurve, self).__init__(None, name, None)
@@ -163,10 +181,13 @@ class LinearMetaCurve(Curve):
         # filter any that fail and fall to backoff
         predictions = [p for p in predictions if p > 0]
 
-        return numpy.mean(predictions)
+        if predictions:
+            return numpy.mean(predictions)
+        else:
+            return self.default_prediction
 
     def __str__(self):
-        return "LinearMetaCurve: {}".format(" | ".join(str(c) for c in self.curves))
+        return "{}: {}".format(self.name, " | ".join(str(c) for c in self.curves))
 
 
 def parse_args():
@@ -198,7 +219,7 @@ def main():
 
     evaluation_suite = EvaluationSuite([Evaluation(3), Evaluation(4), Evaluation(5)],
                                        [log_curve, log_curve_simple, inverse_curve])
-    for evaluation, model, score in evaluation_suite.evaluate(data):
+    for evaluation, model, score, effective_training_size in evaluation_suite.evaluate(data):
         print "{}, [{:.3f}], {}".format(evaluation, score, model)
 
 

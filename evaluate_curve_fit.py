@@ -67,11 +67,8 @@ def main():
     mongo_client = pymongo.MongoClient(config.get("mongo", "uri"))
     collection = mongo_client.get_default_database()["animes"]
 
-    backoff_zero = curve_fitting.ConstantCurve(lambda x: 0, "Zero", "0")
-
     log_curve_1 = curve_fitting.Curve(lambda x, b: b * numpy.power(numpy.log(x + 1), 0.5), "log 1p",
-                                      "{0} * log(x + 1) ^ 0.5",
-                                      backoff_curve=backoff_zero)
+                                      "{0} * log(x + 1) ^ 0.5")
 
     log_curve_3 = curve_fitting.Curve(lambda x, a, b, c: b * numpy.power(numpy.log(x + a + 1), c), "log 3p backoff",
                                       "{1} * (log(x + {0} + 1) ^ {2}",
@@ -124,11 +121,11 @@ def main():
 
             try:
                 all_scores = []
-                for evaluation, model, score in evaluation_suite.evaluate(datapoints):
+                for evaluation, model, score, effective_training_size in evaluation_suite.evaluate(datapoints):
                     scores[model.name][evaluation.x_max].append(score)
                     all_scores.append(score)
 
-                    if score > 0.5 and score < 1.0:
+                    if 0.5 < score < 1.0:
                         print "Hard data set [{:.3f}] for {}, {}:".format(score, evaluation, model)
                         print "\t{}".format(datapoints)
                         print "\tPredict @ 7: {}".format(model.predict(7.))
@@ -145,6 +142,8 @@ def main():
 
             except curve_fitting.InsufficientDataError:
                 pass
+
+    evaluation_suite.describe()
 
     for model_name, scored_models in scores.items():
         scores[model_name] = {x: pandas.Series(scores) for x, scores in scored_models.iteritems()}
