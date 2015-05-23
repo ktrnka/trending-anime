@@ -23,8 +23,7 @@ class Evaluation(object):
         self.testing_x_range = (testing_x_min, testing_x_max)
 
         if self.x_max >= self.testing_x_range[0]:
-            self.logger.warning(
-                "Testing x range overlaps training range: {} vs {}".format(self.x_max, self.testing_x_range))
+            self.logger.warning( "Testing x range overlaps training range: {} vs {}".format(self.x_max, self.testing_x_range))
 
     def evaluate(self, model, datapoints):
         training_data = [p for p in datapoints if p[0] < self.x_max]
@@ -40,17 +39,19 @@ class Evaluation(object):
         model.fit(training_data)
 
         predictions = [model.predict(p[0]) for p in testing_data]
-        return self.score([p[1] for p in testing_data], predictions), len(training_data)
+        return self._score([p[1] for p in testing_data], predictions), len(training_data)
 
-    def score(self, reference_y, predicted_y):
+    @staticmethod
+    def _score(reference_y, predicted_y):
         errors = []
-        for ref, pred in zip(reference_y, predicted_y):
-            errors.append(abs(pred - ref) / float(ref))
+        for reference, prediction in zip(reference_y, predicted_y):
+            errors.append(abs(prediction - reference) / float(reference))
 
         return sum(errors) / len(errors)
 
     def __str__(self):
-        return "Evaluation(x <= {}, {} <= testing_x <= {})".format(self.x_max, self.testing_x_range[0],
+        return "Evaluation(x <= {}, {} <= testing_x <= {})".format(self.x_max,
+                                                                   self.testing_x_range[0],
                                                                    self.testing_x_range[1])
 
 
@@ -95,7 +96,6 @@ class EvaluationSuite(object):
                                                                        num_nan, num_default)
 
 
-
 class Curve(object):
     def __init__(self, function, name, format_string, min_points=None, backoff_curve=None, default_prediction=0):
         self.logger = logging.getLogger(__name__ + ".Curve")
@@ -103,7 +103,7 @@ class Curve(object):
         self.name = name
         self.format_string = format_string
 
-        self.default_prediction = 0
+        self.default_prediction = default_prediction
         self.min_points = min_points
         self.backoff_curve = backoff_curve
 
@@ -121,7 +121,7 @@ class Curve(object):
 
         self.y_max = y.max()
 
-        # reset values to prevent carrying over
+        # reset values to prevent accidentally carrying over
         self.params = None
         self.use_backoff = False
 
@@ -130,10 +130,8 @@ class Curve(object):
                 self.params, opt_covariance = scipy.optimize.curve_fit(self.function, x, y, sigma=uncertainties)
             except (TypeError, RuntimeError):
                 pass
-                # self.logger.exception("Fitting curve failed, backing off")
         else:
             pass
-            # self.logger.info("Too few points, backing off")
 
         if self.params is None and self.backoff_curve:
             self.use_backoff = True
@@ -143,7 +141,13 @@ class Curve(object):
         if self.use_backoff:
             return self.backoff_curve.predict(x)
         elif self.params is not None:
-            return min(self.function(x, *self.params), self.y_max * 2)
+            prediction = self.function(x, *self.params)
+
+            if prediction > self.y_max * 2:
+                self.logger.info("Capping prediction from %.1f to %d", prediction, self.y_max * 2)
+                prediction = self.y_max * 2
+
+            return prediction
         else:
             return self.default_prediction
 
@@ -151,6 +155,10 @@ class Curve(object):
         self.accuracy_table = {int(k): transform(v) for k, v in accuracy_table.iteritems()}
 
     def get_accuracy(self, datapoints):
+        """
+        :param datapoints: The training data
+        :return: Accuracy value between 0-100
+        """
         if not self.accuracy_table:
             return -1
 
@@ -169,24 +177,13 @@ class Curve(object):
 
         return -1
 
-
     def __str__(self):
         if self.use_backoff:
             return "{}-Backoff({})".format(self.name, self.backoff_curve)
         elif self.params is not None:
             return self.name + "(" + self.format_string.format(*self.params) + ")"
         else:
-            return "Default({})".format(self.default_prediction)
-
-
-class SimpleLogCurve(Curve):
-    def __init__(self):
-        super(SimpleLogCurve, self).__init__(lambda x, a: a * numpy.pow(numpy.log(x + 1), 0.5), "simple log",
-                                             "{0} * log(x + 1) ^ 0.5")
-
-    def fit(self, datapoints):
-        max_point = max(datapoints, key=lambda p: p[0])
-        self.params = [max_point[1] / self.function(max_point[0], 1.)]
+            return "{}-Default({})".format(self.name, self.default_prediction)
 
 
 class LinearMetaCurve(Curve):
