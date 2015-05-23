@@ -3,7 +3,6 @@ import logging
 import sys
 import argparse
 import collections
-import download_graph
 
 import numpy
 import scipy.optimize
@@ -27,7 +26,7 @@ class Evaluation(object):
             self.logger.warning(
                 "Testing x range overlaps training range: {} vs {}".format(self.x_max, self.testing_x_range))
 
-    def evaluate(self, model, datapoints, graph_file=None):
+    def evaluate(self, model, datapoints):
         training_data = [p for p in datapoints if p[0] < self.x_max]
         testing_data = [p for p in datapoints if self.testing_x_range[0] <= p[0] <= self.testing_x_range[1]]
 
@@ -39,11 +38,6 @@ class Evaluation(object):
             raise InsufficientTestingDataError()
 
         model.fit(training_data)
-
-        if graph_file:
-            pred = [(p[0], model.predict(p[0])) for p in datapoints]
-
-            download_graph.make_downloads_graph(datapoints, graph_file, prediction_data=pred)
 
         predictions = [model.predict(p[0]) for p in testing_data]
         return self.score([p[1] for p in testing_data], predictions), len(training_data)
