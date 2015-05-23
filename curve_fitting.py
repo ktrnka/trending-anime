@@ -117,6 +117,8 @@ class Curve(object):
         self.y_max = None
         self.use_backoff = False
 
+        self.accuracy_table = None
+
     def fit(self, datapoints):
         x, y = zip(*datapoints)
         x = numpy.array(x)
@@ -150,6 +152,29 @@ class Curve(object):
             return min(self.function(x, *self.params), self.y_max * 2)
         else:
             return self.default_prediction
+
+    def set_accuracy_table(self, accuracy_table, transform=float):
+        self.accuracy_table = {int(k): transform(v) for k, v in accuracy_table.iteritems()}
+
+    def get_accuracy(self, datapoints):
+        if not self.accuracy_table:
+            return -1
+
+        num_datapoints = len(datapoints)
+
+        if num_datapoints in self.accuracy_table:
+            return self.accuracy_table[num_datapoints]
+
+        min_param = min(self.accuracy_table.iterkeys())
+        if num_datapoints < min_param:
+            return self.accuracy_table[min_param]
+
+        max_param = max(self.accuracy_table.iterkeys())
+        if num_datapoints > max_param:
+            return self.accuracy_table[max_param]
+
+        return -1
+
 
     def __str__(self):
         if self.use_backoff:
@@ -202,6 +227,7 @@ def get_best_curve():
     asymptote_curve = Curve(lambda x, a, b: x / (x + a ** 2) * b, "asymptote 2p backoff", "x / (x + {0}^2) * {1}", backoff_curve=log_curve_1, min_points=3)
 
     combined_curve = LinearMetaCurve([log_curve_3, asymptote_curve], name="average")
+    combined_curve.set_accuracy_table({2: 0.340, 3: 0.114, 4: 0.068, 5: 0.061, 6: 0.037, 7: 0.028, 8: 0.019}, transform=lambda v: 100 * (1 - v))
 
     return combined_curve
 

@@ -10,6 +10,7 @@ import shutil
 import datetime
 import string
 import math
+import curve_fitting
 
 from google_search import SearchEngine
 from kimono import inject_version, is_stale, parse_timestamp
@@ -29,11 +30,6 @@ SEASON_COLOR_STYLES = ["light-blue-text", "light-green-text text-accent-2", "gre
 SEASON_DEFAULT_COLOR_STYLE = "grey-text text-lighten-3"
 MONGO_TIME = "%Y/%m/%d %H:%M"
 SEC_IN_DAY = 60. * 60 * 24
-
-ACCURACY_TABLE = {"3": 84.60400510425866, "4": 86.6924739899726, "5": 91.60210393760404, "6": 92.09773148280004,
-                  "7": 92.90524222602687, "8": 95.61050273545129, "9": 97.96066608319538, "10": 97.94706928696975}
-ACCURACY_TABLE = {int(k): v for k, v in ACCURACY_TABLE.iteritems()}
-
 
 class Templates(object):
     """Dict of templates"""
@@ -239,19 +235,6 @@ def date_to_season(date):
 def median(data):
     data = sorted(data)
     return data[len(data) / 2]
-
-
-def get_accuracy(num_datapoints):
-    if num_datapoints in ACCURACY_TABLE:
-        return ACCURACY_TABLE[num_datapoints]
-
-    if num_datapoints < min(ACCURACY_TABLE.iterkeys()):
-        return min(ACCURACY_TABLE.itervalues())
-
-    if num_datapoints > max(ACCURACY_TABLE.iterkeys()):
-        return max(ACCURACY_TABLE.itervalues())
-
-    return -1
 
 
 def first_positive(datapoints, key):
@@ -490,54 +473,19 @@ class Series(object):
             default_prediction = self.get_default_prediction(datapoints, days)
             if default_prediction.confidence > 90:
                 predictions[episode] = default_prediction
-            elif len(datapoints) >= 3:
-                x_data = numpy.array([val[0] for val in datapoints])
-                y_data = numpy.array([val[1] for val in datapoints])
+            elif len(datapoints) >= 2:
+                curve = curve_fitting.get_best_curve()
+                curve.fit(datapoints)
 
-                prediction_max = y_data.max() * 2.
-
-                try:
-                    opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data, y_data)
-                    logger.info("Fitting curve to {}".format(datapoints))
-                    logger.info("Fit {1} * [log x + {0} + 0.1] ^ {2} to data".format(*opt_params))
-                    predictions[episode] = PredictedValue(download_function(7, *opt_params),
-                                                          get_accuracy(len(datapoints)))
-                    if predictions[episode].prediction > prediction_max:
-                        logger.warn("Clipping prediction from %d to %d", int(predictions[episode].prediction), int(prediction_max))
-                        predictions[episode] = PredictedValue(prediction_max, 1.)
-                except (RuntimeError, ValueError):
+                prediction = curve.predict(7)
+                if prediction > 0:
+                    predictions[episode] = PredictedValue(prediction, curve.get_accuracy(datapoints))
+                else:
                     logger.warning("Failed to predict {} episode {} with {} points".format(self.url, episode, len(datapoints)))
                     for point in sorted(datapoints, key=lambda p: p[0]):
                         logger.warning("{:.1f}, {:,}".format(point[0], point[1]))
                     logger.warning("Setting to {}".format(default_prediction))
                     predictions[episode] = default_prediction
-
-        return predictions
-
-    def estimate_downloads_debug(self, days, n_points=-1):
-        logger = logging.getLogger(__name__)
-        predictions = dict()
-
-        for episode in self.episodes.iterkeys():
-            release_date = self.episodes[episode].get_release_date()
-            if not release_date:
-                continue
-
-            # build the dataset
-            datapoints = self.episodes[episode].transform_downloads_history()
-            if len(datapoints) >= 3:
-                x_data = numpy.array([val[0] for val in datapoints])
-                y_data = numpy.array([val[1] for val in datapoints])
-
-                try:
-                    opt_params, opt_covariance = scipy.optimize.curve_fit(download_function, x_data[:n_points], y_data[:n_points])
-                    logger.info("Fitting curve to {}".format(datapoints))
-                    logger.info("Fit params {} to data".format(opt_params))
-                    x_padded = numpy.append(x_data, [5, 6, 7, 8, 9, 10, 14])
-                    x_padded.sort()
-                    predictions[episode] = ((x_data, y_data), (x_padded, [download_function(x, *opt_params) for x in x_padded]))
-                except (RuntimeError, ValueError):
-                    pass
 
         return predictions
 
