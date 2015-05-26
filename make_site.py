@@ -153,6 +153,8 @@ class ParsedTorrent(object):
     """A torrent filename that's been parsed into components"""
     _MD5_PATTERN = re.compile(r"\s*\[[0-9A-F]+\]{6,}\s*", re.IGNORECASE)
     _FILENAME_PATTERN = re.compile(r"\[([^]]+)\] (.+) - (\d+)\s*(?:\[([\d]+p)\])?.(\w+)")
+    _FILENAME_PATTERN_ALT = re.compile(r"\[([^]]+)\] (.+) (\d\d+)\s*(?:\[([\d]+p)\])?.(\w+)")
+    _TAGS = "AAC BD BDrip FLAC".split()
 
     def __init__(self, series, episode, sub_group, resolution, file_type):
         self.series = series
@@ -164,15 +166,29 @@ class ParsedTorrent(object):
     @staticmethod
     def from_name(title):
         title_cleaned = ParsedTorrent._MD5_PATTERN.sub("", title)
+        for tag in ParsedTorrent._TAGS:
+            title_cleaned = title_cleaned.replace("[{}]".format(tag), "")
         title_cleaned = title_cleaned.translate({0x2012: "-"})
+        title_cleaned = ParsedTorrent.normalize_spacing(title_cleaned)
+
         m = ParsedTorrent._FILENAME_PATTERN.match(title_cleaned)
         if m:
             return ParsedTorrent(m.group(2), m.group(3), m.group(1), m.group(4), m.group(5))
-        else:
-            return None
+
+        m = ParsedTorrent._FILENAME_PATTERN_ALT.match(title_cleaned)
+        if m:
+            return ParsedTorrent(m.group(2), m.group(3), m.group(1), m.group(4), m.group(5))
+        return None
 
     def __repr__(self):
         return "[{}] {} - {} [{}].{}".format(self.sub_group, self.series, self.episode, self.resolution, self.file_type)
+
+    @staticmethod
+    def normalize_spacing(title_cleaned):
+        """Normalize torrents that have filenames with all underscores no spaces"""
+        if " " not in title_cleaned:
+            return title_cleaned.replace("_", " ")
+        return title_cleaned
 
 
 class Torrent(object):
