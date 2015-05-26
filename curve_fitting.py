@@ -119,7 +119,7 @@ class Curve(object):
         y = numpy.array(y)
         uncertainties = 1 / (x + 0.5)
 
-        self.max_prediction = y.max() * 2
+        self.max_prediction = y.max() * 3
 
         # reset values to prevent accidentally carrying over
         self.params = None
