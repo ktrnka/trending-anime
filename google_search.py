@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 import json
 import logging
+import collections
 import requests
 
 __author__ = 'keith'
@@ -19,22 +20,27 @@ class SearchEngine(object):
         self.logger = logging.getLogger(__name__)
         self.db = mongo_db
 
+        self.stats = collections.Counter()
+
     def get_link(self, series_name):
         cached = self.db["links"].find_one({"title": series_name})
         if cached:
             self.logger.debug("Found cached object in database: %s", cached)
+            self.stats["cached search"] += 1
             return cached["url"]
 
         if self.requests >= self.max_requests:
+            self.stats["skipped, no more requests"] += 1
             return None
 
         try:
             r = requests.get(self.url, params={"key": self.api_key, "cx": self.cx, "q": series_name})
-            self.logger.info("Request URL: {}".format(r.url))
+            self.logger.debug("Request URL: {}".format(r.url))
             r.raise_for_status()
         except (requests.exceptions.HTTPError, requests.exceptions.SSLError):
             self.logger.exception("Failed to query API, skipping further requests")
             self.requests = self.max_requests
+            self.stats["search exception"] += 1
             return None
 
         self.requests += 1
@@ -42,12 +48,18 @@ class SearchEngine(object):
 
         # not found, but maybe another day
         if int(data["searchInformation"]["totalResults"]) == 0:
+            self.stats["search string not found"] += 1
             return None
 
         try:
             first_result = data["items"][0]["link"]
         except KeyError:
             self.logger.exception("Bad search result from %s: %s", series_name, json.dumps(data))
-        self.logger.info("Link for {}: {}".format(series_name, first_result))
+        self.logger.debug("Link for {}: {}".format(series_name, first_result))
         self.db["links"].insert({"title": series_name, "url": first_result})
+        self.stats["search success"] += 1
         return first_result
+
+    def log_summary(self):
+        for reason, count in self.stats.most_common():
+            self.logger.info("%s: %d", reason, count)

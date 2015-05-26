@@ -332,7 +332,7 @@ class Series(object):
         for ep_num, episode in self.episodes.iteritems():
             num_removed = episode.clean_data()
             if num_removed:
-                logger.info("Filtered {} dates for {} episode {}".format(num_removed, self.get_name(), ep_num))
+                logger.debug("Filtered {} dates for {} episode {}".format(num_removed, self.get_name(), ep_num))
 
     def get_mongo_key(self):
         if not self.url:
@@ -396,7 +396,7 @@ class Series(object):
                 normalized_names.add(normalized_name)
                 names.append(name)
             else:
-                logger.info("Filtering %s from alternate names %s", name, ", ".join(names))
+                logger.debug("Filtering %s from alternate names %s", name, ", ".join(names))
         return names[1:]
 
     def get_linked_name(self):
@@ -421,7 +421,7 @@ class Series(object):
 
     def merge(self, other):
         logger = logging.getLogger(__name__)
-        logger.info("Merging by URL: %s and %s", self, other)
+        logger.debug("Merging by URL: %s and %s", self, other)
         self.num_downloads += other.num_downloads
         self.spelling_counts.update(other.spelling_counts)
         self.sub_group_counts.update(other.sub_group_counts)
@@ -643,7 +643,9 @@ def torrents_to_series(torrents, release_date_torrents):
             parse_fail[torrent.title] += torrent.downloads
             success_counts[False] += torrent.downloads
     logger.info("Parsed {:.1f}% of downloads".format(100. * success_counts[True] / (success_counts[True] + success_counts[False])))
-    logger.debug("Failed to parse %s", parse_fail.most_common(40))
+
+    for filename, count in parse_fail.most_common(40):
+        logger.debug("Failed to parse %s, %d", filename, count)
 
     # add release dates when possible
     for torrent in release_date_torrents:
@@ -711,6 +713,8 @@ def update_anime_links(animes, config, mongo_db):
     for anime in animes.itervalues():
         anime.url = search_engine.get_link(anime.get_name())
 
+    search_engine.log_summary()
+
 
 def filter_old_series(animes):
     logger = logging.getLogger(__name__)
@@ -749,7 +753,7 @@ def main():
     if args.verbose:
         logging.basicConfig(level=logging.DEBUG)
     else:
-        logging.basicConfig(level=logging.WARNING)
+        logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
 
     # load config
