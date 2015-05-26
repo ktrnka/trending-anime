@@ -108,7 +108,7 @@ class Curve(object):
         self.backoff_curve = backoff_curve
 
         self.params = None
-        self.y_max = None
+        self.max_prediction = None
         self.use_backoff = False
 
         self.accuracy_table = None
@@ -119,7 +119,7 @@ class Curve(object):
         y = numpy.array(y)
         uncertainties = 1 / (x + 0.5)
 
-        self.y_max = y.max()
+        self.max_prediction = y.max() * 2
 
         # reset values to prevent accidentally carrying over
         self.params = None
@@ -143,9 +143,9 @@ class Curve(object):
         elif self.params is not None:
             prediction = self.function(x, *self.params)
 
-            if prediction > self.y_max * 2:
-                self.logger.info("Capping prediction from %.1f to %d", prediction, self.y_max * 2)
-                prediction = self.y_max * 2
+            if prediction > self.max_prediction:
+                self.logger.info("Capping prediction from %.1f to %d", prediction, self.max_prediction)
+                prediction = self.max_prediction
 
             return prediction
         else:
