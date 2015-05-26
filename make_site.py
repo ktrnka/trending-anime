@@ -68,9 +68,6 @@ def format_episode(html_templates, episode_no, current_downloads, episode, downl
         downloads = sorted(episode.downloads_history.iteritems())
         extras = "<br>".join("{}: {:,}".format(scrape_date.strftime(MONGO_TIME), download_count) for scrape_date, download_count in downloads)
 
-        # download_graph.make_downloads_graph(episode.transform_downloads_history(), image_path)
-        # extras += '<img src="{}" style="max-width: 200px; height: auto;"/>'.format(os.path.basename(image_path))
-
     return html_templates.sub("episode",
                               episode_number=episode_no,
                               release_date=release_string,
@@ -78,6 +75,20 @@ def format_episode(html_templates, episode_no, current_downloads, episode, downl
                               downloads_at_7=download_estimate_string,
                               retention_percent=retention_string,
                               extras=extras)
+
+
+def format_episode_diagnostic(episode_no, current_downloads, episode, download_estimate):
+    release_string = "???"
+    release_date = episode.get_release_date()
+    if release_date:
+        release_string = release_date.strftime("%a, %b %d")
+
+    download_estimate_string = "???"
+    if download_estimate:
+        download_estimate_string = "{:,} +/- {:,}".format(int(download_estimate.prediction), int(
+            download_estimate.prediction * (1. - download_estimate.confidence / 100) / 2))
+
+    return "{}: currently {:,}, {} at 7, released {}".format(episode_no, current_downloads, download_estimate_string, release_string)
 
 
 def format_season_info(series):
@@ -117,6 +128,9 @@ def format_row(index, series, top_series, html_templates, diagnostics=False, ima
         format_episode(html_templates, episode, count, series.episodes[episode], download_estimates.get(episode),
                        retention_rates.get(episode), diagnostics=diagnostics, image_path="{}_{}.png".format(image_path, episode)) for episode, count in episode_counts[-3:]]
     episode_html = "\n".join(episode_cells)
+
+    if diagnostics:
+        episode_html += "\n<!-- Diagnostics\n" + "\n".join(format_episode_diagnostic(episode_number, count, series.episodes[episode_number], download_estimates.get(episode_number)) for episode_number, count in episode_counts) + "\n-->\n"
 
     season_images = format_season_info(series)
 
@@ -327,12 +341,13 @@ class Series(object):
 
         self.episodes = collections.defaultdict(Episode)
 
+        self.logger = logging.getLogger(__name__)
+
     def clean_data(self):
-        logger = logging.getLogger(__name__)
         for ep_num, episode in self.episodes.iteritems():
             num_removed = episode.clean_data()
             if num_removed:
-                logger.debug("Filtered {} dates for {} episode {}".format(num_removed, self.get_name(), ep_num))
+                self.logger.debug("Filtered {} dates for {} episode {}".format(num_removed, self.get_name(), ep_num))
 
     def get_mongo_key(self):
         if not self.url:
@@ -386,7 +401,6 @@ class Series(object):
 
     def get_alternate_names(self):
         assert len(self.spelling_counts) > 0
-        logger = logging.getLogger(__name__)
 
         normalized_names = set()
         names = []
@@ -396,7 +410,7 @@ class Series(object):
                 normalized_names.add(normalized_name)
                 names.append(name)
             else:
-                logger.debug("Filtering %s from alternate names %s", name, ", ".join(names))
+                self.logger.debug("Filtering %s from alternate names %s", name, ", ".join(names))
         return names[1:]
 
     def get_linked_name(self):
@@ -420,8 +434,7 @@ class Series(object):
         return [name for name, _ in self.sub_group_counts.most_common()]
 
     def merge(self, other):
-        logger = logging.getLogger(__name__)
-        logger.debug("Merging by URL: %s and %s", self, other)
+        self.logger.debug("Merging by URL: %s and %s", self, other)
         self.num_downloads += other.num_downloads
         self.spelling_counts.update(other.spelling_counts)
         self.sub_group_counts.update(other.sub_group_counts)
@@ -459,7 +472,6 @@ class Series(object):
         Compute the predicted number of downloads per episode at a given length out.
         :param days: Number of days to extrapolate
         """
-        logger = logging.getLogger(__name__)
         predictions = dict()
 
         for episode in self.episodes.iterkeys():
@@ -481,10 +493,10 @@ class Series(object):
                 if prediction > 0:
                     predictions[episode] = PredictedValue(prediction, curve.get_accuracy(datapoints))
                 else:
-                    logger.warning("Failed to predict {} episode {} with {} points".format(self.url, episode, len(datapoints)))
+                    self.logger.warning("Failed to predict {} episode {} with {} points".format(self.url, episode, len(datapoints)))
                     for point in sorted(datapoints, key=lambda p: p[0]):
-                        logger.warning("{:.1f}, {:,}".format(point[0], point[1]))
-                    logger.warning("Setting to {}".format(default_prediction))
+                        self.logger.warning("{:.1f}, {:,}".format(point[0], point[1]))
+                    self.logger.warning("Setting to {}".format(default_prediction))
                     predictions[episode] = default_prediction
 
         return predictions
@@ -494,6 +506,18 @@ class Series(object):
             return self.score
 
         estimated_downloads = self.estimate_downloads(7)
+
+        if len(estimated_downloads) > 10:
+            old_score = int(PredictedValue.weighted_average(estimated_downloads.values()))
+
+            estimated_downloads = {k: v for k, v in sorted(estimated_downloads.items())[-10:]}
+            new_score = int(PredictedValue.weighted_average(estimated_downloads.values()))
+
+            if (new_score - old_score) / float(old_score) > 0.2:
+                self.logger.info("[>20% change] Limiting {} to highest-numbered 10 episodes, changes score from {:,} to {:,}".format(self.get_name(), old_score, new_score))
+            else:
+                self.logger.debug("Limiting {} to highest-numbered 10 episodes, changes score from {:,} to {:,}".format(self.get_name(), old_score, new_score))
+
 
         try:
             self.score = int(PredictedValue.weighted_average(estimated_downloads.values()))
