@@ -220,18 +220,20 @@ class ParsedTorrent(object):
 
         for match, contents in ParsedTorrent._PAREN_PATTERN.findall(title):
             # use a more restrictive match to avoid matching years
-            if contents.endswith("p") and ParsedTorrent._RESOLUTION_PATTERN.match(contents):
+            if not resolution and contents.endswith("p") and ParsedTorrent._RESOLUTION_PATTERN.match(contents):
                 m = ParsedTorrent._RESOLUTION_PATTERN.match(contents)
                 resolution = m.group(1)
             elif contents in ParsedTorrent._TAGS:
                 pass
-            else:
+            elif not resolution:
                 resolution = ParsedTorrent._extract_from_tags(contents)
 
                 # by default don't strip unknown tags for parens cause they could be a part of the filename
                 if not resolution:
                     ParsedTorrent._unparsed_tags[contents] += 1
                     continue
+            else:
+                continue
 
             title_cleaned = title_cleaned.replace(match, "")
 
@@ -243,12 +245,14 @@ class ParsedTorrent(object):
 
         m = ParsedTorrent._FILENAME_PATTERN.match(title_cleaned)
         if m:
-            return ParsedTorrent(m.group(2), m.group(3), m.group(1), resolution, m.group(4))
+            p = ParsedTorrent(m.group(2), m.group(3), m.group(1), resolution, m.group(4))
+            p.logger.debug("{} -> {}".format(title, p))
+            return p
 
         m = ParsedTorrent._FILENAME_PATTERN_ALT.match(title_cleaned)
         if m:
             p = ParsedTorrent(m.group(2), m.group(3), m.group(1), resolution, m.group(4))
-            p.logger.debug("Back off parsing {} -> {}".format(title, p))
+            p.logger.debug("{} -> {}".format(title, p))
             return p
         return None
 
