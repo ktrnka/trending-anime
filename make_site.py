@@ -176,7 +176,7 @@ class ParsedTorrent(object):
     def log_unparsed():
         logger = logging.getLogger(__name__)
         for content, count in ParsedTorrent._unparsed_tags.most_common():
-            logger.info("Unparsed %s: %d", content, count)
+            logger.debug("Unparsed %s: %d", content, count)
 
     @staticmethod
     def _extract_from_tags(contents):
