@@ -27,7 +27,6 @@ MIN_DOWNLOADS_WARNINGS = 5000
 
 NORMALIZATION_MAP = {ord(c): None for c in "/:;._ -'\"!,~()"}
 SEASONS = ["Winter season", "Spring season", "Summer season", "Fall season", "Long running show"]
-# SEASON_IMAGES = ["winter.svg", "spring.svg", "summer.svg", "fall.svg", "infinity.svg"]
 SEASON_COLOR_STYLES = ["light-blue-text", "light-green-text text-accent-2", "green-text", "amber-text text-darken-1"]
 SEASON_DEFAULT_COLOR_STYLE = "grey-text text-lighten-3"
 MONGO_TIME = "%Y/%m/%d %H:%M"
@@ -50,7 +49,7 @@ class Templates(object):
         return self.templates[template_name].substitute(**kwargs)
 
 
-def format_episode(html_templates, episode_no, current_downloads, episode, download_estimate, retention_rate, diagnostics=False, image_path=None):
+def format_episode(html_templates, episode_no, current_downloads, episode, download_estimate, retention_rate, diagnostics=False):
     release_string = "???"
     release_date = episode.get_release_date()
     if release_date:
@@ -128,7 +127,7 @@ def format_row(index, series, top_series, html_templates, diagnostics=False, ima
     image_path = os.path.join(image_dir, series.get_name())
     episode_cells = [
         format_episode(html_templates, episode, count, series.episodes[episode], download_estimates.get(episode),
-                       retention_rates.get(episode), diagnostics=diagnostics, image_path="{}_{}.png".format(image_path, episode)) for episode, count in episode_counts[-3:]]
+                       retention_rates.get(episode), diagnostics=diagnostics) for episode, count in episode_counts[-3:]]
     episode_html = "\n".join(episode_cells)
 
     if diagnostics:
@@ -180,7 +179,7 @@ class ParsedTorrent(object):
             logger.debug("Unparsed %s: %d", content, count)
 
     @staticmethod
-    def _extract_from_tags(contents):
+    def _extract_resolution_from_tags(contents):
         """Extract from lists like 720p Hi10 AAC"""
         parts = ParsedTorrent._SPLIT_PATTERN.split(contents)
         if len(parts) == 1:
@@ -211,7 +210,7 @@ class ParsedTorrent(object):
                 m = ParsedTorrent._RESOLUTION_PATTERN.match(contents)
                 resolution = m.group(1)
             else:
-                extracted_res = ParsedTorrent._extract_from_tags(contents)
+                extracted_res = ParsedTorrent._extract_resolution_from_tags(contents)
                 if not extracted_res:
                     ParsedTorrent._unparsed_tags[contents] += 1
                 elif not resolution:
@@ -228,7 +227,7 @@ class ParsedTorrent(object):
             elif contents in ParsedTorrent._TAGS:
                 pass
             else:
-                extracted_res = ParsedTorrent._extract_from_tags(contents)
+                extracted_res = ParsedTorrent._extract_resolution_from_tags(contents)
 
                 # by default don't strip unknown tags for parens cause they could be a part of the filename
                 if not extracted_res:
