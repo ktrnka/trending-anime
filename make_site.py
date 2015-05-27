@@ -181,10 +181,11 @@ class ParsedTorrent(object):
     @staticmethod
     def _extract_from_tags(contents):
         parts = ParsedTorrent._SPLIT_PATTERN.split(contents)
-        for part in parts:
-            m = ParsedTorrent._RESOLUTION_PATTERN.match(part)
-            if m:
-                return m.group(1)
+        if len(parts) > 1:
+            for part in parts:
+                m = ParsedTorrent._RESOLUTION_PATTERN.match(part)
+                if m:
+                    return m.group(1)
 
         return None
 
@@ -214,7 +215,8 @@ class ParsedTorrent(object):
             title_cleaned = title_cleaned.replace(match, "")
 
         for match, contents in ParsedTorrent._PAREN_PATTERN.findall(title):
-            if ParsedTorrent._RESOLUTION_PATTERN.match(contents):
+            # use a more restrictive match to avoid matching years
+            if contents.endswith("p") and ParsedTorrent._RESOLUTION_PATTERN.match(contents):
                 m = ParsedTorrent._RESOLUTION_PATTERN.match(contents)
                 resolution = m.group(1)
             elif contents in ParsedTorrent._TAGS:
