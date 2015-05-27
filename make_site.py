@@ -151,10 +151,17 @@ def get_title_key(title):
 
 class ParsedTorrent(object):
     """A torrent filename that's been parsed into components"""
-    _MD5_PATTERN = re.compile(r"\s*\[[0-9A-F]+\]{6,}\s*", re.IGNORECASE)
-    _FILENAME_PATTERN = re.compile(r"\[([^]]+)\] (.+) - (\d+)\s*(?:\[([\d]+p)\])?.(\w+)")
-    _FILENAME_PATTERN_ALT = re.compile(r"\[([^]]+)\] (.+) (\d\d+)\s*(?:\[([\d]+p)\])?.(\w+)")
-    _TAGS = "AAC BD BDrip FLAC".split()
+    _VERSION_PATTERN = r"\d+(?:v\d)?"
+    _SPLIT_PATTERN = re.compile("[ _,-]")
+    _BRACKET_PATTERN = re.compile(r"(\[([^]]+)\])")
+    _PAREN_PATTERN = re.compile(r"(\(([^)]+)\))")
+    _MD5_PATTERN = re.compile(r"\s*\[[0-9A-F]{6,}\]\s*", re.IGNORECASE)
+    _RESOLUTION_PATTERN = re.compile(r"^(?:\d+x)?(\d+)p?$", re.IGNORECASE)
+    _FILENAME_PATTERN = re.compile(r"\[([^]]+)\] (.+) (?:-|Episode) (\d+)(?:v\d)?\s*(?:\.(\w+))?$")
+    _TAIL_JUNK = re.compile(r"(?<=\.\w{3}).+")
+    _FILENAME_PATTERN_ALT = re.compile(r"\[([^]]+)\] (.+) (\d\d+) +(?:\.(\w+))?$")
+    _TAGS = "AAC BD BDrip FLAC 10bit 10Bit Dual v2 Dual-Audio".split()
+    _unparsed_tags = collections.Counter()
 
     def __init__(self, series, episode, sub_group, resolution, file_type):
         self.series = series
@@ -163,21 +170,77 @@ class ParsedTorrent(object):
         self.resolution = resolution
         self.file_type = file_type
 
+        self.logger = logging.getLogger(__name__)
+
+    @staticmethod
+    def log_unparsed():
+        logger = logging.getLogger(__name__)
+        for content, count in ParsedTorrent._unparsed_tags.most_common():
+            logger.info("Unparsed %s: %d", content, count)
+
+    @staticmethod
+    def _extract_from_tags(contents):
+        parts = ParsedTorrent._SPLIT_PATTERN.split(contents)
+        for part in parts:
+            m = ParsedTorrent._RESOLUTION_PATTERN.match(part)
+            if m:
+                return m.group(1)
+
+        return None
+
     @staticmethod
     def from_name(title):
-        title_cleaned = ParsedTorrent._MD5_PATTERN.sub("", title)
-        for tag in ParsedTorrent._TAGS:
-            title_cleaned = title_cleaned.replace("[{}]".format(tag), "")
+        logger = logging.getLogger(__name__)
+        resolution = None
+
+        title_cleaned = title
+        for match, contents in ParsedTorrent._BRACKET_PATTERN.findall(title):
+            if ParsedTorrent._MD5_PATTERN.match(match):
+                pass
+            elif ParsedTorrent._RESOLUTION_PATTERN.match(contents):
+                m = ParsedTorrent._RESOLUTION_PATTERN.match(contents)
+                resolution = m.group(1)
+            elif title.find(match) == 0:
+                continue
+            elif contents in ParsedTorrent._TAGS:
+                pass
+            else:
+                extracted_res = ParsedTorrent._extract_from_tags(contents)
+                if not extracted_res:
+                    ParsedTorrent._unparsed_tags[contents] += 1
+                elif not resolution:
+                    resolution = extracted_res
+
+            title_cleaned = title_cleaned.replace(match, "")
+
+        for match, contents in ParsedTorrent._PAREN_PATTERN.findall(title):
+            if ParsedTorrent._RESOLUTION_PATTERN.match(contents):
+                m = ParsedTorrent._RESOLUTION_PATTERN.match(contents)
+                resolution = m.group(1)
+            elif contents in ParsedTorrent._TAGS:
+                pass
+            else:
+                resolution = ParsedTorrent._extract_from_tags(contents)
+                if not resolution:
+                    ParsedTorrent._unparsed_tags[contents] += 1
+                    continue
+
+            title_cleaned = title_cleaned.replace(match, "")
+
+        title_cleaned = ParsedTorrent._TAIL_JUNK.sub("", title_cleaned)
+
         title_cleaned = title_cleaned.translate({0x2012: "-"})
         title_cleaned = ParsedTorrent.normalize_spacing(title_cleaned)
 
         m = ParsedTorrent._FILENAME_PATTERN.match(title_cleaned)
         if m:
-            return ParsedTorrent(m.group(2), m.group(3), m.group(1), m.group(4), m.group(5))
+            return ParsedTorrent(m.group(2), m.group(3), m.group(1), resolution, m.group(4))
 
         m = ParsedTorrent._FILENAME_PATTERN_ALT.match(title_cleaned)
         if m:
-            return ParsedTorrent(m.group(2), m.group(3), m.group(1), m.group(4), m.group(5))
+            p = ParsedTorrent(m.group(2), m.group(3), m.group(1), resolution, m.group(4))
+            p.logger.debug("Back off parsing {} -> {}".format(title, p))
+            return p
         return None
 
     def __repr__(self):
@@ -682,6 +745,7 @@ def torrents_to_series(torrents, release_date_torrents):
         else:
             parse_fail[torrent.title] += torrent.downloads
             success_counts[False] += torrent.downloads
+    ParsedTorrent.log_unparsed()
     logger.info("Parsed {:.1f}% of downloads".format(100. * success_counts[True] / (success_counts[True] + success_counts[False])))
 
     for filename, count in parse_fail.most_common(40):
