@@ -151,8 +151,7 @@ def get_title_key(title):
 
 class ParsedTorrent(object):
     """A torrent filename that's been parsed into components"""
-    _VERSION_PATTERN = r"\d+(?:v\d)?"
-    _SPLIT_PATTERN = re.compile("[ _,-]")
+    _SPLIT_PATTERN = re.compile(r"[ _,-]")
     _BRACKET_PATTERN = re.compile(r"(\[([^]]+)\])")
     _PAREN_PATTERN = re.compile(r"(\(([^)]+)\))")
     _MD5_PATTERN = re.compile(r"\s*\[[0-9A-F]{6,}\]\s*", re.IGNORECASE)
@@ -180,31 +179,35 @@ class ParsedTorrent(object):
 
     @staticmethod
     def _extract_from_tags(contents):
+        """Extract from lists like 720p Hi10 AAC"""
         parts = ParsedTorrent._SPLIT_PATTERN.split(contents)
-        if len(parts) > 1:
-            for part in parts:
-                m = ParsedTorrent._RESOLUTION_PATTERN.match(part)
-                if m:
-                    return m.group(1)
+        if len(parts) == 1:
+            return None
+
+        for part in parts:
+            m = ParsedTorrent._RESOLUTION_PATTERN.match(part)
+            if m:
+                return m.group(1)
 
         return None
 
     @staticmethod
     def from_name(title):
-        logger = logging.getLogger(__name__)
+        """Parse a filename/title of a torrent"""
         resolution = None
 
         title_cleaned = title
         for match, contents in ParsedTorrent._BRACKET_PATTERN.findall(title):
-            if ParsedTorrent._MD5_PATTERN.match(match):
+            # don't delete the sub group
+            if title.find(match) == 0:
+                continue
+            elif ParsedTorrent._MD5_PATTERN.match(match):
+                pass
+            elif contents in ParsedTorrent._TAGS:
                 pass
             elif ParsedTorrent._RESOLUTION_PATTERN.match(contents):
                 m = ParsedTorrent._RESOLUTION_PATTERN.match(contents)
                 resolution = m.group(1)
-            elif title.find(match) == 0:
-                continue
-            elif contents in ParsedTorrent._TAGS:
-                pass
             else:
                 extracted_res = ParsedTorrent._extract_from_tags(contents)
                 if not extracted_res:
@@ -212,6 +215,7 @@ class ParsedTorrent(object):
                 elif not resolution:
                     resolution = extracted_res
 
+            # remove the bracketed expression
             title_cleaned = title_cleaned.replace(match, "")
 
         for match, contents in ParsedTorrent._PAREN_PATTERN.findall(title):
@@ -223,12 +227,15 @@ class ParsedTorrent(object):
                 pass
             else:
                 resolution = ParsedTorrent._extract_from_tags(contents)
+
+                # by default don't strip unknown tags for parens cause they could be a part of the filename
                 if not resolution:
                     ParsedTorrent._unparsed_tags[contents] += 1
                     continue
 
             title_cleaned = title_cleaned.replace(match, "")
 
+        # special case for some that have the translated title afterwards
         title_cleaned = ParsedTorrent._TAIL_JUNK.sub("", title_cleaned)
 
         title_cleaned = title_cleaned.translate({0x2012: "-"})
