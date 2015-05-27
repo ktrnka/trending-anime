@@ -23,6 +23,8 @@ import re
 import requests
 import pymongo
 
+MIN_DOWNLOADS_WARNINGS = 5000
+
 NORMALIZATION_MAP = {ord(c): None for c in "/:;._ -'\"!,~()"}
 SEASONS = ["Winter season", "Spring season", "Summer season", "Fall season", "Long running show"]
 # SEASON_IMAGES = ["winter.svg", "spring.svg", "summer.svg", "fall.svg", "infinity.svg"]
@@ -192,11 +194,11 @@ class ParsedTorrent(object):
         return None
 
     @staticmethod
-    def from_name(title):
-        """Parse a filename/title of a torrent"""
+    def _consume_tags(title):
+        """Parse and strip tags like [720p]"""
         resolution = None
-
         title_cleaned = title
+
         for match, contents in ParsedTorrent._BRACKET_PATTERN.findall(title):
             # don't delete the sub group
             if title.find(match) == 0:
@@ -225,17 +227,25 @@ class ParsedTorrent(object):
                 resolution = m.group(1)
             elif contents in ParsedTorrent._TAGS:
                 pass
-            elif not resolution:
-                resolution = ParsedTorrent._extract_from_tags(contents)
+            else:
+                extracted_res = ParsedTorrent._extract_from_tags(contents)
 
                 # by default don't strip unknown tags for parens cause they could be a part of the filename
-                if not resolution:
+                if not extracted_res:
                     ParsedTorrent._unparsed_tags[contents] += 1
                     continue
-            else:
-                continue
+                elif not resolution:
+                    resolution = extracted_res
 
             title_cleaned = title_cleaned.replace(match, "")
+
+        return title_cleaned, resolution
+
+    @staticmethod
+    def from_name(title):
+        """Parse a filename/title of a torrent"""
+
+        title_cleaned, resolution = ParsedTorrent._consume_tags(title)
 
         # special case for some that have the translated title afterwards
         title_cleaned = ParsedTorrent._TAIL_JUNK.sub("", title_cleaned)
@@ -758,6 +768,9 @@ def torrents_to_series(torrents, release_date_torrents):
         else:
             parse_fail[torrent.title] += torrent.downloads
             success_counts[False] += torrent.downloads
+
+            if torrent.downloads > MIN_DOWNLOADS_WARNINGS:
+                logger.warning("Failed to parse %s with %d downloads", torrent.title, torrent.downloads)
     ParsedTorrent.log_unparsed()
     logger.info("Parsed {:.1f}% of downloads".format(100. * success_counts[True] / (success_counts[True] + success_counts[False])))
 
