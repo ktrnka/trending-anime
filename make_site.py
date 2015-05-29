@@ -173,9 +173,10 @@ class ParsedTorrent(object):
         self.logger = logging.getLogger(__name__)
 
     @staticmethod
-    def log_unparsed():
+    def log_unparsed(num_tags=10):
         logger = logging.getLogger(__name__)
-        for content, count in ParsedTorrent._unparsed_tags.most_common():
+        logger.debug("Top %d unparsed tags:", num_tags)
+        for content, count in ParsedTorrent._unparsed_tags.most_common(num_tags):
             logger.debug("Unparsed %s: %d", content, count)
 
     @staticmethod
@@ -404,17 +405,23 @@ class Episode(object):
         good_samples = []
         previous_count = None
 
+        filter_reasons = collections.Counter()
+
         for sample in samples:
             if not previous_count or previous_count < sample[1]:
                 good_samples.append(sample)
                 previous_count = sample[1]
+            elif previous_count == sample[1]:
+                filter_reasons["same value"] += 1
+            elif previous_count > sample[1]:
+                filter_reasons["lower value"] += 1
 
         if not good_samples:
             self.downloads_history.clear()
         else:
             self.downloads_history = {d: c for d, c in good_samples}
 
-        return len(samples) - len(good_samples)
+        return filter_reasons
 
     def transform_downloads_history(self):
         """Convert download history dates to deltas from the release date, sort them, add (0, 0)"""
@@ -446,9 +453,9 @@ class Series(object):
 
     def clean_data(self):
         for ep_num, episode in self.episodes.iteritems():
-            num_removed = episode.clean_data()
-            if num_removed:
-                self.logger.debug("Filtered {} dates for {} episode {}".format(num_removed, self.get_name(), ep_num))
+            filtering_reasons = episode.clean_data()
+            if filtering_reasons:
+                self.logger.debug("Filtered {} dates for {} episode {} for reasons: {}".format(sum(filtering_reasons.values()), self.get_name(), ep_num, ", ".join("{}: {}".format(k, v) for k, v in filtering_reasons.most_common())))
 
     def get_mongo_key(self):
         if not self.url:
@@ -510,8 +517,7 @@ class Series(object):
             if normalized_name not in normalized_names:
                 normalized_names.add(normalized_name)
                 names.append(name)
-            else:
-                self.logger.debug("Filtering %s from alternate names %s", name, ", ".join(names))
+
         return names[1:]
 
     def get_linked_name(self):
