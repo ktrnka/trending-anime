@@ -413,6 +413,8 @@ class Episode(object):
                 previous_count = sample[1]
             elif previous_count == sample[1]:
                 filter_reasons["same value"] += 1
+            elif sample[1] == 0:
+                filter_reasons["value is zero"] += 1
             elif previous_count > sample[1]:
                 filter_reasons["lower value"] += 1
 
