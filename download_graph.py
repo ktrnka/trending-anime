@@ -65,6 +65,36 @@ def make_downloads_graph(data, filename, prediction_data=None):
     plt.savefig(filename, bbox_inches="tight")
     plt.close()
 
+def make_season_graph(data, filename):
+    x_data, y_data = zip(*data)
+
+    x_min = min(x_data) * 0.98
+    x_max = max(x_data) * 1.02
+    y_min = 0
+    y_max = max(y_data) * 1.02
+
+    plt.figure(figsize=(12, 9))
+    plt.plot(x_data, y_data, lw=2, color=tableau20[0])
+
+    plt.xlabel("Episode number", fontsize=16)
+    plt.ylabel("Downloads at 7 days", fontsize=16)
+    ax = plt.subplot(111)
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+
+    y_ticks = choose_ticks(y_min, int(y_max))
+    plt.yticks(y_ticks, ["{:,}".format(y) for y in y_ticks], fontsize=14)
+    plt.xticks(fontsize=14)
+    for y in y_ticks:
+        x_points = range(int(x_min), int(x_max + 1))
+        plt.plot(x_points, [y] * len(x_points), "--", lw=0.5, color="black", alpha=0.3)
+
+    plt.tick_params(axis="both", which="both", bottom="off", top="off", labelbottom="on", left="off", right="off", labelleft="on")
+
+    plt.axis([x_min, x_max, y_min, y_max])
+    plt.savefig(filename, bbox_inches="tight")
+    plt.close()
+
 
 def main():
     data = [(0.0, 2963), (1.0, 17758), (2.1, 20749), (3.1, 22455), (4.1, 23447), (4.9, 24263), (5.0, 24326)]
