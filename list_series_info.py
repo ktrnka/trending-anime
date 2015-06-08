@@ -27,50 +27,42 @@ def weighted_average(values, weights):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("config", help="Config file")
+    parser.add_argument("title_query", help="Keyword to find in the title")
     args = parser.parse_args()
 
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
 
     config = ConfigParser.RawConfigParser()
     config.read([args.config])
 
     mongo_client = pymongo.MongoClient(config.get("mongo", "uri"))
-    collection = mongo_client.get_default_database()["animes"]
 
-    scores_old = dict()
-    scores_new = dict()
+    db = mongo_client.get_default_database()
+    anime_collection = db["animes"]
+    link_collection = db["links"]
 
-    for anime in collection.find():
-        if "seraph" not in anime["key"].lower():
-            continue
+    link_collection.ensure_index([("title", pymongo.TEXT)], background=False)
+
+    for match in link_collection.find({"$text": { "$search": args.title_query }}):
+        anime = anime_collection.find_one({"key": match["url"]})
 
         series = make_site.Series()
         series.url = anime["key"]
-        series.spelling_counts[series.url] += 1
+        series.spelling_counts[match["title"]] += 1
         series.sync_mongo(anime, None)
 
-        print "Anime", series.url
+        print "Anime", series.get_name()
 
         series.clean_data()
 
         episodes = sorted(series.episodes.iterkeys())
 
-        predictions = series.estimate_downloads_debug(7, 4)
-
         for episode in episodes:
             release_date = series.episodes[episode].get_release_date()
             print "Episode {}: {}".format(episode, release_date.strftime("%Y-%m-%d"))
 
-            reference_data, prediction_data = predictions[episode]
-            reference_x, reference_y = reference_data
-            pred_x, pred_y = prediction_data
-            download_graph.make_downloads_graph(zip(reference_x, reference_y), "temp/{}.png".format(episode), prediction_data=zip(pred_x, pred_y))
-
             for date, downloads in sorted(series.episodes[episode].downloads_history.iteritems(), key=lambda p: p[0]):
                 print "\t{}: {:,}".format(date.strftime("%Y-%m-%d %H:%M"), downloads)
-
-
-
 
 if __name__ == "__main__":
     sys.exit(main())
