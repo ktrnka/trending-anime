@@ -67,7 +67,7 @@ def make_downloads_graph(data, filename, prediction_data=None):
     plt.close()
 
 
-def make_season_graph(data, filename):
+def make_season_graph(data, title, filename):
     x_data, y_data, deviations = zip(*data)
     deviations = numpy.array(deviations)
 
@@ -82,10 +82,11 @@ def make_season_graph(data, filename):
 
 
     plt.xlabel("Episode number", fontsize=16)
-    plt.ylabel("Downloads at 7 days", fontsize=16)
+    plt.ylabel("Downloads after 7 days", fontsize=16)
     ax = plt.subplot(111)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
+    ax.set_title(title, fontsize=20)
 
     y_ticks = choose_ticks(y_min, int(y_max))
     plt.yticks(y_ticks, ["{:,}".format(y) for y in y_ticks], fontsize=14)

@@ -83,7 +83,7 @@ def main():
 
         data = [(episode_no, predictions[episode_no].prediction, predictions[episode_no].prediction * (1 - predictions[episode_no].confidence / 100.)) for episode_no in episodes]
         pprint.pprint(data)
-        download_graph.make_season_graph(data, "temp/{}.png".format(clean_filename(series.get_name())))
+        download_graph.make_season_graph(data, series.get_name(), "temp/{}.png".format(clean_filename(series.get_name())))
 
 if __name__ == "__main__":
     sys.exit(main())
