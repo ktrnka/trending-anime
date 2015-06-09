@@ -1,9 +1,9 @@
-
 """
 Make graphs of downloads by day, heavily inspired by
 http://www.randalolson.com/2014/06/28/how-to-make-beautiful-data-visualizations-in-python-with-matplotlib/
 """
 import sys
+import numpy
 import matplotlib.pyplot as plt
 
 tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),
@@ -59,14 +59,17 @@ def make_downloads_graph(data, filename, prediction_data=None):
         x_points = range(int(x_min), int(x_max + 1))
         plt.plot(x_points, [y] * len(x_points), "--", lw=0.5, color="black", alpha=0.3)
 
-    plt.tick_params(axis="both", which="both", bottom="off", top="off", labelbottom="on", left="off", right="off", labelleft="on")
+    plt.tick_params(axis="both", which="both", bottom="off", top="off", labelbottom="on", left="off", right="off",
+                    labelleft="on")
 
     plt.axis([x_min, x_max, y_min, y_max])
     plt.savefig(filename, bbox_inches="tight")
     plt.close()
 
+
 def make_season_graph(data, filename):
-    x_data, y_data = zip(*data)
+    x_data, y_data, deviations = zip(*data)
+    deviations = numpy.array(deviations)
 
     x_min = min(x_data) * 0.98
     x_max = max(x_data) * 1.02
@@ -75,6 +78,8 @@ def make_season_graph(data, filename):
 
     plt.figure(figsize=(12, 9))
     plt.plot(x_data, y_data, lw=2, color=tableau20[0])
+    plt.fill_between(x_data, y_data - deviations, y_data + deviations, alpha=0.1, color=tableau20[0])
+
 
     plt.xlabel("Episode number", fontsize=16)
     plt.ylabel("Downloads at 7 days", fontsize=16)
@@ -89,7 +94,8 @@ def make_season_graph(data, filename):
         x_points = range(int(x_min), int(x_max + 1))
         plt.plot(x_points, [y] * len(x_points), "--", lw=0.5, color="black", alpha=0.3)
 
-    plt.tick_params(axis="both", which="both", bottom="off", top="off", labelbottom="on", left="off", right="off", labelleft="on")
+    plt.tick_params(axis="both", which="both", bottom="off", top="off", labelbottom="on", left="off", right="off",
+                    labelleft="on")
 
     plt.axis([x_min, x_max, y_min, y_max])
     plt.savefig(filename, bbox_inches="tight")

@@ -1,6 +1,7 @@
 import ConfigParser
 import argparse
 import logging
+import pprint
 import string
 import sys
 import collections
@@ -80,7 +81,8 @@ def main():
             for date, downloads in sorted(series.episodes[episode].downloads_history.iteritems(), key=lambda p: p[0]):
                 print "\t{}: {:,}".format(date.strftime("%Y-%m-%d %H:%M"), downloads)
 
-        data = [(episode_no, predictions[episode_no].prediction) for episode_no in episodes]
+        data = [(episode_no, predictions[episode_no].prediction, predictions[episode_no].prediction * (1 - predictions[episode_no].confidence / 100.)) for episode_no in episodes]
+        pprint.pprint(data)
         download_graph.make_season_graph(data, "temp/{}.png".format(clean_filename(series.get_name())))
 
 if __name__ == "__main__":
