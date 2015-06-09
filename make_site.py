@@ -459,6 +459,9 @@ class Series(object):
             if filtering_reasons:
                 self.logger.debug("Filtered {} dates for {} episode {} for reasons: {}".format(sum(filtering_reasons.values()), self.get_name(), ep_num, ", ".join("{}: {}".format(k, v) for k, v in filtering_reasons.most_common())))
 
+    def get_last_release_date(self):
+        return max(self.get_release_dates())
+
     def get_mongo_key(self):
         if not self.url:
             raise ValueError("Missing URL, unable to build key")
