@@ -83,18 +83,21 @@ def main():
 
     animes = [anime for anime in animes if min_date < anime.get_last_release_date() < max_date]
 
+    navbar = templates.sub("navbar", current_class="", winter2015_class="active", about_class="")
 
     table_data = make_site.make_table_body(animes, templates, diagnostics=args.diagnostic, image_dir=os.path.dirname(args.output))
     html_data = templates.sub("main",
                               refreshed_timestamp=datetime.datetime.now().strftime("%A, %B %d"),
-                              table_body=table_data)
+                              table_body=table_data,
+                              navbar=navbar)
 
-    if args.output == "bitballoon":
+    if args.output.startswith("bitballoon"):
         bb = bitballoon.BitBalloon(config.get("bitballoon", "access_key"),
                                    config.get("bitballoon", "site_id"),
                                    config.get("bitballoon", "email"))
+        _, filename = os.path.split(args.output)
 
-        bb.update_file_data(html_data.encode("UTF-8"), "index.html", deploy=True)
+        bb.update_file_data(html_data.encode("UTF-8"), filename, deploy=True)
     else:
         with io.open(args.output, "w", encoding="UTF-8") as html_out:
             html_out.write(html_data)

@@ -935,10 +935,12 @@ def main():
 
     animes = list(filter_old_series(animes))
 
+    navbar = templates.sub("navbar", current_class="active", winter2015_class="", about_class="")
     table_data = make_table_body(animes, templates, diagnostics=args.diagnostic, image_dir=os.path.dirname(args.output))
     html_data = templates.sub("main",
                               refreshed_timestamp=data_date.strftime("%A, %B %d"),
-                              table_body=table_data)
+                              table_body=table_data,
+                              navbar=navbar)
 
     if args.output == "bitballoon":
         bb = bitballoon.BitBalloon(config.get("bitballoon", "access_key"),
