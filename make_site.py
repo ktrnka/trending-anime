@@ -915,6 +915,7 @@ def main():
             release_date_torrents.extend(current_torrents)
         except requests.exceptions.HTTPError:
             logger.exception("Failed to load release dates from %s, skipping", release_date_endpoint)
+    release_date_torrents = deduplicate_torrents(release_date_torrents)
 
     mongo_client = pymongo.MongoClient(config.get("mongo", "uri"))
     mongo_db = mongo_client.get_default_database()
