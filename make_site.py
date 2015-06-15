@@ -908,11 +908,13 @@ def main():
         return -1
 
     # load release dates
-    try:
-        _, release_date_torrents = load(config.get("kimono", "release_date_endpoint"), True)
-    except requests.exceptions.HTTPError:
-        release_date_torrents = []
-        logger.exception("Failed to load release dates, skipping")
+    release_date_torrents = []
+    for release_date_endpoint in config.get("kimono", "release_date_endpoint").split(","):
+        try:
+            _, current_torrents = load(release_date_endpoint, True)
+            release_date_torrents.extend(current_torrents)
+        except requests.exceptions.HTTPError:
+            logger.exception("Failed to load release dates from %s, skipping", release_date_endpoint)
 
     mongo_client = pymongo.MongoClient(config.get("mongo", "uri"))
     mongo_db = mongo_client.get_default_database()
