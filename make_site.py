@@ -109,22 +109,20 @@ def format_season_info(series):
     return season_html
 
 
-def format_alternate_names(names):
-    if names:
-        return ", ".join(names)
+def format_list(strings, default_label):
+    if strings:
+        return ", ".join(strings)
     else:
-        return '<span class="grey-text">None</span>'
+        return '<span class="grey-text">{}</span>'.format(default_label)
 
 
-def format_row(index, series, top_series, html_templates, diagnostics=False, image_dir=None):
-    alternate_names = format_alternate_names(series.get_alternate_names())
-
-    sub_groups = ", ".join(series.get_sub_groups())
+def format_series(index, series, top_series, html_templates, diagnostics=False, image_dir=None):
+    alternate_names = format_list(series.get_alternate_names(), "None")
+    sub_groups = format_list(series.get_sub_groups(), "Unknown")
 
     episode_counts = series.get_episode_counts()
     retention_rates = series.compute_retention()
     download_estimates = series.estimate_downloads(7)
-    image_path = os.path.join(image_dir, series.get_name())
     episode_cells = [
         format_episode(html_templates, episode, count, series.episodes[episode], download_estimates.get(episode),
                        retention_rates.get(episode), diagnostics=diagnostics) for episode, count in episode_counts[-3:]]
@@ -749,7 +747,7 @@ def load(endpoint, timestamp_optional=False):
 
 def make_table_body(series, html_templates, diagnostics=False, image_dir=None):
     top_series = sorted(series, key=lambda s: s.get_score(), reverse=True)
-    data_entries = [format_row(i, anime, top_series[0], html_templates, diagnostics=diagnostics, image_dir=image_dir) for i, anime in enumerate(top_series)]
+    data_entries = [format_series(i, anime, top_series[0], html_templates, diagnostics=diagnostics, image_dir=image_dir) for i, anime in enumerate(top_series)]
     return '<div class="divider"></div>\n'.join(data_entries)
 
 
