@@ -3,8 +3,14 @@ import json
 import logging
 import collections
 import requests
+import datetime
 
 __author__ = 'keith'
+
+
+def refine_query(initial_query):
+    """Tweak the search string for higher accuracy"""
+    return "{} {}".format(initial_query, datetime.datetime.now().year)
 
 
 class SearchEngine(object):
@@ -34,7 +40,7 @@ class SearchEngine(object):
             return None
 
         try:
-            r = requests.get(self.url, params={"key": self.api_key, "cx": self.cx, "q": series_name})
+            r = requests.get(self.url, params={"key": self.api_key, "cx": self.cx, "q": refine_query(series_name)})
             self.logger.debug("Request URL: {}".format(r.url))
             r.raise_for_status()
         except (requests.exceptions.HTTPError, requests.exceptions.SSLError):
