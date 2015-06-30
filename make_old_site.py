@@ -12,6 +12,8 @@ from make_site import Templates
 import make_site
 import os
 import pymongo
+import pymongo.errors
+import pymongo.cursor
 
 
 def parse_args():
@@ -24,7 +26,6 @@ def parse_args():
     parser.add_argument("--weeks", default=2, type=int, help="Number of weeks back to look")
     parser.add_argument("config", help="Config file")
     parser.add_argument("date", help="End date to check in year/month/day format")
-    parser.add_argument("season_name", help="Name of the season, like Winter 2015 to use in the title")
     parser.add_argument("output", help="Output filename or 'bitballoon' to upload to bitballoon")
     parser.add_argument("additional_files", nargs="*", help="Additional files or directories to copy to site release")
     return parser.parse_args()
@@ -35,6 +36,18 @@ def get_date_range(args):
     start_date = end_date - datetime.timedelta(7 * args.weeks)
 
     return start_date, end_date
+
+def load_all(collection, retries=3):
+    results = []
+    try:
+        for result in collection.find():
+            results.append(result)
+        return results
+    except pymongo.errors.AutoReconnect as e:
+        if retries > 0:
+            return load_all(collection, retries - 1)
+        else:
+            raise e
 
 
 def main():
@@ -60,16 +73,17 @@ def main():
 
     # load all series, one-way sync from mongo
     link_collection = mongo_db["links"]
+    logger.info("%d objects in link collection", link_collection.count())
 
     titles = collections.defaultdict(collections.Counter)
-    for match in link_collection.find():
-        logger.info("Proccessed record {}".format(match))
+    for match in load_all(link_collection):
         titles[match["url"]][match["title"]] += 1
+
 
     animes = []
     anime_collection = mongo_db["animes"]
-    for anime_object in anime_collection.find():
-        logger.info("Proccessed record {}".format(anime_object))
+    logger.info("%d objects in anime collection", anime_collection.count())
+    for anime_object in load_all(anime_collection):
         series = make_site.Series()
         series.url = anime_object["key"]
 
@@ -84,6 +98,8 @@ def main():
 
         animes.append(series)
 
+    logger.info("Processed %d shows", len(animes))
+
     animes = [anime for anime in animes if min_date < anime.get_last_release_date() < max_date]
 
     navbar = templates.sub("navbar", current_class="", winter2015_class="active", about_class="")
@@ -93,7 +109,7 @@ def main():
                               refreshed_timestamp=datetime.datetime.now().strftime("%A, %B %d"),
                               table_body=table_data,
                               navbar=navbar,
-                              season_name=args.season_name)
+                              season_name=make_site.make_page_title(max_date - datetime.timedelta(2)))
 
     if args.output.startswith("bitballoon"):
         bb = bitballoon.BitBalloon(config.get("bitballoon", "access_key"),

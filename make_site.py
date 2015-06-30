@@ -28,6 +28,7 @@ MIN_DOWNLOADS_WARNINGS = 5000
 NORMALIZATION_MAP = {ord(c): None for c in "/:;._ -'\"!,~()"}
 SEASONS = ["Winter season", "Spring season", "Summer season", "Fall season", "Long running show"]
 SEASON_COLOR_STYLES = ["light-blue-text", "light-green-text text-accent-2", "green-text", "amber-text text-darken-1"]
+SEASON_NAMES_SHORT = ["Winter", "Spring", "Summer", "Fall"]
 SEASON_DEFAULT_COLOR_STYLE = "grey-text text-lighten-3"
 MONGO_TIME = "%Y/%m/%d %H:%M"
 SEC_IN_DAY = 60. * 60 * 24
@@ -142,6 +143,11 @@ def format_series(index, series, top_series, html_templates, diagnostics=False, 
                               episodes=episode_html,
                               value="{:,}".format(series.get_score()),
                               bar_width=int(100 * series.get_score() / top_series.get_score()))
+
+
+def make_page_title(date):
+    season_number = date_to_season(date)
+    return "{} {}".format(SEASON_NAMES_SHORT[season_number], date.year)
 
 
 def get_title_key(title):
@@ -943,7 +949,8 @@ def main():
     html_data = templates.sub("main",
                               refreshed_timestamp=data_date.strftime("%A, %B %d"),
                               table_body=table_data,
-                              navbar=navbar)
+                              navbar=navbar,
+                              season_name=make_page_title(datetime.datetime.now()))
 
     if args.output == "bitballoon":
         bb = bitballoon.BitBalloon(config.get("bitballoon", "access_key"),
