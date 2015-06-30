@@ -879,6 +879,18 @@ def filter_old_series(animes):
             logger.info("Removing old series {}, age {}".format(series, age))
 
 
+def load_styles(style_files):
+    style_string = ""
+
+    for f in style_files:
+        with io.open(f, "r") as style_in:
+            style_string += "/* inline style: {} */\n".format(f)
+            style_string += "".join(style_in.readlines())
+            style_string += "\n"
+
+    return style_string
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--template_dir", default="templates", help="Dir of templates")
@@ -950,7 +962,8 @@ def main():
                               refreshed_timestamp=data_date.strftime("%A, %B %d"),
                               table_body=table_data,
                               navbar=navbar,
-                              season_name=make_page_title(datetime.datetime.now()))
+                              season_name=make_page_title(datetime.datetime.now()),
+                              inline_style=load_styles([args.style_file] + [f for f in args.additional_files if f.endswith(".css")]))
 
     if args.output == "bitballoon":
         bb = bitballoon.BitBalloon(config.get("bitballoon", "access_key"),
