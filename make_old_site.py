@@ -24,6 +24,7 @@ def parse_args():
     parser.add_argument("--weeks", default=2, type=int, help="Number of weeks back to look")
     parser.add_argument("config", help="Config file")
     parser.add_argument("date", help="End date to check in year/month/day format")
+    parser.add_argument("season_name", help="Name of the season, like Winter 2015 to use in the title")
     parser.add_argument("output", help="Output filename or 'bitballoon' to upload to bitballoon")
     parser.add_argument("additional_files", nargs="*", help="Additional files or directories to copy to site release")
     return parser.parse_args()
@@ -58,15 +59,17 @@ def main():
     min_date, max_date = get_date_range(args)
 
     # load all series, one-way sync from mongo
-    anime_collection = mongo_db["animes"]
     link_collection = mongo_db["links"]
 
     titles = collections.defaultdict(collections.Counter)
     for match in link_collection.find():
+        logger.info("Proccessed record {}".format(match))
         titles[match["url"]][match["title"]] += 1
 
     animes = []
+    anime_collection = mongo_db["animes"]
     for anime_object in anime_collection.find():
+        logger.info("Proccessed record {}".format(anime_object))
         series = make_site.Series()
         series.url = anime_object["key"]
 
@@ -89,7 +92,8 @@ def main():
     html_data = templates.sub("main",
                               refreshed_timestamp=datetime.datetime.now().strftime("%A, %B %d"),
                               table_body=table_data,
-                              navbar=navbar)
+                              navbar=navbar,
+                              season_name=args.season_name)
 
     if args.output.startswith("bitballoon"):
         bb = bitballoon.BitBalloon(config.get("bitballoon", "access_key"),
