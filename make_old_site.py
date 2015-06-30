@@ -110,7 +110,7 @@ def main():
                               table_body=table_data,
                               navbar=navbar,
                               season_name=make_site.make_page_title(max_date - datetime.timedelta(2)),
-                              inline_style=make_site.load_styles([args.style_file] + [f for f in args.additional_files if f.endswith(".css")]))
+                              inline_style=make_site.load_styles([f for f in args.additional_files if f.endswith(".css")] + [args.style_file]))
 
     if args.output.startswith("bitballoon"):
         bb = bitballoon.BitBalloon(config.get("bitballoon", "access_key"),

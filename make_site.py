@@ -963,7 +963,7 @@ def main():
                               table_body=table_data,
                               navbar=navbar,
                               season_name=make_page_title(datetime.datetime.now()),
-                              inline_style=load_styles([args.style_file] + [f for f in args.additional_files if f.endswith(".css")]))
+                              inline_style=load_styles([f for f in args.additional_files if f.endswith(".css")] + [args.style_file]))
 
     if args.output == "bitballoon":
         bb = bitballoon.BitBalloon(config.get("bitballoon", "access_key"),
