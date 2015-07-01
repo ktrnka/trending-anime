@@ -36,7 +36,7 @@ class BitBalloon(object):
         return return_data
 
     def deploy(self, deploy_id):
-        url = "/".join([URL_BASE, "/sites/{site_id}/deploys/{deploy_id}/restore".format(site_id=self.site_id,
+        url = "/".join([URL_BASE, "sites/{site_id}/deploys/{deploy_id}/restore".format(site_id=self.site_id,
                                                                                         deploy_id=deploy_id)])
         r = requests.post(url, headers=self.headers, params=self.params)
         r.raise_for_status()
