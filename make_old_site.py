@@ -118,7 +118,7 @@ def main():
                                    config.get("bitballoon", "email"))
         _, filename = os.path.split(args.output)
 
-        bb.update_file_data(html_data.encode("UTF-8"), filename, deploy=False)
+        bb.update_file_data(html_data.encode("UTF-8"), filename, deploy=True)
     else:
         with io.open(args.output, "w", encoding="UTF-8") as html_out:
             html_out.write(html_data)

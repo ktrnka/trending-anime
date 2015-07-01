@@ -970,7 +970,7 @@ def main():
                                    config.get("bitballoon", "site_id"),
                                    config.get("bitballoon", "email"))
 
-        bb.update_file_data(html_data.encode("UTF-8"), "index.html", deploy=False)
+        bb.update_file_data(html_data.encode("UTF-8"), "index.html", deploy=True)
     else:
         with io.open(args.output, "w", encoding="UTF-8") as html_out:
             html_out.write(html_data)
