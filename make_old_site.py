@@ -102,14 +102,15 @@ def main():
 
     animes = [anime for anime in animes if min_date < anime.get_last_release_date() < max_date]
 
-    navbar = templates.sub("navbar", current_class="", winter2015_class="active", about_class="")
+    target_date = max_date - datetime.timedelta(2)
+    navbar = templates.sub("navbar", **make_site.make_season_active_links(target_date))
 
     table_data = make_site.make_table_body(animes, templates, diagnostics=args.diagnostic, image_dir=os.path.dirname(args.output))
     html_data = templates.sub("main",
                               refreshed_timestamp=datetime.datetime.now().strftime("%A, %B %d"),
                               table_body=table_data,
                               navbar=navbar,
-                              season_name=make_site.make_page_title(max_date - datetime.timedelta(2)),
+                              season_name=make_site.make_page_title(target_date),
                               inline_style=make_site.load_styles([f for f in args.additional_files if f.endswith(".css")] + [args.style_file]))
 
     if args.output.startswith("bitballoon"):

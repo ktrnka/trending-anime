@@ -150,6 +150,19 @@ def make_page_title(date):
     return "{} {}".format(SEASON_NAMES_SHORT[season_number], date.year)
 
 
+def make_season_active_links(date=None):
+    base_args = {"current_class": "", "spring2015_class": "", "winter2015_class": "", "about_class": ""}
+
+    if not date:
+        base_args["current_class"] = "active"
+    else:
+        season_number = date_to_season(date)
+        season_name = SEASON_NAMES_SHORT[season_number].lower()
+        base_args["{}{}_class".format(season_name, date.year)] = "active"
+
+    return base_args
+
+
 def get_title_key(title):
     return title.lower().translate(NORMALIZATION_MAP)
 
@@ -956,7 +969,7 @@ def main():
 
     animes = list(filter_old_series(animes))
 
-    navbar = templates.sub("navbar", current_class="active", winter2015_class="", about_class="")
+    navbar = templates.sub("navbar", **make_season_active_links())
     table_data = make_table_body(animes, templates, diagnostics=args.diagnostic, image_dir=os.path.dirname(args.output))
     html_data = templates.sub("main",
                               refreshed_timestamp=data_date.strftime("%A, %B %d"),
