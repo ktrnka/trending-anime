@@ -10,6 +10,7 @@ import shutil
 import datetime
 import string
 import math
+import itertools
 import curve_fitting
 
 from google_search import SearchEngine
@@ -151,7 +152,7 @@ def make_page_title(date):
 
 
 def make_season_active_links(date=None):
-    base_args = {"current_class": "", "spring2015_class": "", "winter2015_class": "", "about_class": ""}
+    base_args = {"current_class": "", "spring2015_class": "", "winter2015_class": "", "summer2015_class": "", "about_class": ""}
 
     if not date:
         base_args["current_class"] = "active"
@@ -914,6 +915,7 @@ def main():
                         help="Optional version of the main Kimono endpoint to load")
     parser.add_argument("--diagnostic", default=False, action="store_true", help="Include detailed diagnostics in the output")
     parser.add_argument("--one-way-sync", default=False, action="store_true", help="Only sync from mongo but not back to mongo")
+    parser.add_argument("--upload", default=False, action="store_true", help="Upload files to Bitballoon")
     parser.add_argument("config", help="Config file")
     parser.add_argument("output", help="Output filename or 'bitballoon' to upload to bitballoon")
     parser.add_argument("additional_files", nargs="*", help="Additional files or directories to copy to site release")
@@ -978,28 +980,25 @@ def main():
                               season_name=make_page_title(datetime.datetime.now()),
                               inline_style=load_styles([f for f in args.additional_files if f.endswith(".css")] + [args.style_file]))
 
-    if args.output == "bitballoon":
-        bb = bitballoon.BitBalloon(config.get("bitballoon", "access_key"),
-                                   config.get("bitballoon", "site_id"),
-                                   config.get("bitballoon", "email"))
+    # create the site dir and copy over all required files
+    dest_dir = os.path.dirname(args.output)
+    if not os.path.exists(dest_dir):
+        os.makedirs(dest_dir)
 
-        bb.update_file_data(html_data.encode("UTF-8"), "index.html", deploy=True)
-    else:
-        with io.open(args.output, "w", encoding="UTF-8") as html_out:
-            html_out.write(html_data)
+    # generate the output file
+    with io.open(args.output, "w", encoding="UTF-8") as html_out:
+        html_out.write(html_data)
 
-        dest_dir = os.path.dirname(args.output)
-        if dest_dir:
-            for filename in [args.style_file, args.favicon_file]:
-                shutil.copy(filename, os.path.join(dest_dir, os.path.basename(filename)))
-            for filename in args.additional_files:
-                dest_path = os.path.join(dest_dir, os.path.basename(filename))
-                if os.path.isdir(filename):
-                    shutil.rmtree(dest_path, True)
-                    shutil.copytree(filename, dest_path)
-                else:
-                    shutil.copy(filename, dest_path)
-
+    # copy any additional files
+    for filename in [args.style_file, args.favicon_file]:
+        shutil.copy(filename, os.path.join(dest_dir, os.path.basename(filename)))
+    for filename in args.additional_files:
+        dest_path = os.path.join(dest_dir, os.path.basename(filename))
+        if os.path.isdir(filename):
+            shutil.rmtree(dest_path, True)
+            shutil.copytree(filename, dest_path)
+        else:
+            shutil.copy(filename, dest_path)
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -113,28 +113,21 @@ def main():
                               season_name=make_site.make_page_title(target_date),
                               inline_style=make_site.load_styles([f for f in args.additional_files if f.endswith(".css")] + [args.style_file]))
 
-    if args.output.startswith("bitballoon"):
-        bb = bitballoon.BitBalloon(config.get("bitballoon", "access_key"),
-                                   config.get("bitballoon", "site_id"),
-                                   config.get("bitballoon", "email"))
-        _, filename = os.path.split(args.output)
 
-        bb.update_file_data(html_data.encode("UTF-8"), filename, deploy=True)
-    else:
-        with io.open(args.output, "w", encoding="UTF-8") as html_out:
-            html_out.write(html_data)
+    with io.open(args.output, "w", encoding="UTF-8") as html_out:
+        html_out.write(html_data)
 
-        dest_dir = os.path.dirname(args.output)
-        if dest_dir:
-            for filename in [args.style_file, args.favicon_file]:
-                shutil.copy(filename, os.path.join(dest_dir, os.path.basename(filename)))
-            for filename in args.additional_files:
-                dest_path = os.path.join(dest_dir, os.path.basename(filename))
-                if os.path.isdir(filename):
-                    shutil.rmtree(dest_path, True)
-                    shutil.copytree(filename, dest_path)
-                else:
-                    shutil.copy(filename, dest_path)
+    dest_dir = os.path.dirname(args.output)
+    if dest_dir:
+        for filename in [args.style_file, args.favicon_file]:
+            shutil.copy(filename, os.path.join(dest_dir, os.path.basename(filename)))
+        for filename in args.additional_files:
+            dest_path = os.path.join(dest_dir, os.path.basename(filename))
+            if os.path.isdir(filename):
+                shutil.rmtree(dest_path, True)
+                shutil.copytree(filename, dest_path)
+            else:
+                shutil.copy(filename, dest_path)
 
 
 if __name__ == "__main__":
