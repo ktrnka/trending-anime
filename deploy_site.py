@@ -36,6 +36,11 @@ def main():
     # deploy all files under the directory tree
     all_files = [[os.path.join(dirpath, f) for f in filenames] for dirpath, dirnames, filenames in os.walk(args.site_dir)]
     all_files = list(itertools.chain(*all_files))
+
+    if not any(filename.endswith("index.html") for filename in all_files):
+        logger.error("No index.html in the deploy, aborting.")
+        return
+
     logger.debug("File list: %s", all_files)
     bb.deploy_files(all_files)
 
