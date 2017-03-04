@@ -1,0 +1,81 @@
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:active {
+    text-decoration: underline;
+}
+img.season {
+    width: 26px;
+    height: auto;
+}
+div.number {
+    text-align: right;
+}
+body {
+    background: lightgrey;
+}
+div.rectangle {
+    height: 16px;
+    border-radius: 8px;
+    background: linear-gradient(to right, #336699, #4d80b3);
+    /*background-color: #336699;*/
+}
+div.middle {
+    margin: 30px auto;
+    background: #ffffff;
+    padding: 20px 20px;
+}
+h1 {
+    text-align: center;
+    font-style: italic;
+    color: grey;
+    margin: 5px 0px;
+    font-size: 2.5rem;
+}
+h2 {
+    font-style: italic;
+    color: maroon;
+    font-size: 2rem;
+}
+#timestamp {
+    font-style: italic;
+    text-align: center;
+    color: grey;
+    margin: 10px 0px 10px 0px;
+}
+div.parent {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+div.header_row {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    color: grey;
+}
+div.shadeonhover:hover {
+    background-color: #EEE;
+}
+
+nav {
+    background: #336699;
+}
+.brand-logo {
+    margin-left: 2rem;
+    margin-left: 2rem;
+}
+div.rectangle-standalone {
+    margin: 5px;
+}

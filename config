@@ -1,0 +1,15 @@
+[google]
+api_key=AIzaSyCot-SqqOYLpMkQV_HNJRXCZxdVh8k9KA4
+cx=001189303207156659329:lsmriodr44w
+
+[mongo]
+uri=mongodb://anime_user:migi@ds031591.mongolab.com:31591/anime-trends
+
+[kimono]
+endpoint=https://www.kimonolabs.com/api/4ut1753q?apikey=857b8987daae0d4e2ab9365287561fff
+release_date_endpoint=https://www.kimonolabs.com/api/65hz062e?apikey=857b8987daae0d4e2ab9365287561fff,https://www.kimonolabs.com/api/2hoto7z2?apikey=857b8987daae0d4e2ab9365287561fff
+
+[bitballoon]
+access_key=5f2d10c0b8c1f45569dee2eef0e51bf6adfd3e1db178f1b8faff3d30b7e47e71
+site_id=cda6a022-c07b-4288-8b66-ca7158182078
+email=keith.trnka@gmail.com

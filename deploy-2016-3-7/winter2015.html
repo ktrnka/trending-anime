@@ -1,0 +1,2914 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<!-- Testing if nodeploy works -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-site-verification" content="lSrPHbnJwTP4VhmOt4Mt2IkfPLdQogNQXQPau4N67m0" />
+<meta name="description" content="Most popular anime in Winter 2015 by number of torrent downloads.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/css/materialize.min.css">
+<style>
+/* inline style: res/extra-fonts.css */
+@charset "UTF-8";
+
+@font-face {
+  font-family: "season-icon-font";
+  src:url("fonts/season-icon-font.eot");
+  src:url("fonts/season-icon-font.eot?#iefix") format("embedded-opentype"),
+    url("fonts/season-icon-font.woff") format("woff"),
+    url("fonts/season-icon-font.ttf") format("truetype"),
+    url("fonts/season-icon-font.svg#season-icon-font") format("svg");
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+[data-icon]:before {
+  font-family: "season-icon-font" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  font-family: "season-icon-font" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-snowflake:before {
+  color: #03a9f4;
+  content: "\e000";
+}
+.icon-sun:before {
+  color: #ffd600;
+  content: "\e001";
+}
+.icon-grass:before {
+  color: #64dd17;
+  content: "\e002";
+}
+.icon-tree:before {
+  color: #ffa000;
+  content: "\e003";
+}
+.icon-tulip:before {
+  color: #e91e63;
+  content: "\e005";
+}
+
+
+.icon-snowflake-grey:before {
+  color: #eeeeee;
+  content: "\e000";
+}
+.icon-sun-grey:before {
+  color: #eeeeee;
+  content: "\e001";
+}
+.icon-grass-grey:before {
+  color: #eeeeee;
+  content: "\e002";
+}
+.icon-tree-grey:before {
+  color: #eeeeee;
+  content: "\e003";
+}
+.icon-tulip-grey:before {
+  color: #eeeeee;
+  content: "\e005";
+}
+
+/* inline style: res/over9000.css */
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:active {
+    text-decoration: underline;
+}
+img.season {
+    width: 26px;
+    height: auto;
+}
+div.number {
+    text-align: right;
+}
+body {
+    background: lightgrey;
+}
+div.rectangle {
+    height: 16px;
+    border-radius: 8px;
+    background: linear-gradient(to right, #336699, #4d80b3);
+    /*background-color: #336699;*/
+}
+div.middle {
+    margin: 30px auto;
+    background: #ffffff;
+    padding: 20px 20px;
+}
+h1 {
+    text-align: center;
+    font-style: italic;
+    color: grey;
+    margin: 5px 0px;
+    font-size: 2.5rem;
+}
+h2 {
+    font-style: italic;
+    color: maroon;
+    font-size: 2rem;
+}
+#timestamp {
+    font-style: italic;
+    text-align: center;
+    color: grey;
+    margin: 10px 0px 10px 0px;
+}
+div.parent {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+div.header_row {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    color: grey;
+}
+div.shadeonhover:hover {
+    background-color: #EEE;
+}
+
+nav {
+    background: #336699;
+}
+.brand-logo {
+    margin-left: 2rem;
+    margin-left: 2rem;
+}
+div.rectangle-standalone {
+    margin: 5px;
+}
+
+
+</style>
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<title>Top anime in Winter 2015 by Over 9000</title>
+</head>
+
+<body>
+
+<!--<div class="navbar-fixed">-->
+<nav>
+<div class="nav-wrapper">
+    <a href="index.html" class="brand-logo hide-on-med-and-up">Over 9000</a>
+    <a href="index.html" class="brand-logo hide-on-small-only">Over 9000: Popular anime</a>
+    <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+    <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li class=""><a href="index.html">Current trends</a></li>
+        <li class=""><a href="summer2015.html">Summer 2015</a></li>
+        <li class=""><a href="spring2015.html">Spring 2015</a></li>
+        <li class="active"><a href="winter2015.html">Winter 2015</a></li>
+        <li class=""><a href="about.html">About</a></li>
+    </ul>
+    <ul class="side-nav" id="mobile-demo">
+        <li class=""><a href="index.html">Current trends</a></li>
+        <li class=""><a href="summer2015.html">Summer 2015</a></li>
+        <li class=""><a href="spring2015.html">Spring 2015</a></li>
+        <li class="active"><a href="winter2015.html">Winter 2015</a></li>
+        <li class=""><a href="about.html">About</a></li>
+    </ul>
+</div>
+</nav>
+<!--</div>-->
+
+<div class="container middle z-depth-1">
+<div class="row header_row valign-wrapper">
+<div class="col l2 m2 s3 valign">Seasons</div>
+<div class="col l3 m3 s6 valign">Title</div>
+<div class="col l7 m7 s3 valign">Downloads</div>
+</div>
+<div class="divider"></div>
+
+<div class="row parent shadeonhover" id="row_0">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/22535/Kiseijuu:_Sei_no_Kakuritsu">Kiseijuu: Sei no Kakuritsu</a></div>
+<div class="number col l1 m1 s3 valign">102,915</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 100%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 100%;"></div>
+</div>
+
+<div class="child-row_0" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Parasyte - the maxim</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 22</span>
+<p>
+Released Wed, Mar 11<br>
+Current DLs: 129,394<br>
+DLs at 7d: 102,895 +/- 1,091<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 23</span>
+<p>
+Released Wed, Mar 18<br>
+Current DLs: 137,405<br>
+DLs at 7d: 113,698 +/- 2,991<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 24</span>
+<p>
+Released Wed, Mar 25<br>
+Current DLs: 122,754<br>
+DLs at 7d: 108,076 +/- 664<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_1">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/27899/Tokyo_Ghoul_%E2%88%9AA">Tokyo Ghoul Root A</a></div>
+<div class="number col l1 m1 s3 valign">85,505</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 83%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 83%;"></div>
+</div>
+
+<div class="child-row_1" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Tokyo Ghoul √A</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Thu, Mar 12<br>
+Current DLs: 105,089<br>
+DLs at 7d: 85,954 +/- 803<br>
+101.0% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Thu, Mar 19<br>
+Current DLs: 104,364<br>
+DLs at 7d: 85,848 +/- 951<br>
+99.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Thu, Mar 26<br>
+Current DLs: 102,315<br>
+DLs at 7d: 91,568 +/- 1,452<br>
+106.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_2">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/22729/Aldnoah.Zero">Aldnoah.Zero</a></div>
+<div class="number col l1 m1 s3 valign">85,122</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 82%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 82%;"></div>
+</div>
+
+<div class="child-row_2" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 22</span>
+<p>
+Released Sat, Mar 14<br>
+Current DLs: 107,612<br>
+DLs at 7d: 86,671 +/- 1,086<br>
+149.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 23</span>
+<p>
+Released Sat, Mar 21<br>
+Current DLs: 101,103<br>
+DLs at 7d: 81,179 +/- 156<br>
+93.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 24</span>
+<p>
+Released Sat, Mar 28<br>
+Current DLs: 107,001<br>
+DLs at 7d: 88,021 +/- 986<br>
+108.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_3">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/23321/Log_Horizon_2nd_Season">Log Horizon 2nd Season</a></div>
+<div class="number col l1 m1 s3 valign">78,209</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 75%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 75%;"></div>
+</div>
+
+<div class="child-row_3" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Log Horizon 2</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 23</span>
+<p>
+Released Sat, Mar 14<br>
+Current DLs: 97,544<br>
+DLs at 7d: 69,476 +/- 647<br>
+86.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 24</span>
+<p>
+Released Sat, Mar 21<br>
+Current DLs: 89,667<br>
+DLs at 7d: 64,819 +/- 58<br>
+93.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 25</span>
+<p>
+Released Sat, Mar 28<br>
+Current DLs: 92,086<br>
+DLs at 7d: 70,641 +/- 499<br>
+109.0% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_4">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/28223/Death_Parade">Death Parade</a></div>
+<div class="number col l1 m1 s3 valign">69,117</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 67%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 67%;"></div>
+</div>
+
+<div class="child-row_4" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Fri, Mar 13<br>
+Current DLs: 88,568<br>
+DLs at 7d: 70,880 +/- 2,416<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Fri, Mar 20<br>
+Current DLs: 81,112<br>
+DLs at 7d: 65,670 +/- 820<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Fri, Mar 27<br>
+Current DLs: 84,992<br>
+DLs at 7d: 73,725 +/- 1,544<br>
+112.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_5">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/23273/Shigatsu_wa_Kimi_no_Uso">Shigatsu wa Kimi no Uso</a></div>
+<div class="number col l1 m1 s3 valign">53,581</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 52%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 52%;"></div>
+</div>
+
+<div class="child-row_5" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 20</span>
+<p>
+Released Thu, Mar 05<br>
+Current DLs: 53,477<br>
+DLs at 7d: 51,850 +/- 441<br>
+95.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 21</span>
+<p>
+Released Thu, Mar 12<br>
+Current DLs: 75,171<br>
+DLs at 7d: 55,745 +/- 873<br>
+107.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 22</span>
+<p>
+Released Thu, Mar 19<br>
+Current DLs: 74,277<br>
+DLs at 7d: 57,522 +/- 1,020<br>
+103.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_6">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/23233/Shinmai_Maou_no_Testament">Shinmai Maou no Testament</a></div>
+<div class="number col l1 m1 s3 valign">50,613</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 49%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 49%;"></div>
+</div>
+
+<div class="child-row_6" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Shinmai Mao no Testament, Shinmai Maou no Testament Vol.2 (BD</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Wed, Mar 11<br>
+Current DLs: 60,600<br>
+DLs at 7d: 45,502 +/- 717<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Wed, Mar 18<br>
+Current DLs: 55,822<br>
+DLs at 7d: 42,587 +/- 915<br>
+93.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Wed, Mar 25<br>
+Current DLs: 56,345<br>
+DLs at 7d: 52,025 +/- 322<br>
+122.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_7">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/21511/Kantai_Collection:_KanColle">Kantai Collection: KanColle</a></div>
+<div class="number col l1 m1 s3 valign">45,897</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 44%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 44%;"></div>
+</div>
+
+<div class="child-row_7" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Turning Girls, Kantai Collection</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Wed, Mar 11<br>
+Current DLs: 54,799<br>
+DLs at 7d: 37,941 +/- 1,247<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Wed, Mar 18<br>
+Current DLs: 50,735<br>
+DLs at 7d: 37,344 +/- 716<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Thu, Mar 26<br>
+Current DLs: 48,336<br>
+DLs at 7d: 37,300 +/- 101<br>
+99.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_8">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/25397/Absolute_Duo">Absolute Duo</a></div>
+<div class="number col l1 m1 s3 valign">45,101</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 43%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 43%;"></div>
+</div>
+
+<div class="child-row_8" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Mon, Mar 09<br>
+Current DLs: 45,383<br>
+DLs at 7d: 43,194 +/- 1,935<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Mon, Mar 16<br>
+Current DLs: 49,627<br>
+DLs at 7d: 42,263 +/- 1,641<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Mon, Mar 23<br>
+Current DLs: 43,429<br>
+DLs at 7d: 39,016 +/- 812<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_9">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/25731/Cross_Ange:_Tenshi_to_Ryuu_no_Rondo">Cross Ange: Tenshi to Ryuu no Rondo</a></div>
+<div class="number col l1 m1 s3 valign">44,021</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 42%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 42%;"></div>
+</div>
+
+<div class="child-row_9" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Cross Ange - Tenshi to Ryuu no Rondo - Volume 1 [BD, Cross Ange</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 23</span>
+<p>
+Released Sun, Mar 15<br>
+Current DLs: 54,779<br>
+DLs at 7d: 41,329 +/- 279<br>
+100.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 24</span>
+<p>
+Released Sun, Mar 22<br>
+Current DLs: 54,010<br>
+DLs at 7d: 41,499 +/- 602<br>
+100.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 25</span>
+<p>
+Released Sun, Mar 29<br>
+Current DLs: 52,046<br>
+DLs at 7d: 47,704 +/- 816<br>
+115.0% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_10">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/26441/Junketsu_no_Maria">Maria the Virgin Witch</a></div>
+<div class="number col l1 m1 s3 valign">43,602</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 42%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 42%;"></div>
+</div>
+
+<div class="child-row_10" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Junketsu no Maria - Maria the Virgin Witch, Junketsu no Maria</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Sun, Mar 15<br>
+Current DLs: 54,103<br>
+DLs at 7d: 40,031 +/- 404<br>
+100.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Sun, Mar 22<br>
+Current DLs: 49,906<br>
+DLs at 7d: 38,175 +/- 449<br>
+95.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Sun, Mar 29<br>
+Current DLs: 49,258<br>
+DLs at 7d: 41,120 +/- 964<br>
+107.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_11">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/22663/Seiken_Tsukai_no_World_Break">Seiken Tsukai no World Break</a></div>
+<div class="number col l1 m1 s3 valign">42,320</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 41%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 41%;"></div>
+</div>
+
+<div class="child-row_11" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Sun, Mar 15<br>
+Current DLs: 48,057<br>
+DLs at 7d: 40,556 +/- 452<br>
+98.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Sun, Mar 22<br>
+Current DLs: 45,354<br>
+DLs at 7d: 39,256 +/- 474<br>
+96.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Sun, Mar 29<br>
+Current DLs: 43,418<br>
+DLs at 7d: 39,156 +/- 916<br>
+99.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_12">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/23277/Saenai_Heroine_no_Sodatekata">Saekano</a></div>
+<div class="number col l1 m1 s3 valign">40,647</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 39%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 39%;"></div>
+</div>
+
+<div class="child-row_12" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Saenai Heroine no Sodatekata</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Thu, Mar 19<br>
+Current DLs: 51,543<br>
+DLs at 7d: 40,300 +/- 382<br>
+98.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Thu, Mar 26<br>
+Current DLs: 50,217<br>
+DLs at 7d: 36,949 +/- 1,409<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Thu, Mar 26<br>
+Current DLs: 50,446<br>
+DLs at 7d: 36,323 +/- 403<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_13">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/25429/Isuca">ISUCA</a></div>
+<div class="number col l1 m1 s3 valign">34,992</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 34%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 34%;"></div>
+</div>
+
+<div class="child-row_13" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Fri, Mar 13<br>
+Current DLs: 38,795<br>
+DLs at 7d: 32,872 +/- 621<br>
+95.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 9</span>
+<p>
+Released Fri, Mar 20<br>
+Current DLs: 35,322<br>
+DLs at 7d: 29,609 +/- 976<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Fri, Mar 27<br>
+Current DLs: 36,460<br>
+DLs at 7d: 33,015 +/- 828<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_14">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/24873/Juuou_Mujin_no_Fafnir">Unlimited Fafnir</a></div>
+<div class="number col l1 m1 s3 valign">34,721</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 33%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 33%;"></div>
+</div>
+
+<div class="child-row_14" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Juuou Mujin no Fafnir</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Fri, Mar 13<br>
+Current DLs: 35,957<br>
+DLs at 7d: 30,929 +/- 3<br>
+95.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Fri, Mar 20<br>
+Current DLs: 33,575<br>
+DLs at 7d: 29,307 +/- 353<br>
+94.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Fri, Mar 27<br>
+Current DLs: 33,197<br>
+DLs at 7d: 30,322 +/- 483<br>
+103.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_15">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/25013/Akatsuki_no_Yona">Akatsuki no Yona</a></div>
+<div class="number col l1 m1 s3 valign">34,445</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 33%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 33%;"></div>
+</div>
+
+<div class="child-row_15" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 22</span>
+<p>
+Released Tue, Mar 10<br>
+Current DLs: 46,919<br>
+DLs at 7d: 36,595 +/- 347<br>
+103.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 23</span>
+<p>
+Released Tue, Mar 17<br>
+Current DLs: 44,193<br>
+DLs at 7d: 35,176 +/- 445<br>
+96.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 24</span>
+<p>
+Released Tue, Mar 24<br>
+Current DLs: 42,180<br>
+DLs at 7d: 36,135 +/- 257<br>
+102.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_16">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/25867/Rolling%E2%98%86Girls">Rolling Girls</a></div>
+<div class="number col l1 m1 s3 valign">29,455</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 28%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 28%;"></div>
+</div>
+
+<div class="child-row_16" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> The Rolling Girls, Rolling☆Girls</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Sat, Mar 14<br>
+Current DLs: 32,906<br>
+DLs at 7d: 23,207 +/- 806<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Sat, Mar 21<br>
+Current DLs: 30,882<br>
+DLs at 7d: 24,820 +/- 63<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Sat, Mar 28<br>
+Current DLs: 29,859<br>
+DLs at 7d: 26,630 +/- 231<br>
+107.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_17">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/24629/Koufuku_Graffiti">Koufuku Graffiti</a></div>
+<div class="number col l1 m1 s3 valign">28,244</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 27%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 27%;"></div>
+</div>
+
+<div class="child-row_17" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Sun, Mar 15<br>
+Current DLs: 35,162<br>
+DLs at 7d: 24,134 +/- 135<br>
+86.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Sun, Mar 22<br>
+Current DLs: 32,120<br>
+DLs at 7d: 18,713 +/- 433<br>
+77.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Sun, Mar 29<br>
+Current DLs: 29,431<br>
+DLs at 7d: 19,825 +/- 460<br>
+105.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_18">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/23755/Nanatsu_no_Taizai">Nanatsu no Taizai</a></div>
+<div class="number col l1 m1 s3 valign">27,497</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 26%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 26%;"></div>
+</div>
+
+<div class="child-row_18" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Nanatsu no Taizai - The Seven Deadly Sins, Nanatsu no Taizai - 01v2</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 22</span>
+<p>
+Released Sun, Mar 15<br>
+Current DLs: 40,091<br>
+DLs at 7d: 28,297 +/- 509<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 23</span>
+<p>
+Released Sun, Mar 22<br>
+Current DLs: 34,352<br>
+DLs at 7d: 25,489 +/- 499<br>
+90.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 24</span>
+<p>
+Released Sun, Mar 29<br>
+Current DLs: 33,237<br>
+DLs at 7d: 27,754 +/- 1,012<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_19">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/24277/Yowamushi_Pedal:_Grande_Road">Yowamushi Pedal - Grande Road</a></div>
+<div class="number col l1 m1 s3 valign">26,791</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 26%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 26%;"></div>
+</div>
+
+<div class="child-row_19" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 22</span>
+<p>
+Released Mon, Mar 16<br>
+Current DLs: 27,773<br>
+DLs at 7d: 26,387 +/- 654<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 23</span>
+<p>
+Released Mon, Mar 23<br>
+Current DLs: 26,928<br>
+DLs at 7d: 25,890 +/- 338<br>
+98.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 24</span>
+<p>
+Released Mon, Mar 30<br>
+Current DLs: 26,691<br>
+DLs at 7d: 24,607 +/- 225<br>
+95.0% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_20">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/23311/Garo:_Honoo_no_Kokuin">Garo The Animation</a></div>
+<div class="number col l1 m1 s3 valign">26,707</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 25%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 25%;"></div>
+</div>
+
+<div class="child-row_20" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Garo: Honoo no Kokuin</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 22</span>
+<p>
+Released Fri, Mar 13<br>
+Current DLs: 33,654<br>
+DLs at 7d: 27,158 +/- 570<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 23</span>
+<p>
+Released Fri, Mar 20<br>
+Current DLs: 32,576<br>
+DLs at 7d: 26,870 +/- 378<br>
+98.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 24</span>
+<p>
+Released Fri, Mar 27<br>
+Current DLs: 31,821<br>
+DLs at 7d: 28,446 +/- 614<br>
+105.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_21">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/25835/Shirobako">Shirobako</a></div>
+<div class="number col l1 m1 s3 valign">26,127</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 25%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 25%;"></div>
+</div>
+
+<div class="child-row_21" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 22</span>
+<p>
+Released Thu, Mar 12<br>
+Current DLs: 39,769<br>
+DLs at 7d: 24,648 +/- 300<br>
+104.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 23</span>
+<p>
+Released Fri, Mar 20<br>
+Current DLs: 37,378<br>
+DLs at 7d: 27,849 +/- 738<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 24</span>
+<p>
+Released Fri, Mar 27<br>
+Current DLs: 41,089<br>
+DLs at 7d: 31,403 +/- 1,010<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_22">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/26165/Yuri_Kuma_Arashi">Yuri Kuma Arashi</a></div>
+<div class="number col l1 m1 s3 valign">25,024</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 24%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 24%;"></div>
+</div>
+
+<div class="child-row_22" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Mon, Mar 16<br>
+Current DLs: 30,758<br>
+DLs at 7d: 22,348 +/- 1,023<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Mon, Mar 23<br>
+Current DLs: 30,582<br>
+DLs at 7d: 22,543 +/- 440<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Mon, Mar 30<br>
+Current DLs: 28,567<br>
+DLs at 7d: 22,119 +/- 323<br>
+98.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_23">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/16385/Dog_Days">Dog Days S3</a></div>
+<div class="number col l1 m1 s3 valign">24,510</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 23%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 23%;"></div>
+</div>
+
+<div class="child-row_23" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Sat, Mar 14<br>
+Current DLs: 27,512<br>
+DLs at 7d: 21,330 +/- 178<br>
+93.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Sat, Mar 21<br>
+Current DLs: 25,860<br>
+DLs at 7d: 22,690 +/- 27<br>
+106.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Sat, Mar 28<br>
+Current DLs: 24,890<br>
+DLs at 7d: 21,799 +/- 362<br>
+96.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_24">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/25681/Kamisama_Hajimemashita%E2%97%8E">Kami-sama Hajimemashita 2</a></div>
+<div class="number col l1 m1 s3 valign">23,485</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 22%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 22%;"></div>
+</div>
+
+<div class="child-row_24" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Kamisama Kiss 2, Kami-sama Hajimemashita 2nd Season</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Mon, Mar 16<br>
+Current DLs: 26,646<br>
+DLs at 7d: 22,243 +/- 724<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Mon, Mar 23<br>
+Current DLs: 24,773<br>
+DLs at 7d: 21,684 +/- 0<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Mon, Mar 30<br>
+Current DLs: 26,147<br>
+DLs at 7d: 22,887 +/- 300<br>
+105.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_25">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/23259/Gundam:_G_no_Reconguista">Gundam: G no Reconguista</a></div>
+<div class="number col l1 m1 s3 valign">23,219</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 22%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 22%;"></div>
+</div>
+
+<div class="child-row_25" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Gundam Reconguista in G</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 24</span>
+<p>
+Released Fri, Mar 13<br>
+Current DLs: 28,491<br>
+DLs at 7d: 18,702 +/- 177<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 25</span>
+<p>
+Released Fri, Mar 20<br>
+Current DLs: 25,574<br>
+DLs at 7d: 21,459 +/- 118<br>
+114.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 26</span>
+<p>
+Released Fri, Mar 27<br>
+Current DLs: 25,305<br>
+DLs at 7d: 28,269 +/- 268<br>
+131.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_26">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/28155/Yoru_no_Yatterman">Yoru no Yatterman</a></div>
+<div class="number col l1 m1 s3 valign">18,854</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 18%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 18%;"></div>
+</div>
+
+<div class="child-row_26" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Sun, Mar 15<br>
+Current DLs: 18,655<br>
+DLs at 7d: 16,102 +/- 126<br>
+97.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Sun, Mar 22<br>
+Current DLs: 18,170<br>
+DLs at 7d: 15,827 +/- 132<br>
+98.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Sun, Mar 29<br>
+Current DLs: 17,643<br>
+DLs at 7d: 16,006 +/- 337<br>
+101.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_27">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/26085/Military!">Military!</a></div>
+<div class="number col l1 m1 s3 valign">16,046</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 15%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 15%;"></div>
+</div>
+
+<div class="child-row_27" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Thu, Mar 12<br>
+Current DLs: 17,059<br>
+DLs at 7d: 12,769 +/- 100<br>
+75.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Thu, Mar 19<br>
+Current DLs: 16,199<br>
+DLs at 7d: 12,790 +/- 51<br>
+100.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Wed, Mar 25<br>
+Current DLs: 15,059<br>
+DLs at 7d: 12,637 +/- 98<br>
+98.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_28">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/28283/Sengoku_Musou">Sengoku Musou</a></div>
+<div class="number col l1 m1 s3 valign">12,516</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 12%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 12%;"></div>
+</div>
+
+<div class="child-row_28" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Sun, Mar 15<br>
+Current DLs: 12,810<br>
+DLs at 7d: 10,802 +/- 126<br>
+98.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Sun, Mar 22<br>
+Current DLs: 12,220<br>
+DLs at 7d: 10,648 +/- 118<br>
+98.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Sun, Mar 29<br>
+Current DLs: 11,957<br>
+DLs at 7d: 10,822 +/- 292<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_29">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/27727/Binan_Koukou_Chikyuu_Bouei-bu_LOVE!">Binan Koukou Chikyuu Bouei-bu Love!</a></div>
+<div class="number col l1 m1 s3 valign">12,053</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 11%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 11%;"></div>
+</div>
+
+<div class="child-row_29" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Tue, Mar 10<br>
+Current DLs: 13,096<br>
+DLs at 7d: 10,534 +/- 100<br>
+97.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Tue, Mar 17<br>
+Current DLs: 12,494<br>
+DLs at 7d: 10,482 +/- 124<br>
+99.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Tue, Mar 24<br>
+Current DLs: 12,065<br>
+DLs at 7d: 10,654 +/- 63<br>
+101.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_30">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/25839/Bonjour%E2%99%AAKoiaji_P%C3%A2tisserie">Bonjour Sweet Love Patisserie</a></div>
+<div class="number col l1 m1 s3 valign">8,093</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 7%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 7%;"></div>
+</div>
+
+<div class="child-row_30" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 22</span>
+<p>
+Released Sat, Mar 07<br>
+Current DLs: 8,956<br>
+DLs at 7d: 8,203 +/- 45<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 23</span>
+<p>
+Released Sat, Mar 14<br>
+Current DLs: 9,446<br>
+DLs at 7d: 7,593 +/- 98<br>
+92.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 24</span>
+<p>
+Released Sat, Mar 21<br>
+Current DLs: 12,806<br>
+DLs at 7d: 10,203 +/- 141<br>
+134.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_31">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/21835/Majin_Bone">Majin Bone</a></div>
+<div class="number col l1 m1 s3 valign">7,630</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 7%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 7%;"></div>
+</div>
+
+<div class="child-row_31" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 50</span>
+<p>
+Released Tue, Mar 17<br>
+Current DLs: 8,220<br>
+DLs at 7d: 7,343 +/- 33<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 51</span>
+<p>
+Released Tue, Mar 24<br>
+Current DLs: 9,877<br>
+DLs at 7d: 7,802 +/- 46<br>
+106.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 52</span>
+<p>
+Released Tue, Mar 31<br>
+Current DLs: 8,228<br>
+DLs at 7d: 7,624 +/- 107<br>
+97.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_32">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/10155/Dog_Days">Dog Days″</a></div>
+<div class="number col l1 m1 s3 valign">6,845</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 6%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 6%;"></div>
+</div>
+
+<div class="child-row_32" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Dog Days''</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Mon, Mar 16<br>
+Current DLs: 8,677<br>
+DLs at 7d: 5,470 +/- 143<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Sat, Mar 21<br>
+Current DLs: 9,176<br>
+DLs at 7d: 6,203 +/- 22<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Sat, Mar 28<br>
+Current DLs: 9,055<br>
+DLs at 7d: 5,505 +/- 52<br>
+88.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_33">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/22359/Sanzoku_no_Musume_Ronja">Sanzoku no Musume Ronja</a></div>
+<div class="number col l1 m1 s3 valign">5,545</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 5%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 5%;"></div>
+</div>
+
+<div class="child-row_33" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 24</span>
+<p>
+Released Sun, Mar 15<br>
+Current DLs: 6,212<br>
+DLs at 7d: 5,173 +/- 67<br>
+98.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 25</span>
+<p>
+Released Sun, Mar 22<br>
+Current DLs: 5,940<br>
+DLs at 7d: 4,909 +/- 7<br>
+94.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 26</span>
+<p>
+Released Mon, Mar 30<br>
+Current DLs: 5,372<br>
+DLs at 7d: 4,670 +/- 41<br>
+95.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_34">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/22733/Dragon_Collection">Dragon Collection</a></div>
+<div class="number col l1 m1 s3 valign">5,062</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 4%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 4%;"></div>
+</div>
+
+<div class="child-row_34" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 49</span>
+<p>
+Released Mon, Mar 16<br>
+Current DLs: 5,978<br>
+DLs at 7d: 4,865 +/- 154<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 50</span>
+<p>
+Released Mon, Mar 23<br>
+Current DLs: 5,730<br>
+DLs at 7d: 4,513 +/- 69<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 51</span>
+<p>
+Released Mon, Mar 30<br>
+Current DLs: 6,038<br>
+DLs at 7d: 4,911 +/- 59<br>
+108.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_35">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/22735/Oreca_Battle">Oreca Battle</a></div>
+<div class="number col l1 m1 s3 valign">4,439</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 4%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 4%;"></div>
+</div>
+
+<div class="child-row_35" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 49</span>
+<p>
+Released Mon, Mar 16<br>
+Current DLs: 4,981<br>
+DLs at 7d: 4,277 +/- 126<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 50</span>
+<p>
+Released Mon, Mar 23<br>
+Current DLs: 4,719<br>
+DLs at 7d: 3,761 +/- 60<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 51</span>
+<p>
+Released Mon, Mar 30<br>
+Current DLs: 5,345<br>
+DLs at 7d: 4,269 +/- 53<br>
+113.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_36">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/27655/Aldnoah.Zero_2nd_Season">Aldnoah.Zero 2nd Season</a></div>
+<div class="number col l1 m1 s3 valign">4,255</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 4%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 4%;"></div>
+</div>
+
+<div class="child-row_36" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Sat, Mar 14<br>
+Current DLs: 6,096<br>
+DLs at 7d: 4,212 +/- 118<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Sat, Mar 21<br>
+Current DLs: 6,247<br>
+DLs at 7d: 4,106 +/- 16<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Sat, Mar 28<br>
+Current DLs: 6,152<br>
+DLs at 7d: 3,887 +/- 56<br>
+94.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_37">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/22099/Hero_Bank">Hero Bank</a></div>
+<div class="number col l1 m1 s3 valign">4,079</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 3%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 3%;"></div>
+</div>
+
+<div class="child-row_37" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 49</span>
+<p>
+Released Mon, Mar 16<br>
+Current DLs: 4,601<br>
+DLs at 7d: 4,025 +/- 73<br>
+102.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 50</span>
+<p>
+Released Mon, Mar 23<br>
+Current DLs: 4,216<br>
+DLs at 7d: 3,675 +/- 75<br>
+91.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 51</span>
+<p>
+Released Mon, Mar 30<br>
+Current DLs: 4,358<br>
+DLs at 7d: 3,986 +/- 22<br>
+108.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_38">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/8675/Seitokai_Yakuindomo">Seitokai Yakuindomo Bleep</a></div>
+<div class="number col l1 m1 s3 valign">3,044</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 2%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 2%;"></div>
+</div>
+
+<div class="child-row_38" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 16</span>
+<p>
+Released Wed, Mar 18<br>
+Current DLs: 3,447<br>
+DLs at 7d: 3,044 +/- 3<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_39">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/27629/Tantei_Kageki_Milky_Holmes_TD">Tantei Kageki Milky Holmes TD</a></div>
+<div class="number col l1 m1 s3 valign">2,070</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 2%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 2%;"></div>
+</div>
+
+<div class="child-row_39" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Sun, Mar 15<br>
+Current DLs: 2,188<br>
+DLs at 7d: 1,236 +/- 30<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Mon, Mar 23<br>
+Current DLs: 2,335<br>
+DLs at 7d: 1,103 +/- 11<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Mon, Mar 30<br>
+Current DLs: 1,946<br>
+DLs at 7d: 1,187 +/- 3<br>
+107.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_40">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/19685/Kanojo_ga_Flag_wo_Oraretara">Kanojo ga Flag wo Oraretara</a></div>
+<div class="number col l1 m1 s3 valign">1,538</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 1%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 1%;"></div>
+</div>
+
+<div class="child-row_40" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 13</span>
+<p>
+Released Sat, Mar 28<br>
+Current DLs: 1,585<br>
+DLs at 7d: 1,538 +/- 1<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_41">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/21167/Escha_&_Logy_no_Atelier:_Tasogare_no_Sora_no_Renkinjutsushi">Atelier Escha & Logy - Alchemists of the Dusk Sky</a></div>
+<div class="number col l1 m1 s3 valign">1,518</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 1%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 1%;"></div>
+</div>
+
+<div class="child-row_41" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 10</span>
+<p>
+Released Thu, Mar 19<br>
+Current DLs: 1,607<br>
+DLs at 7d: 1,350 +/- 12<br>
+79.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Tue, Mar 24<br>
+Current DLs: 1,429<br>
+DLs at 7d: 1,386 +/- 0<br>
+102.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 12</span>
+<p>
+Released Wed, Mar 25<br>
+Current DLs: 1,267<br>
+DLs at 7d: 1,219 +/- 1<br>
+87.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_42">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/20509/Fate/kaleid_liner_Prisma%E2%98%86Illya_2wei!">Fate Kaleid Prisma Illya 2wei</a></div>
+<div class="number col l1 m1 s3 valign">1,127</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 1%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 1%;"></div>
+</div>
+
+<div class="child-row_42" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> <span class="grey-text">Unknown</span></div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 5</span>
+<p>
+Released Mon, Mar 02<br>
+Current DLs: 1,208<br>
+DLs at 7d: 1,148 +/- 55<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Tue, Mar 31<br>
+Current DLs: 1,233<br>
+DLs at 7d: 1,108 +/- 12<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div id="timestamp">Refreshed Monday, February 29</div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/js/materialize.min.js"></script>
+<script>
+$(function() {
+    $('div.parent')
+        .css("cursor", "pointer")
+        .attr("title", "Click to expand/collapse")
+        .click(function(){
+            $(this).siblings(".child-" + this.id).toggle("slow");
+            $(this).toggleClass("shadeonhover");
+        });
+});
+$(".button-collapse").sideNav();
+</script>
+</body>
+</html>

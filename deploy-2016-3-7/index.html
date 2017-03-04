@@ -1,0 +1,5311 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<!-- Testing if nodeploy works -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-site-verification" content="lSrPHbnJwTP4VhmOt4Mt2IkfPLdQogNQXQPau4N67m0" />
+<meta name="description" content="Most popular anime in Winter 2016 by number of torrent downloads.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/css/materialize.min.css">
+<style>
+/* inline style: res/extra-fonts.css */
+@charset "UTF-8";
+
+@font-face {
+  font-family: "season-icon-font";
+  src:url("fonts/season-icon-font.eot");
+  src:url("fonts/season-icon-font.eot?#iefix") format("embedded-opentype"),
+    url("fonts/season-icon-font.woff") format("woff"),
+    url("fonts/season-icon-font.ttf") format("truetype"),
+    url("fonts/season-icon-font.svg#season-icon-font") format("svg");
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+[data-icon]:before {
+  font-family: "season-icon-font" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  font-family: "season-icon-font" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-snowflake:before {
+  color: #03a9f4;
+  content: "\e000";
+}
+.icon-sun:before {
+  color: #ffd600;
+  content: "\e001";
+}
+.icon-grass:before {
+  color: #64dd17;
+  content: "\e002";
+}
+.icon-tree:before {
+  color: #ffa000;
+  content: "\e003";
+}
+.icon-tulip:before {
+  color: #e91e63;
+  content: "\e005";
+}
+
+
+.icon-snowflake-grey:before {
+  color: #eeeeee;
+  content: "\e000";
+}
+.icon-sun-grey:before {
+  color: #eeeeee;
+  content: "\e001";
+}
+.icon-grass-grey:before {
+  color: #eeeeee;
+  content: "\e002";
+}
+.icon-tree-grey:before {
+  color: #eeeeee;
+  content: "\e003";
+}
+.icon-tulip-grey:before {
+  color: #eeeeee;
+  content: "\e005";
+}
+
+/* inline style: res/over9000.css */
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:active {
+    text-decoration: underline;
+}
+img.season {
+    width: 26px;
+    height: auto;
+}
+div.number {
+    text-align: right;
+}
+body {
+    background: lightgrey;
+}
+div.rectangle {
+    height: 16px;
+    border-radius: 8px;
+    background: linear-gradient(to right, #336699, #4d80b3);
+    /*background-color: #336699;*/
+}
+div.middle {
+    margin: 30px auto;
+    background: #ffffff;
+    padding: 20px 20px;
+}
+h1 {
+    text-align: center;
+    font-style: italic;
+    color: grey;
+    margin: 5px 0px;
+    font-size: 2.5rem;
+}
+h2 {
+    font-style: italic;
+    color: maroon;
+    font-size: 2rem;
+}
+#timestamp {
+    font-style: italic;
+    text-align: center;
+    color: grey;
+    margin: 10px 0px 10px 0px;
+}
+div.parent {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+div.header_row {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    color: grey;
+}
+div.shadeonhover:hover {
+    background-color: #EEE;
+}
+
+nav {
+    background: #336699;
+}
+.brand-logo {
+    margin-left: 2rem;
+    margin-left: 2rem;
+}
+div.rectangle-standalone {
+    margin: 5px;
+}
+
+
+</style>
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<title>Top anime in Winter 2016 by Over 9000</title>
+</head>
+
+<body>
+
+<!--<div class="navbar-fixed">-->
+<nav>
+<div class="nav-wrapper">
+    <a href="index.html" class="brand-logo hide-on-med-and-up">Over 9000</a>
+    <a href="index.html" class="brand-logo hide-on-small-only">Over 9000: Popular anime</a>
+    <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+    <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li class="active"><a href="index.html">Current trends</a></li>
+        <li class=""><a href="summer2015.html">Summer 2015</a></li>
+        <li class=""><a href="spring2015.html">Spring 2015</a></li>
+        <li class=""><a href="winter2015.html">Winter 2015</a></li>
+        <li class=""><a href="about.html">About</a></li>
+    </ul>
+    <ul class="side-nav" id="mobile-demo">
+        <li class="active"><a href="index.html">Current trends</a></li>
+        <li class=""><a href="summer2015.html">Summer 2015</a></li>
+        <li class=""><a href="spring2015.html">Spring 2015</a></li>
+        <li class=""><a href="winter2015.html">Winter 2015</a></li>
+        <li class=""><a href="about.html">About</a></li>
+    </ul>
+</div>
+</nav>
+<!--</div>-->
+
+<div class="container middle z-depth-1 red darken-1">
+<div class="row">
+<div class="col s12 white-text">Over9000 will be down until I have a couple days of free time. In short, Kimono Labs was acquired by Palantir and gave only 2 weeks notice before the service was fully shut down. But I've been in interview mode and haven't gotten around to replacing the Kimono dependency with Scrapy because the scraping workflow from nyaatorrents was a bit complex. I should be able to update once I'm done with interview prep.</div>
+</div>
+</div>
+
+<div class="container middle z-depth-1">
+<div class="row header_row valign-wrapper">
+<div class="col l2 m2 s3 valign">Seasons</div>
+<div class="col l3 m3 s6 valign">Title</div>
+<div class="col l7 m7 s3 valign">Downloads</div>
+</div>
+<div class="divider"></div>
+
+<div class="row parent shadeonhover" id="row_0">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31043/Boku_dake_ga_Inai_Machi">Boku dake ga Inai Machi</a></div>
+<div class="number col l1 m1 s3 valign">69,608</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 100%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 100%;"></div>
+</div>
+
+<div class="child-row_0" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Boku dake ga Inai Machi (ERASED)</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, Commie, BakedFish, DeadFish, GJM-eraser, BudLightSubs, AE</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Thu, Feb 11<br>
+Current DLs: 82,966<br>
+DLs at 7d: 71,612 +/- 395<br>
+130.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Thu, Feb 18<br>
+Current DLs: 61,049<br>
+DLs at 7d: 53,157 +/- 826<br>
+74.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Thu, Feb 25<br>
+Current DLs: 56,168<br>
+DLs at 7d: 65,647 +/- 2,232<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_1">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/28907/Gate:_Jieitai_Kanochi_nite_Kaku_Tatakaeri">GATE</a></div>
+<div class="number col l1 m1 s3 valign">66,766</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 95%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 95%;"></div>
+</div>
+
+<div class="child-row_1" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 18</span>
+<p>
+Released Fri, Feb 12<br>
+Current DLs: 76,518<br>
+DLs at 7d: 68,025 +/- 338<br>
+144.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 19</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 33,816<br>
+DLs at 7d: 31,639 +/- 33<br>
+46.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 20</span>
+<p>
+Released Fri, Feb 26<br>
+Current DLs: 56,976<br>
+DLs at 7d: 69,398 +/- 2,359<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_2">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31859/Hai_to_Gensou_no_Grimgar">Hai to Gensou no Grimgar</a></div>
+<div class="number col l1 m1 s3 valign">64,421</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 92%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 92%;"></div>
+</div>
+
+<div class="child-row_2" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, BakedFish, Hiryuu, DeadFish, AE, NotVeryFuni, Winter</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Sun, Feb 14<br>
+Current DLs: 44,712<br>
+DLs at 7d: 34,678 +/- 857<br>
+52.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 48,983<br>
+DLs at 7d: 47,689 +/- 1,004<br>
+137.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Sun, Feb 28<br>
+Current DLs: 31,307<br>
+DLs at 7d: 70,898 +/- 12,052<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_3">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31442/Musaigen_no_Phantom_World">Musaigen no Phantom World</a></div>
+<div class="number col l1 m1 s3 valign">63,029</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 90%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 90%;"></div>
+</div>
+
+<div class="child-row_3" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, Commie, DeadFish, BakedFish, Chihiro, AE</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Wed, Feb 10<br>
+Current DLs: 66,421<br>
+DLs at 7d: 57,564 +/- 674<br>
+105.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Wed, Feb 17<br>
+Current DLs: 45,889<br>
+DLs at 7d: 39,098 +/- 641<br>
+67.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Wed, Feb 24<br>
+Current DLs: 42,978<br>
+DLs at 7d: 46,514 +/- 1,418<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_4">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31163/Dimension_W">Dimension W</a></div>
+<div class="number col l1 m1 s3 valign">61,020</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 87%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 87%;"></div>
+</div>
+
+<div class="child-row_4" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, DameDesuYo, BakedFish, DeadFish, AE, apv, MK-Pn8</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Sun, Feb 14<br>
+Current DLs: 47,729<br>
+DLs at 7d: 39,060 +/- 660<br>
+65.0% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 43,861<br>
+DLs at 7d: 42,790 +/- 830<br>
+109.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Sun, Feb 28<br>
+Current DLs: 31,968<br>
+DLs at 7d: 72,395 +/- 12,307<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_5">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31636/Dagashi_Kashi">Dagashi Kashi</a></div>
+<div class="number col l1 m1 s3 valign">57,818</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 83%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 83%;"></div>
+</div>
+
+<div class="child-row_5" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, Commie, Mori, DeadFish, BakedFish, konosweets, AE, MK, Scales, RightShiftBy2, notname</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 5</span>
+<p>
+Released Fri, Feb 05<br>
+Current DLs: 57,362<br>
+DLs at 7d: 42,137 +/- 397<br>
+71.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Fri, Feb 19<br>
+Current DLs: 31,544<br>
+DLs at 7d: 26,889 +/- 1,184<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Fri, Feb 26<br>
+Current DLs: 42,596<br>
+DLs at 7d: 54,916 +/- 1,867<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_6">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/21">One Piece</a></div>
+<div class="number col l1 m1 s3 valign">52,135</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 74%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 74%;"></div>
+</div>
+
+<div class="child-row_6" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, yibis, AE</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 729</span>
+<p>
+Released Sun, Feb 14<br>
+Current DLs: 47,827<br>
+DLs at 7d: 33,695 +/- 367<br>
+60.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 730</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 35,289<br>
+DLs at 7d: 32,818 +/- 29<br>
+97.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 731</span>
+<p>
+Released Sat, Feb 27<br>
+Current DLs: 36,635<br>
+DLs at 7d: 48,763 +/- 2,779<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_7">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/30831/Kono_Subarashii_Sekai_ni_Shukufuku_wo!">Kono Subarashii Sekai ni Shukufuku wo!</a></div>
+<div class="number col l1 m1 s3 valign">51,619</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 74%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 74%;"></div>
+</div>
+
+<div class="child-row_7" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, Chihiro, BakedFish, DeadFish, FFF, Kuusou</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 5</span>
+<p>
+Released Wed, Feb 10<br>
+Current DLs: 65,262<br>
+DLs at 7d: 55,484 +/- 709<br>
+113.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Wed, Feb 17<br>
+Current DLs: 37,445<br>
+DLs at 7d: 31,153 +/- 695<br>
+56.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Wed, Feb 24<br>
+Current DLs: 49,819<br>
+DLs at 7d: 53,508 +/- 1,632<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_8">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31251/Mobile_Suit_Gundam:_Iron-Blooded_Orphans">Mobile Suit Gundam - Iron-Blooded Orphans</a></div>
+<div class="number col l1 m1 s3 valign">48,287</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 69%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 69%;"></div>
+</div>
+
+<div class="child-row_8" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, BakedFish, Chinpo, Manko, DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 19</span>
+<p>
+Released Sun, Feb 14<br>
+Current DLs: 38,254<br>
+DLs at 7d: 32,094 +/- 458<br>
+69.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 20</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 33,204<br>
+DLs at 7d: 32,142 +/- 409<br>
+100.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 21</span>
+<p>
+Released Sun, Feb 28<br>
+Current DLs: 28,170<br>
+DLs at 7d: 63,794 +/- 10,845<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_9">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/30749/Saijaku_Muhai_no_Bahamut">Saijaku Muhai no Bahamut</a></div>
+<div class="number col l1 m1 s3 valign">47,982</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 68%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 68%;"></div>
+</div>
+
+<div class="child-row_9" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, FFF, BakedFish, DeadFish, Heroine, AE</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 5</span>
+<p>
+Released Mon, Feb 08<br>
+Current DLs: 53,126<br>
+DLs at 7d: 45,493 +/- 695<br>
+98.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Mon, Feb 15<br>
+Current DLs: 42,991<br>
+DLs at 7d: 37,076 +/- 716<br>
+81.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Mon, Feb 22<br>
+Current DLs: 39,021<br>
+DLs at 7d: 39,739 +/- 735<br>
+107.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_10">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/1735/Naruto:_Shippuuden">Naruto Shippuuden</a></div>
+<div class="number col l1 m1 s3 valign">44,193</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 63%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 63%;"></div>
+</div>
+
+<div class="child-row_10" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, DeadFish, AE</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 448</span>
+<p>
+Released Thu, Feb 11<br>
+Current DLs: 49,947<br>
+DLs at 7d: 40,813 +/- 241<br>
+111.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 449</span>
+<p>
+Released Thu, Feb 18<br>
+Current DLs: 24,047<br>
+DLs at 7d: 16,354 +/- 494<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 450</span>
+<p>
+Released Thu, Feb 25<br>
+Current DLs: 37,449<br>
+DLs at 7d: 42,208 +/- 1,435<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_11">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/30654/Ansatsu_Kyoushitsu_(TV)_2nd_Season">Assassination Classroom S2</a></div>
+<div class="number col l1 m1 s3 valign">40,895</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 58%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 58%;"></div>
+</div>
+
+<div class="child-row_11" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Ansatsu Kyoushitsu (2016)</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, FFF, DeadFish, BakedFish, MK</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Thu, Feb 11<br>
+Current DLs: 43,902<br>
+DLs at 7d: 37,238 +/- 286<br>
+106.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Thu, Feb 18<br>
+Current DLs: 38,939<br>
+DLs at 7d: 33,083 +/- 624<br>
+88.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Thu, Feb 25<br>
+Current DLs: 28,052<br>
+DLs at 7d: 32,583 +/- 1,857<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_12">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/24415/Kuroko_no_Basket_3rd_Season">Kuroko's Basketball</a></div>
+<div class="number col l1 m1 s3 valign">40,043</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 57%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 57%;"></div>
+</div>
+
+<div class="child-row_12" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> Saizen</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 73</span>
+<p>
+Released Sat, Jun 13<br>
+Current DLs: 50,686<br>
+DLs at 7d: 41,214 +/- 502<br>
+102.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 74</span>
+<p>
+Released Sat, Jun 20<br>
+Current DLs: 49,652<br>
+DLs at 7d: 40,683 +/- 312<br>
+98.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 75</span>
+<p>
+Released Tue, Jun 30<br>
+Current DLs: 54,764<br>
+DLs at 7d: 49,904 +/- 140<br>
+122.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_13">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31710/Divine_Gate">Divine Gate</a></div>
+<div class="number col l1 m1 s3 valign">39,435</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 56%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 56%;"></div>
+</div>
+
+<div class="child-row_13" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, Heroine, BakedFish, DeadFish, AE, apv</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Fri, Feb 12<br>
+Current DLs: 40,897<br>
+DLs at 7d: 35,722 +/- 167<br>
+140.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Fri, Feb 19<br>
+Current DLs: 18,595<br>
+DLs at 7d: 16,409 +/- 155<br>
+45.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Fri, Feb 26<br>
+Current DLs: 26,419<br>
+DLs at 7d: 31,809 +/- 1,081<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_14">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/22043/Fairy_Tail_(2014)">Fairy Tail S2</a></div>
+<div class="number col l1 m1 s3 valign">37,135</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 53%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 53%;"></div>
+</div>
+
+<div class="child-row_14" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 96</span>
+<p>
+Released Sat, Feb 13<br>
+Current DLs: 40,580<br>
+DLs at 7d: 34,331 +/- 14<br>
+118.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 97</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 21,620<br>
+DLs at 7d: 20,096 +/- 23<br>
+58.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 98</span>
+<p>
+Released Sat, Feb 27<br>
+Current DLs: 31,780<br>
+DLs at 7d: 40,716 +/- 2,320<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_15">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/30806/Schwarzesmarken">Schwarzesmarken</a></div>
+<div class="number col l1 m1 s3 valign">36,451</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 52%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 52%;"></div>
+</div>
+
+<div class="child-row_15" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, Commie, BakedFish, DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Sun, Feb 14<br>
+Current DLs: 25,604<br>
+DLs at 7d: 20,504 +/- 532<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 25,675<br>
+DLs at 7d: 25,352 +/- 363<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Sun, Feb 28<br>
+Current DLs: 12,469<br>
+DLs at 7d: 28,237 +/- 4,800<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_16">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/27829/Heavy_Object">Heavy Object</a></div>
+<div class="number col l1 m1 s3 valign">36,401</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 52%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 52%;"></div>
+</div>
+
+<div class="child-row_16" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, Pure™ & Innocent™, BakedFish, DeadFish, AE, ADZ, adz, Not Senketsu Subs, notname</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 18</span>
+<p>
+Released Fri, Feb 12<br>
+Current DLs: 41,990<br>
+DLs at 7d: 36,900 +/- 188<br>
+148.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 19</span>
+<p>
+Released Fri, Feb 19<br>
+Current DLs: 19,390<br>
+DLs at 7d: 17,198 +/- 163<br>
+46.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 20</span>
+<p>
+Released Fri, Feb 26<br>
+Current DLs: 30,542<br>
+DLs at 7d: 36,898 +/- 1,254<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_17">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/30901/Utawarerumono:_Itsuwari_no_Kamen">Utawarerumono - Itsuwari no Kamen</a></div>
+<div class="number col l1 m1 s3 valign">34,744</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 49%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 49%;"></div>
+</div>
+
+<div class="child-row_17" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, DameDesuYo, BakedFish, DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 19</span>
+<p>
+Released Sat, Feb 13<br>
+Current DLs: 28,518<br>
+DLs at 7d: 23,305 +/- 179<br>
+67.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 20</span>
+<p>
+Released Sat, Feb 20<br>
+Current DLs: 21,947<br>
+DLs at 7d: 20,847 +/- 291<br>
+89.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 21</span>
+<p>
+Released Sat, Feb 27<br>
+Current DLs: 26,484<br>
+DLs at 7d: 36,680 +/- 2,090<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_18">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31790/Active_Raid:_Kidou_Kyoushuushitsu_Dai_Hakkei">Active Raid</a></div>
+<div class="number col l1 m1 s3 valign">32,747</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 47%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 47%;"></div>
+</div>
+
+<div class="child-row_18" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Active Raid: Kidou Kyoushuushitsu Dai Hakkei</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, BakedFish, DeadFish, Impatience, AE</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Thu, Feb 11<br>
+Current DLs: 28,451<br>
+DLs at 7d: 25,569 +/- 115<br>
+111.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Thu, Feb 18<br>
+Current DLs: 16,123<br>
+DLs at 7d: 12,676 +/- 325<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Thu, Feb 25<br>
+Current DLs: 20,724<br>
+DLs at 7d: 23,418 +/- 796<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_19">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/28391/Ao_no_Kanata_no_Four_Rhythm">Ao no Kanata no Four Rhythm</a></div>
+<div class="number col l1 m1 s3 valign">32,710</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 46%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 46%;"></div>
+</div>
+
+<div class="child-row_19" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, GJM, BakedFish, DeadFish, AE, apv</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 5</span>
+<p>
+Released Mon, Feb 08<br>
+Current DLs: 34,651<br>
+DLs at 7d: 29,570 +/- 439<br>
+102.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Mon, Feb 15<br>
+Current DLs: 29,719<br>
+DLs at 7d: 25,875 +/- 473<br>
+87.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Mon, Feb 22<br>
+Current DLs: 21,484<br>
+DLs at 7d: 21,799 +/- 403<br>
+84.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_20">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/28891/Haikyuu!!_Second_Season">Haikyuu!! S2</a></div>
+<div class="number col l1 m1 s3 valign">31,682</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 45%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 45%;"></div>
+</div>
+
+<div class="child-row_20" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Haikyuu!! Second Season</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, DeadFish, Commie</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 19</span>
+<p>
+Released Sat, Feb 13<br>
+Current DLs: 21,585<br>
+DLs at 7d: 16,570 +/- 253<br>
+49.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 20</span>
+<p>
+Released Sat, Feb 20<br>
+Current DLs: 20,475<br>
+DLs at 7d: 19,499 +/- 272<br>
+117.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 21</span>
+<p>
+Released Sat, Feb 27<br>
+Current DLs: 24,025<br>
+DLs at 7d: 33,219 +/- 1,893<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_21">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/32083/Luck_&_Logic?_Logic=">Luck & Logic</a></div>
+<div class="number col l1 m1 s3 valign">31,187</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 44%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 44%;"></div>
+</div>
+
+<div class="child-row_21" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, BakedFish, DeadFish, Oyatsu, Athena</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Sat, Feb 13<br>
+Current DLs: 23,476<br>
+DLs at 7d: 20,498 +/- 75<br>
+71.0% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Sat, Feb 20<br>
+Current DLs: 15,531<br>
+DLs at 7d: 14,797 +/- 207<br>
+72.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Sat, Feb 27<br>
+Current DLs: 20,439<br>
+DLs at 7d: 26,906 +/- 1,533<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_22">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31223/Phantasy_Star_Online_2_The_Animation">Phantasy Star Online 2 The Animation</a></div>
+<div class="number col l1 m1 s3 valign">30,136</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 43%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 43%;"></div>
+</div>
+
+<div class="child-row_22" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, DeadFish, BakedFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 5</span>
+<p>
+Released Sat, Feb 06<br>
+Current DLs: 27,985<br>
+DLs at 7d: 23,840 +/- 124<br>
+76.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Sat, Feb 20<br>
+Current DLs: 15,332<br>
+DLs at 7d: 14,190 +/- 198<br>
+59.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Sat, Feb 27<br>
+Current DLs: 20,888<br>
+DLs at 7d: 26,591 +/- 1,515<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_23">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31559/Prince_of_Stride:_Alternative">Prince of Stride - Alternative</a></div>
+<div class="number col l1 m1 s3 valign">29,720</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 42%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 42%;"></div>
+</div>
+
+<div class="child-row_23" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, orz, BakedFish, DeadFish, AE, KRIPS, apv</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Tue, Feb 09<br>
+Current DLs: 28,434<br>
+DLs at 7d: 23,839 +/- 416<br>
+87.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Tue, Feb 16<br>
+Current DLs: 21,754<br>
+DLs at 7d: 18,020 +/- 653<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Tue, Feb 23<br>
+Current DLs: 23,149<br>
+DLs at 7d: 24,118 +/- 735<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_24">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31914/Shoujo-tachi_wa_Kouya_wo_Mezasu">Shoujo-tachi wa Kouya wo Mezasu</a></div>
+<div class="number col l1 m1 s3 valign">28,487</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 40%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 40%;"></div>
+</div>
+
+<div class="child-row_24" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, Watashi, BakedFish, DeadFish, AnimePM, SnF, notname</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Thu, Feb 11<br>
+Current DLs: 31,469<br>
+DLs at 7d: 26,571 +/- 114<br>
+156.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Thu, Feb 18<br>
+Current DLs: 19,139<br>
+DLs at 7d: 17,036 +/- 289<br>
+64.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Thu, Feb 25<br>
+Current DLs: 19,855<br>
+DLs at 7d: 23,080 +/- 1,315<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_25">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/32023/Bubuki_Buranki">Bubuki Buranki</a></div>
+<div class="number col l1 m1 s3 valign">28,293</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 40%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 40%;"></div>
+</div>
+
+<div class="child-row_25" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, Heroine, BakedFish, DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Sat, Feb 13<br>
+Current DLs: 17,118<br>
+DLs at 7d: 13,182 +/- 156<br>
+53.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Sat, Feb 20<br>
+Current DLs: 15,647<br>
+DLs at 7d: 14,734 +/- 206<br>
+111.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Sat, Feb 27<br>
+Current DLs: 18,179<br>
+DLs at 7d: 24,233 +/- 1,381<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_26">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/23199/Durarara!!x2_Shou">Durarara!! X2</a></div>
+<div class="number col l1 m1 s3 valign">28,044</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 40%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 40%;"></div>
+</div>
+
+<div class="child-row_26" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 30</span>
+<p>
+Released Sat, Feb 13<br>
+Current DLs: 26,014<br>
+DLs at 7d: 22,204 +/- 84<br>
+84.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 31</span>
+<p>
+Released Sat, Feb 20<br>
+Current DLs: 16,758<br>
+DLs at 7d: 15,694 +/- 219<br>
+70.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 32</span>
+<p>
+Released Sat, Feb 27<br>
+Current DLs: 21,143<br>
+DLs at 7d: 28,394 +/- 1,618<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_27">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/30895/Haruchika:_Haruta_to_Chika_wa_Seishun_Suru">Haruchika</a></div>
+<div class="number col l1 m1 s3 valign">26,362</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 37%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 37%;"></div>
+</div>
+
+<div class="child-row_27" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Haruchika ~Haruta to Chika wa Seishun Suru~</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, GJM-Vivid, BakedFish, DeadFish, Scales, removempeg2, RightShiftBy2</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Wed, Feb 10<br>
+Current DLs: 26,544<br>
+DLs at 7d: 23,482 +/- 215<br>
+108.0% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Wed, Feb 17<br>
+Current DLs: 18,333<br>
+DLs at 7d: 15,930 +/- 212<br>
+67.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Wed, Feb 24<br>
+Current DLs: 1,431<br>
+DLs at 7d: 1,556 +/- 52<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_28">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/30123/Akagami_no_Shirayuki-hime">Akagami no Shirayukihime</a></div>
+<div class="number col l1 m1 s3 valign">26,362</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 37%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 37%;"></div>
+</div>
+
+<div class="child-row_28" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, notname</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 17</span>
+<p>
+Released Mon, Feb 08<br>
+Current DLs: 27,011<br>
+DLs at 7d: 23,955 +/- 229<br>
+99.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 18</span>
+<p>
+Released Mon, Feb 15<br>
+Current DLs: 23,331<br>
+DLs at 7d: 19,724 +/- 232<br>
+82.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 19</span>
+<p>
+Released Mon, Feb 22<br>
+Current DLs: 20,982<br>
+DLs at 7d: 21,164 +/- 391<br>
+107.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_29">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/32214/Koukaku_no_Pandora">Koukaku no Pandora</a></div>
+<div class="number col l1 m1 s3 valign">25,635</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 36%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 36%;"></div>
+</div>
+
+<div class="child-row_29" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, DameDesuYo, DeadFish, BakedFish, RipFuni</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Fri, Feb 12<br>
+Current DLs: 27,661<br>
+DLs at 7d: 20,975 +/- 116<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Fri, Feb 19<br>
+Current DLs: 14,974<br>
+DLs at 7d: 11,434 +/- 108<br>
+54.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Fri, Feb 26<br>
+Current DLs: 16,980<br>
+DLs at 7d: 20,516 +/- 697<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_30">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/24405/World_Trigger">World Trigger</a></div>
+<div class="number col l1 m1 s3 valign">24,333</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 34%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 34%;"></div>
+</div>
+
+<div class="child-row_30" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, BakedFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 66</span>
+<p>
+Released Sun, Feb 14<br>
+Current DLs: 21,225<br>
+DLs at 7d: 17,675 +/- 147<br>
+78.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 67</span>
+<p>
+Released Sat, Feb 20<br>
+Current DLs: 16,250<br>
+DLs at 7d: 15,432 +/- 216<br>
+87.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 68</span>
+<p>
+Released Sun, Feb 28<br>
+Current DLs: 16,865<br>
+DLs at 7d: 38,192 +/- 6,492<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_31">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31973/Mobile_Suit_Gundam_Thunderbolt">Mobile Suit Gundam Thunderbolt</a></div>
+<div class="number col l1 m1 s3 valign">24,149</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 34%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 34%;"></div>
+</div>
+
+<div class="child-row_31" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> Blaze077-Subs</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 1</span>
+<p>
+Released Fri, Dec 25<br>
+Current DLs: 62,031<br>
+DLs at 7d: 43,344 +/- 172<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 2</span>
+<p>
+Released Thu, Feb 11<br>
+Current DLs: 6,567<br>
+DLs at 7d: 5,042 +/- 8<br>
+11.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_32">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/28735/Shouwa_Genroku_Rakugo_Shinjuu">Shouwa Genroku Rakugo Shinjuu</a></div>
+<div class="number col l1 m1 s3 valign">22,670</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 32%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 32%;"></div>
+</div>
+
+<div class="child-row_32" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, BakedFish, DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Fri, Feb 12<br>
+Current DLs: 22,897<br>
+DLs at 7d: 20,149 +/- 132<br>
+130.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Sat, Feb 20<br>
+Current DLs: 11,904<br>
+DLs at 7d: 10,370 +/- 145<br>
+51.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Fri, Feb 26<br>
+Current DLs: 17,232<br>
+DLs at 7d: 21,142 +/- 718<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_33">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/32013/Oshiete!_Galko-chan">Oshiete! Galko-chan</a></div>
+<div class="number col l1 m1 s3 valign">21,776</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 31%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 31%;"></div>
+</div>
+
+<div class="child-row_33" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, PosedLook, BakedFish, DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Fri, Feb 12<br>
+Current DLs: 23,934<br>
+DLs at 7d: 20,481 +/- 145<br>
+139.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Fri, Feb 19<br>
+Current DLs: 13,425<br>
+DLs at 7d: 11,775 +/- 111<br>
+57.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Fri, Feb 26<br>
+Current DLs: 18,396<br>
+DLs at 7d: 22,838 +/- 776<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_34">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/18689/Diamond_no_Ace">Ace of Diamond S2</a></div>
+<div class="number col l1 m1 s3 valign">21,490</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 30%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 30%;"></div>
+</div>
+
+<div class="child-row_34" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Ace of the Diamond</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, Commie</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 73</span>
+<p>
+Released Sun, Mar 15<br>
+Current DLs: 24,165<br>
+DLs at 7d: 21,253 +/- 18<br>
+101.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 74</span>
+<p>
+Released Sun, Mar 22<br>
+Current DLs: 23,316<br>
+DLs at 7d: 20,542 +/- 24<br>
+96.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 75</span>
+<p>
+Released Sun, Mar 29<br>
+Current DLs: 25,193<br>
+DLs at 7d: 20,771 +/- 562<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_35">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/918/Gintama">Gintama</a></div>
+<div class="number col l1 m1 s3 valign">21,194</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 30%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 30%;"></div>
+</div>
+
+<div class="child-row_35" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, apv</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 309</span>
+<p>
+Released Wed, Feb 10<br>
+Current DLs: 21,374<br>
+DLs at 7d: 19,013 +/- 80<br>
+97.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 310</span>
+<p>
+Released Wed, Feb 17<br>
+Current DLs: 15,817<br>
+DLs at 7d: 13,678 +/- 107<br>
+71.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 311</span>
+<p>
+Released Wed, Feb 24<br>
+Current DLs: 20,362<br>
+DLs at 7d: 21,723 +/- 738<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_36">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake-grey" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/32668/Noblesse__Awakening">Noblesse - Awakening</a></div>
+<div class="number col l1 m1 s3 valign">20,684</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 29%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 29%;"></div>
+</div>
+
+<div class="child-row_36" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 0</span>
+<p>
+Released Thu, Feb 04<br>
+Current DLs: 24,869<br>
+DLs at 7d: 20,684 +/- 354<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_37">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31848/Ojisan_to_Marshmallow">Ojisan to Marshmallow</a></div>
+<div class="number col l1 m1 s3 valign">19,436</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 27%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 27%;"></div>
+</div>
+
+<div class="child-row_37" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, Commie, BakedFish, DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Thu, Feb 11<br>
+Current DLs: 20,612<br>
+DLs at 7d: 18,007 +/- 115<br>
+128.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Thu, Feb 18<br>
+Current DLs: 12,422<br>
+DLs at 7d: 10,964 +/- 174<br>
+60.9% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Thu, Feb 25<br>
+Current DLs: 14,875<br>
+DLs at 7d: 16,928 +/- 575<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_38">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31621/Ooyasan_wa_Shishunki!">Ooyasan wa Shishunki!</a></div>
+<div class="number col l1 m1 s3 valign">19,368</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 27%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 27%;"></div>
+</div>
+
+<div class="child-row_38" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, Kaitou, BakedFish, DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Sun, Feb 14<br>
+Current DLs: 14,671<br>
+DLs at 7d: 11,465 +/- 300<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 15,366<br>
+DLs at 7d: 15,156 +/- 317<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Sun, Feb 28<br>
+Current DLs: 8,908<br>
+DLs at 7d: 20,173 +/- 3,429<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_39">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/22199/Akame_ga_Kill!">Akame ga Kill!</a></div>
+<div class="number col l1 m1 s3 valign">19,269</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 27%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 27%;"></div>
+</div>
+
+<div class="child-row_39" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> MK-Pn8</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 22</span>
+<p>
+Released Sun, Feb 14<br>
+Current DLs: 2,607<br>
+DLs at 7d: 1,202 +/- 59<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 23</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 907<br>
+DLs at 7d: 896 +/- 3<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 24</span>
+<p>
+Released Sat, Jan 17<br>
+Current DLs: 113,997<br>
+DLs at 7d: 258,160 +/- 43,887<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_40">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31414/Nijiiro_Days">Nijiiro Days</a></div>
+<div class="number col l1 m1 s3 valign">18,582</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 26%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 26%;"></div>
+</div>
+
+<div class="child-row_40" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, Heroine, BakedFish, DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Sun, Feb 14<br>
+Current DLs: 12,608<br>
+DLs at 7d: 9,631 +/- 400<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 10,402<br>
+DLs at 7d: 10,280 +/- 183<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Sun, Feb 28<br>
+Current DLs: 6,957<br>
+DLs at 7d: 15,755 +/- 2,678<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_41">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31452/Norn9:_Norn+Nonet">Norn9 - Norn+Nonet</a></div>
+<div class="number col l1 m1 s3 valign">17,457</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 25%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 25%;"></div>
+</div>
+
+<div class="child-row_41" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, BakedFish, Cuck9</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Thu, Feb 11<br>
+Current DLs: 18,203<br>
+DLs at 7d: 16,268 +/- 78<br>
+163.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Thu, Feb 18<br>
+Current DLs: 11,993<br>
+DLs at 7d: 10,850 +/- 145<br>
+66.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Fri, Feb 26<br>
+Current DLs: 12,610<br>
+DLs at 7d: 14,646 +/- 834<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_42">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/30694/Dragon_Ball_Super">Dragon Ball Super</a></div>
+<div class="number col l1 m1 s3 valign">16,534</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 23%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 23%;"></div>
+</div>
+
+<div class="child-row_42" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> KamiFS, DeadFish, Pafu Subs</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 31</span>
+<p>
+Released Mon, Feb 15<br>
+Current DLs: 16,855<br>
+DLs at 7d: 13,516 +/- 464<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 32</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 10,282<br>
+DLs at 7d: 13,078 +/- 444<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 33</span>
+<p>
+Released Sun, Feb 28<br>
+Current DLs: 3,197<br>
+DLs at 7d: 7,240 +/- 1,230<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_43">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31580/Ajin">Ajin - Demi-Human</a></div>
+<div class="number col l1 m1 s3 valign">15,953</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 22%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 22%;"></div>
+</div>
+
+<div class="child-row_43" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Ajin (2016), Ajin</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> Underwater-µtw, DeadFish, Ganbarou, KamiFS, TenchouSubs, TenchouHardSubs, NoobSubs, Scales, Draguila, RightShiftBy2</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 5</span>
+<p>
+Released Tue, Feb 09<br>
+Current DLs: 28,035<br>
+DLs at 7d: 17,304 +/- 361<br>
+73.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 20,239<br>
+DLs at 7d: 19,412 +/- 643<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Wed, Feb 24<br>
+Current DLs: 3,118<br>
+DLs at 7d: 3,378 +/- 192<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_44">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31540/Sekkou_Boys">Sekkou Boys</a></div>
+<div class="number col l1 m1 s3 valign">15,189</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 21%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 21%;"></div>
+</div>
+
+<div class="child-row_44" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, BakedFish, Commie, DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Fri, Feb 12<br>
+Current DLs: 13,048<br>
+DLs at 7d: 11,315 +/- 94<br>
+126.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Fri, Feb 19<br>
+Current DLs: 8,085<br>
+DLs at 7d: 6,754 +/- 64<br>
+59.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Fri, Feb 26<br>
+Current DLs: 10,394<br>
+DLs at 7d: 12,903 +/- 735<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_45">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31793/Mahou_Shoujo_Nante_Mou_Ii_Desukara.">Mahou Shoujo Nante Mou Ii Desukara</a></div>
+<div class="number col l1 m1 s3 valign">14,902</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 21%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 21%;"></div>
+</div>
+
+<div class="child-row_45" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, BakedFish, DeadFish, Impatience</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 5</span>
+<p>
+Released Mon, Feb 08<br>
+Current DLs: 14,977<br>
+DLs at 7d: 12,629 +/- 212<br>
+90.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Mon, Feb 15<br>
+Current DLs: 13,879<br>
+DLs at 7d: 11,725 +/- 204<br>
+92.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Mon, Feb 22<br>
+Current DLs: 10,929<br>
+DLs at 7d: 11,109 +/- 205<br>
+94.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_46">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31174/Osomatsu-san">Osomatsu-san</a></div>
+<div class="number col l1 m1 s3 valign">14,139</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 20%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 20%;"></div>
+</div>
+
+<div class="child-row_46" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, BakedFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 18</span>
+<p>
+Released Mon, Feb 08<br>
+Current DLs: 18,009<br>
+DLs at 7d: 14,471 +/- 232<br>
+102.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 19</span>
+<p>
+Released Mon, Feb 15<br>
+Current DLs: 15,674<br>
+DLs at 7d: 13,074 +/- 202<br>
+90.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 20</span>
+<p>
+Released Mon, Feb 22<br>
+Current DLs: 13,579<br>
+DLs at 7d: 13,731 +/- 254<br>
+105.0% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_47">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31890/Nurse_Witch_Komugi-chan_R">Nurse Witch Komugi-chan R</a></div>
+<div class="number col l1 m1 s3 valign">13,108</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 18%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 18%;"></div>
+</div>
+
+<div class="child-row_47" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, BakedFish, DeadFish, Impatience</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Sat, Feb 13<br>
+Current DLs: 11,616<br>
+DLs at 7d: 9,734 +/- 54<br>
+92.0% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 7,823<br>
+DLs at 7d: 7,181 +/- 10<br>
+73.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Sat, Feb 27<br>
+Current DLs: 6,560<br>
+DLs at 7d: 8,979 +/- 511<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_48">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/genre/6">Garo - The Crimson Moon</a></div>
+<div class="number col l1 m1 s3 valign">13,028</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 18%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 18%;"></div>
+</div>
+
+<div class="child-row_48" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 18</span>
+<p>
+Released Fri, Feb 12<br>
+Current DLs: 14,394<br>
+DLs at 7d: 12,998 +/- 67<br>
+154.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 19</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 6,737<br>
+DLs at 7d: 6,410 +/- 5<br>
+49.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 20</span>
+<p>
+Released Fri, Feb 26<br>
+Current DLs: 11,545<br>
+DLs at 7d: 13,886 +/- 472<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_49">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/19383/Yami_Shibai">Yami Shibai - Japanese Ghost Stories 3</a></div>
+<div class="number col l1 m1 s3 valign">8,034</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 11%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 11%;"></div>
+</div>
+
+<div class="child-row_49" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Mon, Feb 15<br>
+Current DLs: 7,104<br>
+DLs at 7d: 5,777 +/- 137<br>
+71.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 6,624<br>
+DLs at 7d: 6,530 +/- 142<br>
+113.0% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Sun, Feb 28<br>
+Current DLs: 2,929<br>
+DLs at 7d: 6,633 +/- 1,127<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_50">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/235/Detective_Conan">Detective Conan</a></div>
+<div class="number col l1 m1 s3 valign">8,010</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 11%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 11%;"></div>
+</div>
+
+<div class="child-row_50" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 807</span>
+<p>
+Released Wed, Feb 10<br>
+Current DLs: 8,840<br>
+DLs at 7d: 7,706 +/- 69<br>
+117.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 808</span>
+<p>
+Released Wed, Feb 17<br>
+Current DLs: 8,131<br>
+DLs at 7d: 6,315 +/- 181<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 809</span>
+<p>
+Released Wed, Feb 24<br>
+Current DLs: 8,822<br>
+DLs at 7d: 9,697 +/- 295<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_51">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/27947/Lupin_III_(2015)">Lupin III (2015)</a></div>
+<div class="number col l1 m1 s3 valign">7,746</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 11%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 11%;"></div>
+</div>
+
+<div class="child-row_51" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, BakedFish, DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 19</span>
+<p>
+Released Thu, Feb 11<br>
+Current DLs: 11,488<br>
+DLs at 7d: 9,862 +/- 80<br>
+144.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 20</span>
+<p>
+Released Thu, Feb 18<br>
+Current DLs: 8,766<br>
+DLs at 7d: 7,818 +/- 115<br>
+79.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 21</span>
+<p>
+Released Thu, Feb 25<br>
+Current DLs: 8,396<br>
+DLs at 7d: 9,660 +/- 550<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_52">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31815/Kono_Danshi_Mahou_ga_Oshigoto_Desu">Kono Danshi, Mahou ga Oshigoto Desu</a></div>
+<div class="number col l1 m1 s3 valign">7,275</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 10%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 10%;"></div>
+</div>
+
+<div class="child-row_52" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, BakedFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 2</span>
+<p>
+Released Fri, Feb 12<br>
+Current DLs: 9,420<br>
+DLs at 7d: 8,030 +/- 77<br>
+93.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 3</span>
+<p>
+Released Fri, Feb 19<br>
+Current DLs: 5,180<br>
+DLs at 7d: 4,378 +/- 41<br>
+54.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 4</span>
+<p>
+Released Fri, Feb 26<br>
+Current DLs: 6,738<br>
+DLs at 7d: 8,222 +/- 468<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_53">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31578/JK_Meshi!">JK Meshi!</a></div>
+<div class="number col l1 m1 s3 valign">6,981</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 10%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 10%;"></div>
+</div>
+
+<div class="child-row_53" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, Kaitou, BakedFish, DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 19</span>
+<p>
+Released Mon, Feb 08<br>
+Current DLs: 8,319<br>
+DLs at 7d: 6,713 +/- 132<br>
+96.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 20</span>
+<p>
+Released Mon, Feb 15<br>
+Current DLs: 7,578<br>
+DLs at 7d: 6,178 +/- 124<br>
+92.0% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 21</span>
+<p>
+Released Mon, Feb 22<br>
+Current DLs: 6,448<br>
+DLs at 7d: 6,516 +/- 120<br>
+105.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_54">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31227/Kindaichi_Shounen_no_Jikenbo_Returns_2nd_Season">Kindaichi Case Files R S2</a></div>
+<div class="number col l1 m1 s3 valign">6,908</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 9%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 9%;"></div>
+</div>
+
+<div class="child-row_54" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 41</span>
+<p>
+Released Sat, Feb 13<br>
+Current DLs: 7,275<br>
+DLs at 7d: 6,349 +/- 19<br>
+102.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 42</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 4,651<br>
+DLs at 7d: 4,452 +/- 3<br>
+70.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 43</span>
+<p>
+Released Sat, Feb 27<br>
+Current DLs: 6,360<br>
+DLs at 7d: 8,316 +/- 474<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_55">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/30651/Itoshi_no_Muco">Itoshi no Muco</a></div>
+<div class="number col l1 m1 s3 valign">6,808</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 9%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 9%;"></div>
+</div>
+
+<div class="child-row_55" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, BakedFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 19</span>
+<p>
+Released Sat, Feb 13<br>
+Current DLs: 7,562<br>
+DLs at 7d: 6,086 +/- 4<br>
+104.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 20</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 5,159<br>
+DLs at 7d: 4,824 +/- 5<br>
+79.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 21</span>
+<p>
+Released Sat, Feb 27<br>
+Current DLs: 6,261<br>
+DLs at 7d: 8,017 +/- 457<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_56">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/30649/Shin_Atashinchi">Shin Atashinchi</a></div>
+<div class="number col l1 m1 s3 valign">6,241</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 8%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 8%;"></div>
+</div>
+
+<div class="child-row_56" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, BakedFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 18</span>
+<p>
+Released Tue, Feb 09<br>
+Current DLs: 7,519<br>
+DLs at 7d: 6,318 +/- 53<br>
+106.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 19</span>
+<p>
+Released Tue, Feb 16<br>
+Current DLs: 6,204<br>
+DLs at 7d: 5,285 +/- 45<br>
+83.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 20</span>
+<p>
+Released Tue, Feb 23<br>
+Current DLs: 6,082<br>
+DLs at 7d: 6,304 +/- 192<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_57">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31573/Brave_Beats">Brave Beats</a></div>
+<div class="number col l1 m1 s3 valign">5,767</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 8%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 8%;"></div>
+</div>
+
+<div class="child-row_57" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, BakedFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 16</span>
+<p>
+Released Sun, Feb 14<br>
+Current DLs: 5,872<br>
+DLs at 7d: 4,664 +/- 107<br>
+83.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 17</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 5,093<br>
+DLs at 7d: 4,857 +/- 3<br>
+104.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 18</span>
+<p>
+Released Sun, Feb 28<br>
+Current DLs: 4,606<br>
+DLs at 7d: 6,845 +/- 390<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_58">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/29893/Aria_The_Avvenire">Aria the Avvenire</a></div>
+<div class="number col l1 m1 s3 valign">5,738</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 8%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 8%;"></div>
+</div>
+
+<div class="child-row_58" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> Vivid</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 1</span>
+<p>
+Released Tue, Feb 02<br>
+Current DLs: 6,524<br>
+DLs at 7d: 5,738 +/- 21<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_59">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31637/Gate:_Jieitai_Kanochi_nite_Kaku_Tatakaeri_-_Enryuu-hen">Gate: Jieitai Kanochi nite, Kaku Tatakaeri - Enryuu-hen</a></div>
+<div class="number col l1 m1 s3 valign">5,460</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 7%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 7%;"></div>
+</div>
+
+<div class="child-row_59" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> BakedFish, DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Fri, Feb 12<br>
+Current DLs: 5,471<br>
+DLs at 7d: 4,231 +/- 49<br>
+100.0% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Fri, Feb 19<br>
+Current DLs: 4,164<br>
+DLs at 7d: 3,586 +/- 34<br>
+84.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Fri, Feb 26<br>
+Current DLs: 3,486<br>
+DLs at 7d: 4,469 +/- 254<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_60">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31440/Teekyuu_6">Teekyu S7</a></div>
+<div class="number col l1 m1 s3 valign">4,707</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 6%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 6%;"></div>
+</div>
+
+<div class="child-row_60" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 77</span>
+<p>
+Released Mon, Feb 15<br>
+Current DLs: 5,316<br>
+DLs at 7d: 4,364 +/- 89<br>
+83.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 78</span>
+<p>
+Released Mon, Feb 15<br>
+Current DLs: 4,661<br>
+DLs at 7d: 3,781 +/- 79<br>
+86.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 79</span>
+<p>
+Released Mon, Feb 22<br>
+Current DLs: 4,473<br>
+DLs at 7d: 4,523 +/- 83<br>
+119.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_61">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/13163/Furusato_Saisei:_Nihon_no_Mukashi_Banashi">Folktales from Japan</a></div>
+<div class="number col l1 m1 s3 valign">4,485</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 6%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 6%;"></div>
+</div>
+
+<div class="child-row_61" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> HorribleSubs, DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 201</span>
+<p>
+Released Sun, Feb 14<br>
+Current DLs: 4,964<br>
+DLs at 7d: 4,218 +/- 35<br>
+101.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 202</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 3,129<br>
+DLs at 7d: 2,960 +/- 1<br>
+70.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 203</span>
+<p>
+Released Sat, Feb 27<br>
+Current DLs: 3,895<br>
+DLs at 7d: 5,184 +/- 295<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_62">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/30230/Diamond_no_Ace:_Second_Season">Ace of the Diamond ~Second Season~</a></div>
+<div class="number col l1 m1 s3 valign">4,110</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 5%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 5%;"></div>
+</div>
+
+<div class="child-row_62" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Diamond no Ace: Second Season</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> Commie, DeadFish, BakedFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 44</span>
+<p>
+Released Mon, Feb 08<br>
+Current DLs: 4,547<br>
+DLs at 7d: 3,682 +/- 41<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 45</span>
+<p>
+Released Mon, Feb 15<br>
+Current DLs: 4,884<br>
+DLs at 7d: 3,590 +/- 134<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 46</span>
+<p>
+Released Mon, Feb 22<br>
+Current DLs: 4,704<br>
+DLs at 7d: 4,544 +/- 84<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_63">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/21639/Yu-Gi-Oh!_Arc-V">Yu-Gi-Oh ARC-V</a></div>
+<div class="number col l1 m1 s3 valign">3,955</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 5%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 5%;"></div>
+</div>
+
+<div class="child-row_63" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> MonoSubs, DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 92</span>
+<p>
+Released Thu, Feb 11<br>
+Current DLs: 5,058<br>
+DLs at 7d: 4,243 +/- 29<br>
+164.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 93</span>
+<p>
+Released Fri, Feb 19<br>
+Current DLs: 3,818<br>
+DLs at 7d: 3,458 +/- 72<br>
+81.5% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 94</span>
+<p>
+Released Mon, Feb 22<br>
+Current DLs: 4,026<br>
+DLs at 7d: 4,024 +/- 74<br>
+116.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_64">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/13851/To_LOVE-Ru_Darkness_OVA">To Love-Ru Darkness OVA</a></div>
+<div class="number col l1 m1 s3 valign">3,353</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 4%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 4%;"></div>
+</div>
+
+<div class="child-row_64" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> Doutei</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Fri, Apr 03<br>
+Current DLs: 4,178<br>
+DLs at 7d: 3,797 +/- 7<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Sun, Feb 28<br>
+Current DLs: 1,690<br>
+DLs at 7d: 2,683 +/- 456<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_65">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/27833/Durarara!!x2_Ketsu">Durarara!!x2 Ketsu</a></div>
+<div class="number col l1 m1 s3 valign">3,192</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 4%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 4%;"></div>
+</div>
+
+<div class="child-row_65" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> BakedFish, DeadFish, Glue, AE</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Sat, Feb 13<br>
+Current DLs: 4,184<br>
+DLs at 7d: 3,116 +/- 30<br>
+94.0% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Sat, Feb 20<br>
+Current DLs: 3,330<br>
+DLs at 7d: 2,804 +/- 39<br>
+90.0% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Sat, Feb 27<br>
+Current DLs: 1,298<br>
+DLs at 7d: 1,739 +/- 99<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_66">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31918/Owari_no_Seraph__Nagoya_Kessen-hen_-_Owaranai_Seraph_-_Nagoya_Kessen-hen">Owari no Seraph - Nagoya Kessen-hen Specials - Owaranai Seraph - Nagoya Kessen-hen</a></div>
+<div class="number col l1 m1 s3 valign">2,955</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 4%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 4%;"></div>
+</div>
+
+<div class="child-row_66" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> Mori</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 1</span>
+<p>
+Released Sun, Feb 28<br>
+Current DLs: 1,305<br>
+DLs at 7d: 2,955 +/- 502<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_67">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/15125/Teekyuu">Teekyuu</a></div>
+<div class="number col l1 m1 s3 valign">2,591</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 3%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 3%;"></div>
+</div>
+
+<div class="child-row_67" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> Commie</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 77</span>
+<p>
+Released Mon, Feb 08<br>
+Current DLs: 2,937<br>
+DLs at 7d: 2,295 +/- 55<br>
+96.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 78</span>
+<p>
+Released Mon, Feb 15<br>
+Current DLs: 2,788<br>
+DLs at 7d: 2,386 +/- 33<br>
+104.0% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 79</span>
+<p>
+Released Mon, Feb 22<br>
+Current DLs: 1,934<br>
+DLs at 7d: 1,948 +/- 36<br>
+81.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_68">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31633/Sushi_Police">Sushi Police</a></div>
+<div class="number col l1 m1 s3 valign">2,559</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 3%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 3%;"></div>
+</div>
+
+<div class="child-row_68" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> DeadFish, fishmap, TenchouHardSubs, TenchouSubs</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Thu, Feb 11<br>
+Current DLs: 3,379<br>
+DLs at 7d: 2,681 +/- 5<br>
+123.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Wed, Feb 17<br>
+Current DLs: 2,390<br>
+DLs at 7d: 1,838 +/- 34<br>
+68.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 8</span>
+<p>
+Released Sat, Feb 27<br>
+Current DLs: 1,368<br>
+DLs at 7d: 1,844 +/- 105<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_69">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/28977/Gintama%C2%B0">Gintama° (2015)</a></div>
+<div class="number col l1 m1 s3 valign">1,973</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 2%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 2%;"></div>
+</div>
+
+<div class="child-row_69" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 44</span>
+<p>
+Released Wed, Feb 10<br>
+Current DLs: 2,568<br>
+DLs at 7d: 1,999 +/- 31<br>
+113.6% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 45</span>
+<p>
+Released Wed, Feb 17<br>
+Current DLs: 2,136<br>
+DLs at 7d: 1,682 +/- 31<br>
+84.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 46</span>
+<p>
+Released Wed, Feb 24<br>
+Current DLs: 1,748<br>
+DLs at 7d: 1,928 +/- 65<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_70">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/15061/Aikatsu!">Aikatsu!</a></div>
+<div class="number col l1 m1 s3 valign">1,800</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 2%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 2%;"></div>
+</div>
+
+<div class="child-row_70" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> Mezashite</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 171</span>
+<p>
+Released Sun, Feb 14<br>
+Current DLs: 1,437<br>
+DLs at 7d: 1,165 +/- 12<br>
+62.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 172</span>
+<p>
+Released Sun, Feb 21<br>
+Current DLs: 2,066<br>
+DLs at 7d: 2,037 +/- 36<br>
+174.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 173</span>
+<p>
+Released Sun, Feb 28<br>
+Current DLs: 810<br>
+DLs at 7d: 1,834 +/- 311<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_71">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31884/Mahoutsukai_Precure">Mahoutsukai Precure!</a></div>
+<div class="number col l1 m1 s3 valign">1,725</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 2%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 2%;"></div>
+</div>
+
+<div class="child-row_71" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> Mahoutsukai Precure! - Maho Girls Precure!</div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> naisho, Shimakaze, DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 1</span>
+<p>
+Released Sun, Feb 07<br>
+Current DLs: 3,285<br>
+DLs at 7d: 1,631 +/- 2<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 2</span>
+<p>
+Released Thu, Feb 25<br>
+Current DLs: 1,460<br>
+DLs at 7d: 1,700 +/- 289<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 3</span>
+<p>
+Released Sat, Feb 27<br>
+Current DLs: 1,314<br>
+DLs at 7d: 1,892 +/- 321<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_72">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign">Parasyte -the maxim-</div>
+<div class="number col l1 m1 s3 valign">1,686</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 2%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 2%;"></div>
+</div>
+
+<div class="child-row_72" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> MK-Pn8</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 16</span>
+<p>
+Released Mon, Feb 15<br>
+Current DLs: 0<br>
+DLs at 7d: ???<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 17</span>
+<p>
+Released Tue, Feb 23<br>
+Current DLs: 0<br>
+DLs at 7d: ???<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 18</span>
+<p>
+Released ???<br>
+Current DLs: 0<br>
+DLs at 7d: ???<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_73">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31173/Akagami_no_Shirayuki-hime_2nd_Season">Akagami no Shirayuki-hime 2nd Season</a></div>
+<div class="number col l1 m1 s3 valign">1,391</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 1%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 1%;"></div>
+</div>
+
+<div class="child-row_73" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> BakedFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 5</span>
+<p>
+Released Mon, Feb 08<br>
+Current DLs: 1,807<br>
+DLs at 7d: 1,339 +/- 41<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Mon, Feb 15<br>
+Current DLs: 1,702<br>
+DLs at 7d: 1,271 +/- 43<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Mon, Feb 22<br>
+Current DLs: 1,403<br>
+DLs at 7d: 1,414 +/- 26<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_74">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/32228/Teekyuu_7">Teekyuu 7</a></div>
+<div class="number col l1 m1 s3 valign">1,249</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 1%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 1%;"></div>
+</div>
+
+<div class="child-row_74" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> BakedFish, DeadFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 5</span>
+<p>
+Released Mon, Feb 08<br>
+Current DLs: 1,694<br>
+DLs at 7d: 964 +/- 9<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Mon, Feb 15<br>
+Current DLs: 1,801<br>
+DLs at 7d: 1,317 +/- 37<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Mon, Feb 22<br>
+Current DLs: 1,173<br>
+DLs at 7d: 1,196 +/- 22<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_75">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/32094/Reikenzan__Hoshikuzu-tachi_no_Utage">Reikenzan - Hoshikuzu-tachi no Utage</a></div>
+<div class="number col l1 m1 s3 valign">1,224</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 1%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 1%;"></div>
+</div>
+
+<div class="child-row_75" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> Wien-Subs, K155, apv</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 4</span>
+<p>
+Released Wed, Feb 17<br>
+Current DLs: 980<br>
+DLs at 7d: 798 +/- 14<br>
+35.4% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 5</span>
+<p>
+Released Fri, Feb 26<br>
+Current DLs: 354<br>
+DLs at 7d: 430 +/- 24<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Wed, Feb 24<br>
+Current DLs: 748<br>
+DLs at 7d: 798 +/- 27<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_76">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/genre/16?page=6">Mahou Shoujo Nante Mou Ii Desukara. - I've Had Enough of Being a Magical Girl.</a></div>
+<div class="number col l1 m1 s3 valign">1,209</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 1%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 1%;"></div>
+</div>
+
+<div class="child-row_76" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> μtw-scribbles</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 5</span>
+<p>
+Released Mon, Feb 08<br>
+Current DLs: 1,285<br>
+DLs at 7d: 1,112 +/- 14<br>
+96.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 6</span>
+<p>
+Released Mon, Feb 15<br>
+Current DLs: 1,451<br>
+DLs at 7d: 1,315 +/- 13<br>
+118.3% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 7</span>
+<p>
+Released Mon, Feb 22<br>
+Current DLs: 1,391<br>
+DLs at 7d: 1,311 +/- 24<br>
+99.7% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_77">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree-grey" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31044/Kamisama_Minarai__Himitsu_no_Cocotama/clubs">Kamisama Minarai: Himitsu no Cocotama</a></div>
+<div class="number col l1 m1 s3 valign">1,123</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 1%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 1%;"></div>
+</div>
+
+<div class="child-row_77" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> DeadFish, Wasurenai</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 3</span>
+<p>
+Released Mon, Feb 22<br>
+Current DLs: 1,108<br>
+DLs at 7d: 1,123 +/- 191<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_78">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/28537/Garo:_Guren_no_Tsuki">Garo: Guren no Tsuki</a></div>
+<div class="number col l1 m1 s3 valign">1,022</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 1%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 1%;"></div>
+</div>
+
+<div class="child-row_78" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> BakedFish</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 18</span>
+<p>
+Released Fri, Feb 12<br>
+Current DLs: 1,353<br>
+DLs at 7d: 1,014 +/- 10<br>
+114.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 19</span>
+<p>
+Released Fri, Feb 19<br>
+Current DLs: 898<br>
+DLs at 7d: 789 +/- 11<br>
+77.8% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 20</span>
+<p>
+Released Fri, Feb 26<br>
+Current DLs: 789<br>
+DLs at 7d: 970 +/- 55<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_79">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/269/Bleach">Bleach</a></div>
+<div class="number col l1 m1 s3 valign">1,014</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 1%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 1%;"></div>
+</div>
+
+<div class="child-row_79" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> xDTK</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 207</span>
+<p>
+Released Thu, Feb 04<br>
+Current DLs: 1,149<br>
+DLs at 7d: 782 +/- 1<br>
+44.0% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 208</span>
+<p>
+Released Sat, Feb 13<br>
+Current DLs: 1,651<br>
+DLs at 7d: 751 +/- 5<br>
+96.1% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 209</span>
+<p>
+Released Sat, Feb 13<br>
+Current DLs: 1,660<br>
+DLs at 7d: 761 +/- 6<br>
+101.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_80">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime/31637/Gate__Jieitai_Kanochi_nite_Kaku_Tatakaeri_2nd_Season">Gate - Jieitai Kanochi nite, Kaku Tatakaeri</a></div>
+<div class="number col l1 m1 s3 valign">961</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 1%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 1%;"></div>
+</div>
+
+<div class="child-row_80" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> NotLFF, TW</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 18</span>
+<p>
+Released Sat, Feb 13<br>
+Current DLs: 1,037<br>
+DLs at 7d: 492 +/- 6<br>
+38.2% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 19</span>
+<p>
+Released Mon, Feb 22<br>
+Current DLs: 885<br>
+DLs at 7d: 896 +/- 51<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 20</span>
+<p>
+Released Sat, Feb 27<br>
+Current DLs: 366<br>
+DLs at 7d: 518 +/- 88<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div><div class="divider"></div>
+<div class="row parent shadeonhover" id="row_81">
+<div class="valign-wrapper">
+<div class="seasons col l2 m2 s3 valign"><i class="icon icon-snowflake" style="font-size: 1.5rem;" title="Winter season"></i><i class="icon icon-tulip-grey" style="font-size: 1.5rem;" title="Spring season"></i><br class="hide-on-med-and-up"/><i class="icon icon-sun-grey" style="font-size: 1.5rem;" title="Summer season"></i><i class="icon icon-tree" style="font-size: 1.5rem;" title="Fall season"></i></div>
+<div class="name col l3 m3 s6 valign"><a href="http://myanimelist.net/anime.php?letter=Y&p=11">Yawara</a></div>
+<div class="number col l1 m1 s3 valign">754</div>
+<div class="value hide-on-small-only col l6 m6 valign"><div class="rectangle" style="width: 1%;"></div></div>
+</div>
+<div class="rectangle rectangle-standalone hide-on-med-and-up col s12" style="width: 1%;"></div>
+</div>
+
+<div class="child-row_81" style="display: none;">
+<div class="row">
+<div class="col l6 m6 s12"><span class="indigo-text">Alternate titles:</span> <span class="grey-text">None</span></div>
+<div class="col l6 m6 s12"><span class="indigo-text">Sub groups:</span> FroZen-EviL</div>
+</div>
+
+<div class="row">
+<div class="col l4 m6 s12">
+<div class="card z-depth-2">
+<div class="card-content">
+<span class="card-title indigo-text text-darken-1">Episode 11</span>
+<p>
+Released Thu, Feb 11<br>
+Current DLs: 1,150<br>
+DLs at 7d: 754 +/- 42<br>
+???% of previous ep
+
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div id="timestamp">Refreshed Monday, February 29</div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/js/materialize.min.js"></script>
+<script>
+$(function() {
+    $('div.parent')
+        .css("cursor", "pointer")
+        .attr("title", "Click to expand/collapse")
+        .click(function(){
+            $(this).siblings(".child-" + this.id).toggle("slow");
+            $(this).toggleClass("shadeonhover");
+        });
+});
+$(".button-collapse").sideNav();
+</script>
+</body>
+</html>
