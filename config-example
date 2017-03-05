@@ -1,0 +1,15 @@
+[google]
+api_key=GOOGLE_SEARCH_API_KEY
+cx=CONTEXT?
+
+[mongo]
+uri=MONGO_URL
+
+[kimono]
+endpoint=KIMONO_MAIN_ENDPOINT
+release_date_endpoint=KIMONO_ENDPOINTS_FOR_RELEASE_DATES
+
+[bitballoon]
+access_key=BITBALLOON_ACCESS_KEY
+site_id=SITE_ID
+email=EMAIL
